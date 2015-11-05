@@ -15,52 +15,57 @@ import bwta.BWTA;
 public class Bot extends DefaultBWListener implements Runnable {
 
 	private Com com;
-	
+
 	public Mirror mirror;
 	public Game game;
 	public Player self;
 
 	private BWAPI_UnitToWrapper unitToWrapper;
 
+	private boolean firstStart;
 	private boolean firstExec;
+	private boolean restarting;
 
 	public Bot(Com com) {
 		this.com = com;
-		mirror = new Mirror();
+		this.mirror = new Mirror();
+		this.firstStart = true;
 	}
 
 	@Override
 	public void onStart() {
-		game = mirror.getGame();
-		self = game.self();
-		//game.setGUI(false);
+		// onStart is also called after re-start
+		this.game = mirror.getGame();
+		this.self = game.self();
+		// this.game.setGUI(false);
+		this.game.setLocalSpeed(0);
 
 		this.firstExec = true;
 		this.unitToWrapper = new BWAPI_UnitToWrapper();
 		this.restarting = false;
 
-		com.ComData.action = null;
-		com.ComData.enBaliza = false;
-		com.ComData.restart = false;
+		this.com.ComData.action = null;
+		this.com.ComData.enBaliza = false;
+		this.com.ComData.restart = false;
 
-		// Use BWTA to analyze map
-		// This may take a few minutes if the map is processed first time!
-		System.out.println("Analyzing map...");
-		BWTA.readMap();
-		BWTA.analyze();
-		System.out.println("Map data ready");
-		game.setLocalSpeed(0);
-		com.Sync.s_restartSync.release();
+		if (firstStart) { // Only enters the very first execution (restarts wont enter here)
+			// Use BWTA to analyze map
+			// This may take a few minutes if the map is processed first time!
+			System.out.println("Analyzing map...");
+			BWTA.readMap();
+			BWTA.analyze();
+			System.out.println("Map data ready");
+			this.firstStart = false;
+		}
+
+		this.com.Sync.s_restartSync.release();
 	}
 
 	@Override
 	public void onFrame() {
-
-		if (!restarting) {
-			if (com.ComData.restart) {
-				this.restart();
-			} else {
-
+		if (shouldExecuteOnFrame()) {
+			// Draw even if paused (at the end)
+			if (!game.isPaused()) {
 				if (firstExec) {
 					for (Unit unit : self.getUnits()) {
 						if (unit.getType().equals(UnitType.Terran_Marine)) {
@@ -99,18 +104,25 @@ public class Bot extends DefaultBWListener implements Runnable {
 						com.ComData.enBaliza = unit.distanceTo(com.ComData.unit.getUnit().getPosition()) < 150;
 					}
 				}
-
-				printUnitsInfo();
 			}
+			printUnitsInfo();
 		}
 	}
 
-	private boolean restarting;
+	private boolean isRestarting() {
+		if (!restarting) {
+			if (com.ComData.restart) {
+				System.out.println("Restart2...");
+				restarting = true;
+				game.restartGame();
+			}
+		}
 
-	private void restart() {
-		System.out.println("Restart2...");
-		restarting = true;
-		game.restartGame();
+		return restarting;
+	}
+
+	private boolean shouldExecuteOnFrame() {
+		return !game.isReplay() && !isRestarting();
 	}
 
 	private void printUnitsInfo() {
