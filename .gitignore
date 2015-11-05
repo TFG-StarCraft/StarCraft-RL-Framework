@@ -12,6 +12,3 @@
 hs_err_pid*
 
 /results*
-/bwapi-data/
-/lib
-/*.dll
