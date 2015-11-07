@@ -37,7 +37,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 		// onStart is also called after re-start
 		this.game = mirror.getGame();
 		this.self = game.self();
-		// this.game.setGUI(false);
+		this.game.setGUI(false);
 		this.game.setLocalSpeed(0);
 
 		this.firstExec = true;
@@ -64,7 +64,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onFrame() {
 		if (shouldExecuteOnFrame()) {
-			// Draw even if paused (at the end)
+			// Draw info even if paused (at the end)
 			if (!game.isPaused()) {
 				if (firstExec) {
 					for (Unit unit : self.getUnits()) {
