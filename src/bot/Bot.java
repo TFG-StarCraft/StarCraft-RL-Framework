@@ -51,10 +51,10 @@ public class Bot extends DefaultBWListener implements Runnable {
 		if (firstStart) { // Only enters the very first execution (restarts wont enter here)
 			// Use BWTA to analyze map
 			// This may take a few minutes if the map is processed first time!
-			System.out.println("Analyzing map...");
+			com.onSendMessage("Analyzing map...");
 			BWTA.readMap();
 			BWTA.analyze();
-			System.out.println("Map data ready");
+			com.onSendMessage("Map data ready");
 			this.firstStart = false;
 		}
 
@@ -112,7 +112,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 	private boolean isRestarting() {
 		if (!restarting) {
 			if (com.ComData.restart) {
-				System.out.println("Restart2...");
+				com.onSendMessage("Restart2...");
 				restarting = true;
 				game.restartGame();
 			}
