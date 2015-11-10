@@ -61,7 +61,7 @@ public class Agent implements Runnable {
 			e1.printStackTrace();
 		}
 
-		System.out.println("q-Learning started");
+		com.onSendMessage("q-Learning started");
 		for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
 			State S = estados.getEstadoInicial();
 			int movimientos = 0;
@@ -96,11 +96,13 @@ public class Agent implements Runnable {
 				S = SS;
 				movimientos++;
 			}
-			System.out.println("movimientos: " + movimientos + " nume: " + nume + " episodio " + i);
+			// Iteration end
+			com.onEndIteration(movimientos, nume, i);
 			pw.println(i + "\t" + movimientos + "\t" + nume);
 			pw.flush();
 			com.restart();
 		}
+		com.onEndTrain();
 		pw.close();
 		// printPolicy();
 	}
@@ -130,7 +132,7 @@ public class Agent implements Runnable {
 				else
 					System.out.print("|" + "***" + "");
 			}
-			System.out.println("|");
+			com.onSendMessage("|");
 		}
 	}
 
