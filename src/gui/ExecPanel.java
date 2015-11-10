@@ -67,6 +67,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 						throw new NumberFormatException();
 					com.configureParams(alpha, gamma, epsilon);
 					
+					run.setEnabled(false);
 					new Thread(com).start();
 				} catch (NumberFormatException e1) {
 					t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
