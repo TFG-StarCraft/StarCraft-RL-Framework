@@ -1,8 +1,8 @@
-package com;
+package com.observers;
 
-public interface ComObserver {
+public interface AgentObserver {
 
-	public void onEndIteration();
+	public void onEndIteration(int movimientos, int nume, int i);
 	public void onEndTrain();
 	
 	public void onActionTaken();

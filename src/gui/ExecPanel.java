@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -14,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import com.Com;
-import com.ComObserver;
+import com.observers.ComObserver;
 
 public class ExecPanel extends JPanel implements ComObserver {
 
@@ -22,7 +23,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 * 
 	 */
 	private static final long serialVersionUID = -624314441968368833L;
-	
+
 	private JPanel topPanel;
 	private JButton run;
 	private JLabel l_alpha, l_gamma, l_epsilon;
@@ -32,13 +33,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JTextArea textConsole;
 
 	private Com com;
-	
+
 	public ExecPanel(Com com) {
 		this.com = com;
 		this.com.addObserver(this);
-		
+
 		this.topPanel = new JPanel();
-		
+
 		this.l_alpha = new JLabel("Alpha: ");
 		this.l_gamma = new JLabel("Gamma: ");
 		this.l_epsilon = new JLabel("Epsilon: ");
@@ -50,7 +51,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
 		this.run = new JButton("Run");
 		this.run.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				double alpha, gamma, epsilon;
@@ -66,7 +67,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 					if (epsilon < 0 || epsilon >= 1)
 						throw new NumberFormatException();
 					com.configureParams(alpha, gamma, epsilon);
-					
+
 					run.setEnabled(false);
 					new Thread(com).start();
 				} catch (NumberFormatException e1) {
@@ -76,7 +77,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 				}
 			}
 		});
-		
+
 		this.topPanel.setLayout(new GridLayout(1, 7));
 		this.topPanel.add(this.l_alpha);
 		this.topPanel.add(this.t_alpha);
@@ -85,50 +86,50 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.topPanel.add(this.l_epsilon);
 		this.topPanel.add(this.t_epsilon);
 		this.topPanel.add(this.run);
-		
+
 		this.textConsole = new JTextArea();
 		this.textConsole.setEditable(false);
 		this.scroll = new JScrollPane(textConsole);
 		this.scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		this.setLayout(new BorderLayout());
 		this.add(this.topPanel, BorderLayout.NORTH);
 		this.add(this.scroll, BorderLayout.CENTER);
-		
-	}
 
+	}
 
 	@Override
-	public void onEndIteration() {
+	public void onEndIteration(int i, int movimientos, int nume) {
 		// TODO Auto-generated method stub
-		
+		this.textConsole.append("movimientos: " + movimientos + " nume: " + nume + " episodio " + i + "\n");
 	}
-
 
 	@Override
 	public void onEndTrain() {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void onActionTaken() {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void onActionFail() {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void onSendMessage(String s) {
 		this.textConsole.append(s + "\n");
 	}
-	
+
+	@Override
+	public void onError(String s, boolean fatal) {
+		JOptionPane.showMessageDialog(this.getParent(), s, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
 }

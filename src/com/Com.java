@@ -3,6 +3,10 @@ package com;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.observers.AgentObserver;
+import com.observers.BotOberver;
+import com.observers.ComObserver;
+
 import bot.Bot;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
@@ -71,7 +75,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	@Override
 	public void onEndIteration(int movimientos, int nume, int i) {
-		onSendMessage("movimientos: " + movimientos + " nume: " + nume + " episodio " + i);
+		for (ComObserver comObserver : observers) {
+			comObserver.onEndIteration(i, movimientos, nume);
+		}
 	}
 
 	@Override
@@ -97,6 +103,14 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		for (ComObserver comObserver : observers) {
 			comObserver.onSendMessage(s);
 		}
+	}
+
+	public void onError(String s, boolean fatal) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onError(s, fatal);
+		}
+		if (fatal)
+			System.exit(-1);
 	}
 
 }

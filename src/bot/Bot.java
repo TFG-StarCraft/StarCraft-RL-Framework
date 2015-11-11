@@ -37,7 +37,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 		// onStart is also called after re-start
 		this.game = mirror.getGame();
 		this.self = game.self();
-		this.game.setGUI(false);
+		//this.game.setGUI(false);
 		this.game.setLocalSpeed(0);
 
 		this.firstExec = true;

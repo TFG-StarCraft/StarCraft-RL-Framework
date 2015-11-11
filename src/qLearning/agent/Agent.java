@@ -70,8 +70,7 @@ public class Agent implements Runnable {
 			try {
 				com.Sync.s_restartSync.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				com.onError(e.getLocalizedMessage(), true);
 			}
 
 			while (!S.isEnd()) {
