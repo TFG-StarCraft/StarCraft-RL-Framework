@@ -38,9 +38,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		this.epsilon = epsilon;
 	}
 
+	public Bot bot;
+	
 	@Override
 	public void run() {
-		Thread t1 = new Thread(new Bot(this));
+		bot = new Bot(this);
+		Thread t1 = new Thread(bot);
 		t1.start();
 
 		try {

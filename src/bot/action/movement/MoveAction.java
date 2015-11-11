@@ -83,7 +83,8 @@ public abstract class MoveAction implements GenericAction {
 
 	protected abstract void setUpMove();
 
-	public boolean isValid() {
+	@Override
+	public boolean isPossible() {
 		return unit.getPosition().hasPath(new Position(testX, testY));
 	}
 

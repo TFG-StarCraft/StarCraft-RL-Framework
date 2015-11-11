@@ -18,9 +18,9 @@ public interface Const {
 	public final static double GAMMA = 0.8;
 	public static final double EPSLLON_EGREEDY = 0.9;
 
-	public static final double RECOMPENSA_GENERAL = -10;
-	public static final double RECOMPENSA_FINAL = 10000;
-	public static final double RECOMPENSA_ERROR = -1000;
+	public static final double RECOMPENSA_GENERAL = 0;
+	public static final double RECOMPENSA_FINAL = 1000;
+	public static final double RECOMPENSA_ERROR = 0;
 	
 	public static final double Q_GENERAL = 1;
 	

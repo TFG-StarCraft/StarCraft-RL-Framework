@@ -26,18 +26,23 @@ public class Bot extends DefaultBWListener implements Runnable {
 	private boolean firstExec;
 	private boolean restarting;
 
+	public boolean guiEnabled;
+	public long frames;
+
 	public Bot(Com com) {
 		this.com = com;
 		this.mirror = new Mirror();
 		this.firstStart = true;
+		this.guiEnabled = false;
 	}
 
 	@Override
 	public void onStart() {
+		this.frames = 0;
 		// onStart is also called after re-start
 		this.game = mirror.getGame();
 		this.self = game.self();
-		//this.game.setGUI(false);
+		this.game.setGUI(guiEnabled);
 		this.game.setLocalSpeed(0);
 
 		this.firstExec = true;
@@ -48,7 +53,8 @@ public class Bot extends DefaultBWListener implements Runnable {
 		this.com.ComData.enBaliza = false;
 		this.com.ComData.restart = false;
 
-		if (firstStart) { // Only enters the very first execution (restarts wont enter here)
+		if (firstStart) { // Only enters the very first execution (restarts wont
+							// enter here)
 			// Use BWTA to analyze map
 			// This may take a few minutes if the map is processed first time!
 			com.onSendMessage("Analyzing map...");
@@ -62,7 +68,22 @@ public class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	@Override
+	public void onUnitDestroy(Unit unit) {
+		super.onUnitDestroy(unit);
+		com.ComData.enBaliza = true;
+
+		if (unit.getType().equals(UnitType.Terran_Marine)) {
+			com.ComData.action.onEndAction(false);
+			com.onSendMessage("Randy ha muerto :(");
+		} else {
+			com.ComData.action.onEndAction(true);
+			com.onSendMessage("Randy ha matado :)");
+		}
+	}
+
+	@Override
 	public void onFrame() {
+		this.frames++;
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
 			if (!game.isPaused()) {
@@ -99,11 +120,13 @@ public class Bot extends DefaultBWListener implements Runnable {
 				}
 
 				// End check
-				for (Unit unit : self.getUnits()) {
-					if (unit.getType().equals(UnitType.Terran_Command_Center)) {
-						com.ComData.enBaliza = unit.distanceTo(com.ComData.unit.getUnit().getPosition()) < 150;
-					}
-				}
+				/*
+				 * for (Unit unit : self.getUnits()) { if
+				 * (unit.getType().equals(UnitType.Terran_Command_Center)) {
+				 * com.ComData.enBaliza =
+				 * unit.distanceTo(com.ComData.unit.getUnit().getPosition()) <
+				 * 150; } }
+				 */
 			}
 			printUnitsInfo();
 		}
@@ -133,12 +156,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 				game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
 						myUnit.getOrderTargetPosition().getX(), myUnit.getOrderTargetPosition().getY(),
 						bwapi.Color.Red);
-			} else if (myUnit.getType().equals(UnitType.Terran_Command_Center)) {
-				game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
-						"Dist: " + myUnit.distanceTo(com.ComData.unit.getUnit().getPosition()));
-				game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
-						com.ComData.unit.getUnit().getOrderTargetPosition().getX(),
-						com.ComData.unit.getUnit().getOrderTargetPosition().getY(), bwapi.Color.Green);
 			}
 		}
 	}

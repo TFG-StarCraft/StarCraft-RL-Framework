@@ -44,12 +44,12 @@ public class State {
 
 	public boolean esAccionValida(Action a) {
 
-		return a.toMoveAction(com).isValid();
+		return a.toAction(com).isPossible();
 	}
 
 	public State move(Action action) {
 
-		com.ComData.action = action.toMoveAction(com);
+		com.ComData.action = action.toAction(com);
 		try {
 			com.Sync.s_postAction.acquire();
 		} catch (InterruptedException e) {

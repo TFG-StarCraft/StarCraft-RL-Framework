@@ -26,6 +26,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	private JPanel topPanel;
 	private JButton run;
+	private JButton gui;
 	private JLabel l_alpha, l_gamma, l_epsilon;
 	private JTextField t_alpha, t_gamma, t_epsilon;
 
@@ -92,6 +93,20 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.scroll = new JScrollPane(textConsole);
 		this.scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
+		this.gui = new JButton("gui");
+		this.gui.addActionListener(new ActionListener() {
+			
+			private boolean b = true;
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				com.bot.guiEnabled = b;
+				b = !b;
+			}
+		});
+		
+		this.topPanel.add(gui);
+		
 		this.setLayout(new BorderLayout());
 		this.add(this.topPanel, BorderLayout.NORTH);
 		this.add(this.scroll, BorderLayout.CENTER);
