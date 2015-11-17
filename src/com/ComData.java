@@ -1,17 +1,17 @@
 package com;
 
 import bot.UnitWrapper.UnitWrapper;
-import bot.action.movement.MoveAction;
+import bot.action.GenericAction;
 
 public class ComData {
 
 	public UnitWrapper unit;
-	public boolean enBaliza;
+	public boolean enFinal;
 	public int iniX;
 	public int iniY;
 	public boolean lastActionOk;
 
-	public MoveAction action;
+	public GenericAction action;
 	
 	public boolean restart;
 	

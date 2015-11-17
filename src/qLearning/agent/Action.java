@@ -2,16 +2,17 @@ package qLearning.agent;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
+import bot.action.AtacarVisibles;
+import bot.action.GenericAction;
 import bot.action.movement.MoveDown;
 import bot.action.movement.MoveLeft;
 import bot.action.movement.MoveRight;
 import bot.action.movement.MoveUp;
 
 public enum Action {
-	UP, DOWN, LEFT, RIGHT;
+	UP, DOWN, LEFT, RIGHT, ATTACK;
 
-	public MoveAction toMoveAction(Com com) {
+	public GenericAction toAction(Com com) {
 		switch (this) {
 		case UP:
 			return new MoveUp(com, com.ComData.unit.getUnit());
@@ -21,6 +22,8 @@ public enum Action {
 			return new MoveLeft(com, com.ComData.unit.getUnit());
 		case RIGHT:
 			return new MoveRight(com, com.ComData.unit.getUnit());
+		case ATTACK:
+			return new AtacarVisibles(com, com.ComData.unit.getUnit());
 		default:
 			throw new IllegalArgumentException("Accion no valida");
 		}

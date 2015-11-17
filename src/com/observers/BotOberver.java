@@ -1,4 +1,4 @@
-package com;
+package com.observers;
 
 public interface BotOberver {
 

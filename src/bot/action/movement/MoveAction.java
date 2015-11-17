@@ -3,10 +3,12 @@ package bot.action.movement;
 import com.Com;
 
 import bot.action.GenericAction;
+import bot.event.Event;
+import bot.observers.unit.GenericUnitObserver;
 import bwapi.Position;
 import bwapi.Unit;
 
-public abstract class MoveAction implements GenericAction {
+public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 
 	protected final Unit unit;
 
@@ -21,6 +23,16 @@ public abstract class MoveAction implements GenericAction {
 
 	private Com com;
 
+	@Override
+	public void onUnit(Unit unit) {
+		checkAndActuate();
+	}
+	
+	@Override
+	public Unit getUnit() {
+		return this.unit;
+	}
+	
 	public MoveAction(Com com, Unit unit) {
 		this.com = com;
 		this.unit = unit;
@@ -67,13 +79,14 @@ public abstract class MoveAction implements GenericAction {
 
 	@Override
 	public void onEndAction(boolean correct) {
+		com.bot.addEvent(new Event(Event.CODE_MOVE));
+		
 		if (correct) {
 			com.ComData.action = null;
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
 			com.Sync.s_postAction.release();
 		} else {
-			//System.out.println("Miss");
 			com.ComData.action = null;
 			com.ComData.lastActionOk = false;
 			com.ComData.unit.removeAction();
@@ -83,8 +96,14 @@ public abstract class MoveAction implements GenericAction {
 
 	protected abstract void setUpMove();
 
-	public boolean isValid() {
+	@Override
+	public boolean isPossible() {
 		return unit.getPosition().hasPath(new Position(testX, testY));
+	}
+	
+	@Override
+	public void register() {
+		this.com.bot.registerOnUnitObserver(this);	
 	}
 
 }
