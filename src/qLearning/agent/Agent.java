@@ -72,8 +72,9 @@ public class Agent implements Runnable {
 			} catch (InterruptedException e) {
 				com.onError(e.getLocalizedMessage(), true);
 			}
-
-			while (!S.isEnd()) {
+			
+			com.Sync.s_end.release();
+			while (!S.isFinalEnd()) {
 				Action A = siguienteAccion(S);
 
 				State SS = S.move(A);

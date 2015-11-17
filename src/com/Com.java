@@ -8,6 +8,7 @@ import com.observers.BotOberver;
 import com.observers.ComObserver;
 
 import bot.Bot;
+import bot.BotDestruirUnidad;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
 
@@ -42,7 +43,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	
 	@Override
 	public void run() {
-		bot = new Bot(this);
+		bot = new BotDestruirUnidad(this);
 		Thread t1 = new Thread(bot);
 		t1.start();
 

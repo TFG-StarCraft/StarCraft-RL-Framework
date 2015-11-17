@@ -25,16 +25,9 @@ public class QAarray implements AbstractQFunction {
 
 		for (int i = 0; i < sizeX; i++) {
 			for (int j = 0; j < sizeY; j++) {
-				if (s.getEstado(i, j).isEnd()) {
-					for (int k = 0; k < Action.values().length; k++) {
-						this.arrayQ[i][j][0][k] = 0;
-						this.arrayQ[i][j][1][k] = 0;
-					}
-				} else {
-					for (int k = 0; k < Action.values().length; k++) {
-						this.arrayQ[i][j][0][k] = Const.Q_GENERAL;
-						this.arrayQ[i][j][1][k] = Const.Q_GENERAL;
-					}
+				for (int k = 0; k < Action.values().length; k++) {
+					this.arrayQ[i][j][0][k] = Const.Q_GENERAL;
+					this.arrayQ[i][j][1][k] = Const.Q_GENERAL;
 				}
 			}
 		}
