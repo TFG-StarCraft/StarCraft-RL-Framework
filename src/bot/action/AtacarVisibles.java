@@ -17,15 +17,22 @@ public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 	private Com com;
 	private long frameEnd;
 	
+	private boolean firstExec;
+	
 	public AtacarVisibles(Com com, Unit atacante) {
 		this.unit = atacante;
 		this.com = com;
 		
-		this.frameEnd = com.bot.frames + 13;
+		this.firstExec = true;
 	}
 
 	@Override
 	public void checkAndActuate() {
+		if (firstExec) {
+			this.frameEnd = com.bot.frames + 13;
+			this.firstExec = false;
+		}
+		
 		if (com.bot.frames >= frameEnd) {
 			onEndAction(false);
 		} else {

@@ -19,7 +19,8 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 	protected int testX;
 	protected int testY;
 
-	private long timeEnd;
+	private long frameEnd;
+	private boolean movStarted;
 
 	private Com com;
 
@@ -39,19 +40,22 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();
-		timeEnd = -1;
+		
+		this.movStarted = false;
 	}
 
 	@Override
 	public void checkAndActuate() {
 		//System.out.println(" a " + System.currentTimeMillis());
-		//System.out.println(timeEnd);
-		if (System.currentTimeMillis() >= timeEnd && timeEnd != -1) {
+		System.out.println(com.bot.frames);
+
+		if (com.bot.frames >= frameEnd && movStarted) {
 			onEndAction(false);
 		} else {
 			if (unit.isMoving()) {
 				int a = unit.getOrderTargetPosition().getX();
 				int b = unit.getOrderTargetPosition().getY();
+				
 				if (a != endX || b != endY) {
 					startMove();
 				} else {
@@ -71,8 +75,9 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 	}
 
 	private void startMove() {
-		if (timeEnd == -1) {
-			timeEnd = System.currentTimeMillis() + bot.Const.TIME_MAX;
+		if (!movStarted) {
+			this.frameEnd = com.bot.frames + 50;
+			this.movStarted = true;
 			this.unit.move(new Position(endX, endY));
 		}
 	}

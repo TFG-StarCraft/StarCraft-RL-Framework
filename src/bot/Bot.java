@@ -63,7 +63,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.game = mirror.getGame();
 		this.self = game.self();
 		this.game.setGUI(guiEnabled);
-		this.game.setLocalSpeed(0);
+		//this.game.setLocalSpeed(0);
 
 		this.firstExec = true;
 		this.unitToWrapper = new BWAPI_UnitToWrapper();
@@ -124,6 +124,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					// TODO SACAR DE AQUÍ (DEL ARRAY LIST) EL OBSERVER (LA ACCION) CUANDO ESTA ACABE
+					// Hacerlo desde la accion cuando acabe. Puntero a array o wtfff
 					
 					ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
 					if (a != null) {
