@@ -11,7 +11,7 @@ public class State {
 	private int y;
 
 	private boolean isStart;
-	private boolean baliza;
+	private boolean enFinal;
 
 	private StateContainer states;
 	private AbstractGridEnviroment enviroment;
@@ -21,7 +21,7 @@ public class State {
 		this.com = com; 
 		this.x = x;
 		this.y = y;
-		this.baliza = false;
+		this.enFinal = false;
 
 		this.states = estados;
 		this.enviroment = e;
@@ -39,7 +39,7 @@ public class State {
 	}
 
 	public boolean getBaliza() {
-		return this.baliza;
+		return this.enFinal;
 	}
 
 	public boolean esAccionValida(Action a) {
@@ -50,6 +50,7 @@ public class State {
 	public State move(Action action) {
 
 		com.ComData.action = action.toAction(com);
+		com.ComData.action.register();
 		try {
 			com.Sync.s_postAction.acquire();
 		} catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class State {
 		}
 		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.states,
 				this.enviroment, this.com);
-		SS.baliza = com.ComData.enBaliza;
+		SS.enFinal = com.ComData.enFinal;
 
 		return SS;
 	}
@@ -68,7 +69,7 @@ public class State {
 	}
 
 	public boolean isEnd() {
-		return baliza;
+		return enFinal;
 	}
 
 	public double getReward() {
@@ -79,6 +80,17 @@ public class State {
 		} else {
 			return Const.RECOMPENSA_ERROR;
 		}
+	}
+
+	public boolean isFinalEnd() {
+		try {
+			com.Sync.s_end.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return enFinal;
 	}
 
 }

@@ -1,10 +1,17 @@
 package bot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.Semaphore;
+
 import com.Com;
 
 import bot.UnitWrapper.BWAPI_UnitToWrapper;
 import bot.UnitWrapper.UnitWrapper;
+import bot.observers.OnUnitDestroyObserver;
+import bot.observers.unit.GenericUnitObserver;
 import bwapi.DefaultBWListener;
+import bot.event.Event;
 import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
@@ -12,9 +19,11 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 
-public class Bot extends DefaultBWListener implements Runnable {
+public abstract class Bot extends DefaultBWListener implements Runnable {
 
-	private Com com;
+	protected Com com;
+	
+	private Semaphore s_map;
 
 	public Mirror mirror;
 	public Game game;
@@ -29,11 +38,22 @@ public class Bot extends DefaultBWListener implements Runnable {
 	public boolean guiEnabled;
 	public long frames;
 
+	private ArrayList<OnUnitDestroyObserver> onUnitDestroyObs;
+	protected HashMap<Integer, ArrayList<GenericUnitObserver>> genericObservers;
+
+	protected ArrayList<Event> events;
+
 	public Bot(Com com) {
 		this.com = com;
 		this.mirror = new Mirror();
 		this.firstStart = true;
-		this.guiEnabled = false;
+		this.guiEnabled = true;
+
+		this.onUnitDestroyObs = new ArrayList<>();
+		this.genericObservers = new HashMap<>();
+
+		this.events = new ArrayList<>();
+		this.s_map = new Semaphore(1);
 	}
 
 	@Override
@@ -50,8 +70,12 @@ public class Bot extends DefaultBWListener implements Runnable {
 		this.restarting = false;
 
 		this.com.ComData.action = null;
-		this.com.ComData.enBaliza = false;
+		this.com.ComData.enFinal = false;
 		this.com.ComData.restart = false;
+
+		this.onUnitDestroyObs.clear();
+		this.genericObservers.clear();
+		this.events.clear();
 
 		if (firstStart) { // Only enters the very first execution (restarts wont
 							// enter here)
@@ -70,14 +94,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onUnitDestroy(Unit unit) {
 		super.onUnitDestroy(unit);
-		com.ComData.enBaliza = true;
 
-		if (unit.getType().equals(UnitType.Terran_Marine)) {
-			com.ComData.action.onEndAction(false);
-			com.onSendMessage("Randy ha muerto :(");
-		} else {
-			com.ComData.action.onEndAction(true);
-			com.onSendMessage("Randy ha matado :)");
+		for (OnUnitDestroyObserver observer : onUnitDestroyObs) {
+			observer.onUnitDestroy(unit);
 		}
 	}
 
@@ -87,20 +106,10 @@ public class Bot extends DefaultBWListener implements Runnable {
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
 			if (!game.isPaused()) {
-				if (firstExec) {
-					for (Unit unit : self.getUnits()) {
-						if (unit.getType().equals(UnitType.Terran_Marine)) {
-							com.ComData.unit = new UnitWrapper(unit);
-							unitToWrapper.put(com.ComData.unit);
-							if (com.ComData.iniX == -1) {
-								com.ComData.iniX = unit.getX();
-								com.ComData.iniY = unit.getY();
-							}
-						}
-					}
-					com.ComData.enBaliza = false;
-					firstExec = false;
-					com.Sync.s_initSync.release();
+				this.events.clear();
+				
+				if (this.firstExec) {
+					firstExecOnFrame();
 				}
 				// Add action
 				if (com.ComData.action != null) {
@@ -108,28 +117,67 @@ public class Bot extends DefaultBWListener implements Runnable {
 				}
 
 				for (Unit rawUnit : self.getUnits()) {
-					UnitWrapper unit;
-					if (unitToWrapper.contains(rawUnit)) {
-						unit = unitToWrapper.get(rawUnit);
-					} else {
-						unit = new UnitWrapper(rawUnit);
-						unitToWrapper.put(unit);
+
+					try {
+						s_map.acquire();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
+					if (a != null) {
+						for (GenericUnitObserver observer : a) {
+							observer.onUnit(rawUnit);
+						}
 					}
 
-					unit.checkAndDispatchActions();
+					s_map.release();
+					
+					// UnitWrapper unit;
+					// if (unitToWrapper.contains(rawUnit)) {
+					// unit = unitToWrapper.get(rawUnit);
+					// } else {
+					// unit = new UnitWrapper(rawUnit);
+					// unitToWrapper.put(unit);
+					// }
+					//
+					// unit.checkAndDispatchActions();
 				}
 
 				// End check
-				/*
-				 * for (Unit unit : self.getUnits()) { if
-				 * (unit.getType().equals(UnitType.Terran_Command_Center)) {
-				 * com.ComData.enBaliza =
-				 * unit.distanceTo(com.ComData.unit.getUnit().getPosition()) <
-				 * 150; } }
-				 */
+
+				// for (Unit unit : self.getUnits()) {
+				// if (unit.getType().equals(UnitType.Terran_Command_Center)) {
+				// com.ComData.enBaliza =
+				// unit.distanceTo(com.ComData.unit.getUnit().getPosition()) <
+				// 150;
+				// }
+				// }
+
+				checkEnd();
+				com.Sync.s_end.release();
 			}
 			printUnitsInfo();
 		}
+	}
+
+	public abstract void checkEnd();
+
+	private void firstExecOnFrame() {
+		for (Unit unit : self.getUnits()) {
+			if (unit.getType().equals(UnitType.Terran_Marine)) {
+				com.ComData.unit = new UnitWrapper(unit);
+				unitToWrapper.put(com.ComData.unit);
+				if (com.ComData.iniX == -1) {
+					com.ComData.iniX = unit.getX();
+					com.ComData.iniY = unit.getY();
+				}
+			}
+		}
+		com.ComData.enFinal = false;
+		this.firstExec = false;
+		com.Sync.s_initSync.release();
 	}
 
 	private boolean isRestarting() {
@@ -164,6 +212,38 @@ public class Bot extends DefaultBWListener implements Runnable {
 	public void run() {
 		mirror.getModule().setEventListener(this);
 		mirror.startGame();
+	}
+
+	public void registerOnUnitDestroyObserver(OnUnitDestroyObserver o) {
+		this.onUnitDestroyObs.add(o);
+	}
+
+	public void registerOnUnitObserver(GenericUnitObserver obs) {
+
+		try {
+			s_map.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (genericObservers.containsKey(obs.getUnit().getID())) {
+			ArrayList<GenericUnitObserver> a = genericObservers.get(obs.getUnit().getID());
+			a.add(obs);
+
+			genericObservers.put(obs.getUnit().getID(), a);
+		} else {
+			ArrayList<GenericUnitObserver> a = new ArrayList<>();
+			a.add(obs);
+
+			genericObservers.put(obs.getUnit().getID(), a);
+		}
+
+		s_map.release();
+	}
+
+	public void addEvent(Event event) {
+		this.events.add(event);
 	}
 
 }

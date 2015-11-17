@@ -6,7 +6,7 @@ import bot.action.GenericAction;
 public class ComData {
 
 	public UnitWrapper unit;
-	public boolean enBaliza;
+	public boolean enFinal;
 	public int iniX;
 	public int iniY;
 	public boolean lastActionOk;

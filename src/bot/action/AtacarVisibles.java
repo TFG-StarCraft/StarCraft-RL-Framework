@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.Com;
 
+import bot.observers.OnUnitDestroyObserver;
 import bwapi.Order;
 import bwapi.Unit;
 import bwapi.WeaponType;
+import bot.event.Event;
 
-public class AtacarVisibles implements GenericAction {
+public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 
 	protected final Unit unit;
 
@@ -25,7 +27,7 @@ public class AtacarVisibles implements GenericAction {
 	@Override
 	public void checkAndActuate() {
 		if (com.bot.frames >= frameEnd) {
-			onEndAction(true);
+			onEndAction(false);
 		} else {
 			List<Unit> l = this.unit.getUnitsInWeaponRange(WeaponType.Gauss_Rifle);
 			if (!l.isEmpty()) {
@@ -56,6 +58,22 @@ public class AtacarVisibles implements GenericAction {
 	public boolean isPossible() {
 		List<Unit> l = this.unit.getUnitsInWeaponRange(WeaponType.Gauss_Rifle);
 		return !l.isEmpty();
+	}
+
+	@Override
+	public void onUnitDestroy(Unit unit) {
+		if (unit.equals(this.unit)) {
+			com.bot.addEvent(new Event(Event.CODE_KILLED));
+		} else {
+			com.bot.addEvent(new Event(Event.CODE_KILL));
+		}
+		onEndAction(true);
+		
+	}
+
+	@Override
+	public void register() {
+		this.com.bot.registerOnUnitDestroyObserver(this);
 	}
 
 }

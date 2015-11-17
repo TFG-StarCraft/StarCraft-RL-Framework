@@ -96,7 +96,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.gui = new JButton("gui");
 		this.gui.addActionListener(new ActionListener() {
 			
-			private boolean b = true;
+			private boolean b = false;
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
