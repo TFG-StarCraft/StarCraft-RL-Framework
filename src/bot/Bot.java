@@ -2,6 +2,7 @@ package bot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.Com;
 
@@ -114,14 +115,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				}
 
 				for (Unit rawUnit : self.getUnits()) {
-					
 					ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
 					if (a != null) {
-						for (GenericUnitObserver observer : a) {
+						for (Iterator<GenericUnitObserver> it = a.iterator(); it.hasNext();) {
+							GenericUnitObserver observer = (GenericUnitObserver) it.next();
 							observer.onUnit(rawUnit);
 						}
+//						for (GenericUnitObserver observer : a) {
+//							observer.onUnit(rawUnit);
+//						}
 					}
-
 				}
 
 				// End check
