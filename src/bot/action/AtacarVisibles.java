@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.Com;
 
-import bot.observers.OnUnitDestroyObserver;
+import bot.observers.UnitDestroyObserver;
 import bwapi.Order;
 import bwapi.Unit;
 import bwapi.WeaponType;
 import bot.event.Event;
 
-public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
+public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 
 	protected final Unit unit;
 
@@ -47,7 +47,8 @@ public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 
 	@Override
 	public void onEndAction(boolean correct) {
-		unRegister();
+		unRegisterUnitObserver();
+		unRegisterUnitDestroy();
 		
 		if (correct) {
 			com.ComData.lastActionOk = true;
@@ -79,23 +80,30 @@ public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 	}
 
 	@Override
-	public void register() {
+	public void registerUnitObserver() {
+		this.com.bot.registerOnUnitObserver(this);
 		this.com.bot.registerOnUnitDestroyObserver(this);
 	}
 
 	@Override
-	public void unRegister() {
-		this.com.bot.unRegisterOnUnitDestroyObserver(this);
+	public void unRegisterUnitObserver() {
+		this.com.bot.unRegisterOnUnitObserver(this);
 	}
 
 	@Override
 	public void onUnit(Unit unit) {
-		
+		if (this.unit.equals(unit))
+			checkAndActuate();
 	}
 
 	@Override
 	public Unit getUnit() {
 		return this.unit;
+	}
+
+	@Override
+	public void unRegisterUnitDestroy() {
+		this.com.bot.unRegisterOnUnitDestroyObserver(this);	
 	}
 
 }

@@ -76,7 +76,7 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 
 	private void startMove() {
 		if (!movStarted) {
-			this.frameEnd = com.bot.frames + 50;
+			this.frameEnd = com.bot.frames + 150;
 			this.movStarted = true;
 			this.unit.move(new Position(endX, endY));
 		}
@@ -85,7 +85,7 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 	@Override
 	public void onEndAction(boolean correct) {
 		com.bot.addEvent(new Event(Event.CODE_MOVE));
-		unRegister();
+		unRegisterUnitObserver();
 		
 		if (correct) {
 			com.ComData.lastActionOk = true;
@@ -106,12 +106,12 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 	}
 	
 	@Override
-	public void register() {
+	public void registerUnitObserver() {
 		this.com.bot.registerOnUnitObserver(this);	
 	}
 	
 	@Override
-	public void unRegister() {
+	public void unRegisterUnitObserver() {
 		this.com.bot.unRegisterOnUnitObserver(this);
 	}
 
