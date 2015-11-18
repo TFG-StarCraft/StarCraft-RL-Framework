@@ -16,14 +16,14 @@ public class BotDestruirUnidad extends Bot {
 			switch (event.getCode()) {
 			case Event.CODE_KILL:
 				com.onSendMessage("Randy ha matado :)");
-				com.ComData.enFinal = true;
+				com.ComData.onFinal = true;
 				break;
 			case Event.CODE_KILLED:
 				com.onSendMessage("Randy ha muerto :(");
-				com.ComData.enFinal = true;
+				com.ComData.onFinal = true;
 				break;
 			default:
-				com.ComData.enFinal = false;
+				com.ComData.onFinal = false;
 				break;
 			}
 		}

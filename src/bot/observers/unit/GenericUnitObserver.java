@@ -7,4 +7,8 @@ public interface GenericUnitObserver {
 	public void onUnit(Unit unit);
 	public Unit getUnit();
 	
+	public void register();
+	public void unRegister();
+	
+	
 }

@@ -49,8 +49,8 @@ public class State {
 
 	public State move(Action action) {
 
-		com.ComData.action = action.toAction(com);
-		com.ComData.action.register();
+		com.ComData.actionQueue.put(action);
+		
 		try {
 			com.Sync.s_postAction.acquire();
 		} catch (InterruptedException e) {
@@ -59,7 +59,7 @@ public class State {
 		}
 		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.states,
 				this.enviroment, this.com);
-		SS.enFinal = com.ComData.enFinal;
+		SS.enFinal = com.ComData.onFinal;
 
 		return SS;
 	}

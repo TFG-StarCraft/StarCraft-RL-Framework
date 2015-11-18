@@ -26,7 +26,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 
 	public Com() {
-		this.ComData = new ComData();
+		this.ComData = new ComData(this);
 		this.Sync = new Sync();
 		this.observers = new ArrayList<>();
 	}

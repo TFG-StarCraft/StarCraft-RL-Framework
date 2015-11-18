@@ -2,12 +2,12 @@ package bot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 
 import com.Com;
 
 import bot.UnitWrapper.BWAPI_UnitToWrapper;
 import bot.UnitWrapper.UnitWrapper;
+import bot.action.GenericAction;
 import bot.observers.OnUnitDestroyObserver;
 import bot.observers.unit.GenericUnitObserver;
 import bwapi.DefaultBWListener;
@@ -23,8 +23,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	protected Com com;
 	
-	private Semaphore s_map;
-
 	public Mirror mirror;
 	public Game game;
 	public Player self;
@@ -53,7 +51,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.genericObservers = new HashMap<>();
 
 		this.events = new ArrayList<>();
-		this.s_map = new Semaphore(1);
 	}
 
 	@Override
@@ -69,8 +66,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.unitToWrapper = new BWAPI_UnitToWrapper();
 		this.restarting = false;
 
-		this.com.ComData.action = null;
-		this.com.ComData.enFinal = false;
+		this.com.ComData.onFinal = false;
 		this.com.ComData.restart = false;
 
 		this.onUnitDestroyObs.clear();
@@ -107,26 +103,17 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			// Draw info even if paused (at the end)
 			if (!game.isPaused()) {
 				this.events.clear();
+				ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueue();
+				
+				for (GenericAction action : actionsToRegister) {
+					action.register();
+				}
 				
 				if (this.firstExec) {
 					firstExecOnFrame();
 				}
-				// Add action
-				if (com.ComData.action != null) {
-					com.ComData.unit.addAction(com.ComData.action);
-				}
 
 				for (Unit rawUnit : self.getUnits()) {
-
-					try {
-						s_map.acquire();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// TODO SACAR DE AQUÍ (DEL ARRAY LIST) EL OBSERVER (LA ACCION) CUANDO ESTA ACABE
-					// Hacerlo desde la accion cuando acabe. Puntero a array o wtfff
 					
 					ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
 					if (a != null) {
@@ -135,17 +122,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 						}
 					}
 
-					s_map.release();
-					
-					// UnitWrapper unit;
-					// if (unitToWrapper.contains(rawUnit)) {
-					// unit = unitToWrapper.get(rawUnit);
-					// } else {
-					// unit = new UnitWrapper(rawUnit);
-					// unitToWrapper.put(unit);
-					// }
-					//
-					// unit.checkAndDispatchActions();
 				}
 
 				// End check
@@ -167,6 +143,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	public abstract void checkEnd();
 
+	// Called on the first execution of onFrame
 	private void firstExecOnFrame() {
 		for (Unit unit : self.getUnits()) {
 			if (unit.getType().equals(UnitType.Terran_Marine)) {
@@ -178,7 +155,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				}
 			}
 		}
-		com.ComData.enFinal = false;
+		com.ComData.onFinal = false;
 		this.firstExec = false;
 		com.Sync.s_initSync.release();
 	}
@@ -221,14 +198,11 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.onUnitDestroyObs.add(o);
 	}
 
+	public void unRegisterOnUnitDestroyObserver(OnUnitDestroyObserver obs) {
+		this.onUnitDestroyObs.remove(obs);
+	}
+	
 	public void registerOnUnitObserver(GenericUnitObserver obs) {
-
-		try {
-			s_map.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		if (genericObservers.containsKey(obs.getUnit().getID())) {
 			ArrayList<GenericUnitObserver> a = genericObservers.get(obs.getUnit().getID());
@@ -242,7 +216,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			genericObservers.put(obs.getUnit().getID(), a);
 		}
 
-		s_map.release();
+	}
+	
+	public void unRegisterOnUnitObserver(GenericUnitObserver obs) {
+		
+		if (genericObservers.containsKey(obs.getUnit().getID())) {
+			ArrayList<GenericUnitObserver> a = genericObservers.get(obs.getUnit().getID());
+			a.remove(obs);
+
+			genericObservers.put(obs.getUnit().getID(), a);
+		}
 	}
 
 	public void addEvent(Event event) {

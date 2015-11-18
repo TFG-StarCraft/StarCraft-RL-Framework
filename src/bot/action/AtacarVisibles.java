@@ -47,14 +47,14 @@ public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 
 	@Override
 	public void onEndAction(boolean correct) {
+		unRegister();
+		
 		if (correct) {
-			com.ComData.action = null;
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
 			com.Sync.s_postAction.release();
 		} else {
 			// System.out.println("Miss");
-			com.ComData.action = null;
 			com.ComData.lastActionOk = false;
 			com.ComData.unit.removeAction();
 			com.Sync.s_postAction.release();
@@ -81,6 +81,21 @@ public class AtacarVisibles implements GenericAction, OnUnitDestroyObserver {
 	@Override
 	public void register() {
 		this.com.bot.registerOnUnitDestroyObserver(this);
+	}
+
+	@Override
+	public void unRegister() {
+		this.com.bot.unRegisterOnUnitDestroyObserver(this);
+	}
+
+	@Override
+	public void onUnit(Unit unit) {
+		
+	}
+
+	@Override
+	public Unit getUnit() {
+		return this.unit;
 	}
 
 }

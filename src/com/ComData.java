@@ -1,21 +1,23 @@
 package com;
 
 import bot.UnitWrapper.UnitWrapper;
-import bot.action.GenericAction;
+import bot.action.ActionDispatchQueue;
 
 public class ComData {
 
 	public UnitWrapper unit;
-	public boolean enFinal;
+	public boolean onFinal;
 	public int iniX;
 	public int iniY;
 	public boolean lastActionOk;
 
-	public GenericAction action;
+	public ActionDispatchQueue actionQueue;
 	
 	public boolean restart;
 	
-	public ComData() {
+	public ComData(Com com) {
+		this.actionQueue = new ActionDispatchQueue(com);
+		
 		this.iniX = -1;
 		this.iniY = -1;
 	}
