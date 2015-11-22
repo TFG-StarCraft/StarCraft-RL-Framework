@@ -16,10 +16,14 @@ public class Sync {
 		s_initSync = new Semaphore(0);
 		s_restartSync = new Semaphore(0);
 		s_end = new Semaphore(0);
-
+		
+		l_private = new Semaphore(1);
+		endCheckIsAvailable = false;
+		
 		this.com = com;
 	}
 
+	
 	public void signalInitIsDone() {
 		this.s_initSync.release();
 	}
@@ -32,21 +36,50 @@ public class Sync {
 		}
 	}
 	
+	private Semaphore l_private;
+	private boolean endCheckIsAvailable;
+	
 	public void signalAgentIsStarting() {
 		this.s_end.release();
 	}
 
-	public void signalEndOfIterationCanBeChecked() {
-		this.s_end.release();
+	public void signalIsEndCanBeChecked() {
+		// Take mutex
+		try {
+			l_private.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!endCheckIsAvailable) {
+			endCheckIsAvailable = true;
+			this.s_end.release();
+		}
+
+		// Release mutex
+		l_private.release();
 	}
 	
 	public void waitForEndOfIterationCanBeChecked() {
+		// Take mutex
+		try {
+			l_private.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		try {
 			this.s_end.acquire();
 		} catch (InterruptedException e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
+		endCheckIsAvailable = false;
+		
+		// Release mutex
+		l_private.release();
 	}
+	
 
 	public void signalGameIsReady() {
 		this.s_restartSync.release();
@@ -59,6 +92,7 @@ public class Sync {
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}	
+	
 	
 	public void signalActionEnded() {
 		com.Sync.s_postAction.release();

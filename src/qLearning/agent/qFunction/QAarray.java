@@ -7,27 +7,25 @@ import java.util.Scanner;
 
 import qLearning.Const;
 import qLearning.agent.Action;
-import qLearning.agent.estados.State;
-import qLearning.agent.estados.StateContainer;
-import qLearning.enviroment.AbstractGridEnviroment;
+import qLearning.agent.State;
+import qLearning.enviroment.AbstractEnviroment;
 
 public class QAarray implements AbstractQFunction {
 
-	private double[][][][] arrayQ;
+	private double[][][] arrayQ;
 	private int sizeX;
 	private int sizeY;
 
-	public QAarray(AbstractGridEnviroment e, StateContainer s) {
+	public QAarray(AbstractEnviroment e) {
 		this.sizeX = e.getSizeX();
 		this.sizeY = e.getSizeY();
 
-		this.arrayQ = new double[sizeX][sizeY][2][Action.values().length];
+		this.arrayQ = new double[sizeX][sizeY][Action.values().length];
 
 		for (int i = 0; i < sizeX; i++) {
 			for (int j = 0; j < sizeY; j++) {
 				for (int k = 0; k < Action.values().length; k++) {
-					this.arrayQ[i][j][0][k] = Const.Q_GENERAL;
-					this.arrayQ[i][j][1][k] = Const.Q_GENERAL;
+					this.arrayQ[i][j][k] = Const.Q_GENERAL;
 				}
 			}
 		}
@@ -35,12 +33,12 @@ public class QAarray implements AbstractQFunction {
 
 	@Override
 	public double get(State S, Action A) {
-		return arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][S.getBaliza() ? 1 : 0][A.ordinal()];
+		return arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][A.ordinal()];
 	}
 
 	@Override
 	public void set(State S, Action A, double val) {
-		arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][S.getBaliza() ? 1 : 0][A.ordinal()] = val;
+		arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][A.ordinal()] = val;
 	}
 
 	@Override
@@ -50,8 +48,7 @@ public class QAarray implements AbstractQFunction {
 		for (int i = 0; i < sizeX; i++) {
 			for (int j = 0; j < sizeY; j++) {
 				for (int k = 0; k < Action.values().length; k++) {
-					pw.print(this.arrayQ[i][j][0][k]);
-					pw.print(this.arrayQ[i][j][1][k]);
+					pw.print(this.arrayQ[i][j][k]);
 				}
 			}
 			pw.println("");
@@ -67,8 +64,7 @@ public class QAarray implements AbstractQFunction {
 		for (int i = 0; i < sizeX; i++) {
 			for (int j = 0; j < sizeY; j++) {
 				for (int k = 0; k < Action.values().length; k++) {
-					(this.arrayQ[i][j][0][k]) = sc.nextDouble();
-					(this.arrayQ[i][j][1][k]) = sc.nextDouble();
+					(this.arrayQ[i][j][k]) = sc.nextDouble();
 				}
 			}
 		}

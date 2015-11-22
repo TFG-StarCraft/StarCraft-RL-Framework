@@ -46,10 +46,8 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		bot = new BotDestruirUnidad(this);
 		Thread t1 = new Thread(bot);
 		t1.start();
-
-		this.Sync.waitForBotEndsInit();		
+	
 		onSendMessage("Starting q-Learning");
-
 		Thread t2 = new Thread(new Agent(this, new SCEnviroment(this), alpha, gamma, epsilon));
 		t2.start();
 
@@ -63,7 +61,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 
 	public void restart() {
-		onSendMessage("Restart1...");
+		onSendMessage("Com Restart call...");
 		this.ComData.restart = true;
 	}
 

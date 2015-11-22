@@ -43,6 +43,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	private ArrayList<UnitDestroyObserver> unitDestroyQueue;
 
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
+	public abstract void checkEnd();
+
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
 	public Bot(Com com) {
 		this.com = com;
 		this.mirror = new Mirror();
@@ -57,17 +67,19 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.unitDestroyQueue = new ArrayList<>();
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// BWAPI CALLS ////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	public void onStart() {
-		//this.game.enableFlag(0);
-		
-		this.frames = 0;
 		// onStart is also called after re-start
 		this.game = mirror.getGame();
 		this.self = game.self();
 		this.game.setGUI(guiEnabled);
 		this.game.setLocalSpeed(0);
 
+		this.frames = 0;
 		this.firstExec = true;
 		this.unitToWrapper = new BWAPI_UnitToWrapper();
 		this.restarting = false;
@@ -108,9 +120,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				i++;
 			// else en onUnit se llamó a unRegister y se eliminó ese observador
 		}
-		// for (OnUnitDestroyObserver observer : onUnitDestroyObs) {
-		// observer.onUnitDestroy(unit);
-		// }
 
 		super.onUnitDestroy(unit);
 	}
@@ -132,7 +141,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 					events.clear();
 					unitDestroyQueue.clear();
 					// This signals that the PREVIOUS onFrame was executed
-					com.Sync.signalEndOfIterationCanBeChecked();
+					com.Sync.signalIsEndCanBeChecked();
 				}
 
 				this.frames++;
@@ -158,16 +167,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 							// else en onUnit se llamó a unRegister y se eliminó
 							// ese observador
 						}
-
-						// for (Iterator<GenericUnitObserver> it = a.iterator();
-						// it.hasNext();) {
-						// GenericUnitObserver observer = (GenericUnitObserver)
-						// it.next();
-						// observer.onUnit(rawUnit);
-						// }
-						// for (GenericUnitObserver observer : a) {
-						// observer.onUnit(rawUnit);
-						// }
 					}
 				}
 
@@ -184,23 +183,11 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			printUnitsInfo();
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	
-
-	private long lastTime = System.currentTimeMillis();
-	private long lastFrames = -1;
-
-	private void showFramesPerSecs() {
-		if (System.currentTimeMillis() - lastTime > 500) {
-			lastTime = System.currentTimeMillis();
-
-			com.onSendMessage("FPS: " + (frames - lastFrames) / 0.5);
-
-			lastFrames = frames;
-		}
-	}
-
-	public abstract void checkEnd();
-
 	// Called on the first execution of onFrame
 	private void firstExecOnFrame() {
 		for (Unit unit : self.getUnits()) {
@@ -219,7 +206,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private boolean isRestarting() {
 		if (!restarting) {
 			if (com.ComData.restart) {
-				com.onSendMessage("Restart2...");
+				com.onSendMessage("Restart bot call...");
 				restarting = true;
 				game.restartGame();
 			}
@@ -232,24 +219,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		return !game.isReplay() && !isRestarting();
 	}
 
-	private void printUnitsInfo() {
-		for (Unit myUnit : self.getUnits()) {
-			if (myUnit.getType().equals(UnitType.Terran_Marine)) {
-				game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
-						"Order: " + myUnit.getOrder() + myUnit.getPosition().toString());
-				game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
-						myUnit.getOrderTargetPosition().getX(), myUnit.getOrderTargetPosition().getY(),
-						bwapi.Color.Red);
-			}
-		}
-	}
-
-	@Override
-	public void run() {
-		mirror.getModule().setEventListener(this);
-		mirror.startGame();
-	}
-
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	
 	public void registerOnUnitDestroyObserver(UnitDestroyObserver o) {
 		this.onUnitDestroyObs.add(o);
 	}
@@ -289,6 +262,41 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	public void addEvent(Event event) {
 		System.out.println("EVENT " + frames);
 		this.events.add(event);
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
+	@Override
+	public void run() {
+		mirror.getModule().setEventListener(this);
+		mirror.startGame();
+	}
+
+	private void printUnitsInfo() {
+		for (Unit myUnit : self.getUnits()) {
+			if (myUnit.getType().equals(UnitType.Terran_Marine)) {
+				game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
+						"Order: " + myUnit.getOrder() + myUnit.getPosition().toString());
+				game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
+						myUnit.getOrderTargetPosition().getX(), myUnit.getOrderTargetPosition().getY(),
+						bwapi.Color.Red);
+			}
+		}
+	}
+
+	private long lastTime = System.currentTimeMillis();
+	private long lastFrames = -1;
+
+	private void showFramesPerSecs() {
+		if (System.currentTimeMillis() - lastTime > 500) {
+			lastTime = System.currentTimeMillis();
+
+			com.onSendMessage("FPS: " + (frames - lastFrames) / 0.5);
+
+			lastFrames = frames;
+		}
 	}
 
 }

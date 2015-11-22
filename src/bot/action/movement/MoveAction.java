@@ -76,7 +76,7 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 
 	private void startMove() {
 		if (!movStarted) {
-			this.frameEnd = com.bot.frames + 150;
+			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
 			this.movStarted = true;
 			this.unit.move(new Position(endX, endY));
 		}

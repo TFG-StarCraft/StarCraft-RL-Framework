@@ -1,33 +1,29 @@
-package qLearning.agent.estados;
+package qLearning.agent;
 
 import com.Com;
 
 import qLearning.Const;
-import qLearning.agent.Action;
-import qLearning.enviroment.AbstractGridEnviroment;
+import qLearning.enviroment.AbstractEnviroment;
 
 public class State {
 	private int x;
 	private int y;
 
-	private boolean isStart;
+	private Double reward;
+	
 	private boolean enFinal;
 
-	private StateContainer states;
-	private AbstractGridEnviroment enviroment;
+	private AbstractEnviroment enviroment;
 	private Com com;
 
-	State(int x, int y, StateContainer estados, AbstractGridEnviroment e, Com com) {
-		this.com = com; 
+	public State(int x, int y, AbstractEnviroment e, Com com) {
+		this.com = com;
 		this.x = x;
 		this.y = y;
 		this.enFinal = false;
+		this.reward = Double.NaN;
 
-		this.states = estados;
 		this.enviroment = e;
-
-		this.isStart = e.isStart(x, y);
-
 	}
 
 	public int getX() {
@@ -36,10 +32,6 @@ public class State {
 
 	public int getY() {
 		return y;
-	}
-
-	public boolean getBaliza() {
-		return this.enFinal;
 	}
 
 	public boolean esAccionValida(Action a) {
@@ -52,23 +44,20 @@ public class State {
 		com.ComData.actionQueue.put(action);
 
 		com.Sync.waitForActionEnds();
-		
-		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.states,
-				this.enviroment, this.com);
+
+		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.enviroment,
+				this.com);
 		SS.enFinal = com.ComData.onFinal;
+		SS.reward = SS.calculateReward();
 
 		return SS;
-	}
-
-	public boolean isStart() {
-		return isStart;
 	}
 
 	public boolean isEnd() {
 		return enFinal;
 	}
 
-	public double getReward() {
+	private double calculateReward() {
 		if (isEnd()) {
 			return Const.RECOMPENSA_FINAL;
 		} else if (com.ComData.lastActionOk) {
@@ -79,9 +68,18 @@ public class State {
 	}
 
 	public boolean isFinalEnd() {
+		System.out.println("Check end");
 		com.Sync.waitForEndOfIterationCanBeChecked();
-
+		System.out.println("Checked");
+		
 		return enFinal;
+	}
+
+	public Double getReward() {
+		if (this.reward.isNaN())
+			throw new RuntimeException("Reward is NaN");
+		
+		return this.reward;
 	}
 
 }
