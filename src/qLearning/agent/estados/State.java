@@ -47,16 +47,12 @@ public class State {
 		return a.toAction(com).isPossible();
 	}
 
-	public State move(Action action) {
+	public State executeAction(Action action) {
 
 		com.ComData.actionQueue.put(action);
+
+		com.Sync.waitForActionEnds();
 		
-		try {
-			com.Sync.s_postAction.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.states,
 				this.enviroment, this.com);
 		SS.enFinal = com.ComData.onFinal;
@@ -83,13 +79,8 @@ public class State {
 	}
 
 	public boolean isFinalEnd() {
-		try {
-			com.Sync.s_end.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		com.Sync.waitForEndOfIterationCanBeChecked();
+
 		return enFinal;
 	}
 

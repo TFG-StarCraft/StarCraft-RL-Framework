@@ -27,7 +27,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	public Com() {
 		this.ComData = new ComData(this);
-		this.Sync = new Sync();
+		this.Sync = new Sync(this);
 		this.observers = new ArrayList<>();
 	}
 
@@ -47,12 +47,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		Thread t1 = new Thread(bot);
 		t1.start();
 
-		try {
-			this.Sync.s_initSync.acquire();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		this.Sync.waitForBotEndsInit();		
 		onSendMessage("Starting q-Learning");
 
 		Thread t2 = new Thread(new Agent(this, new SCEnviroment(this), alpha, gamma, epsilon));
@@ -62,8 +57,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			t1.join();
 			t2.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			onError(e.getLocalizedMessage(), true);
 		}
 
 	}
@@ -113,8 +107,10 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		for (ComObserver comObserver : observers) {
 			comObserver.onError(s, fatal);
 		}
-		if (fatal)
+		if (fatal) {
+			System.err.println(s);
 			System.exit(-1);
+		}
 	}
 
 }

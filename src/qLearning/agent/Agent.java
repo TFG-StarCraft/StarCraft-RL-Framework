@@ -63,21 +63,19 @@ public class Agent implements Runnable {
 
 		com.onSendMessage("q-Learning started");
 		for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
+
+			com.Sync.waitForBotGameIsStarted();		
+			
 			State S = estados.getEstadoInicial();
 			int movimientos = 0;
 			nume = 0;
 
-			try {
-				com.Sync.s_restartSync.acquire();
-			} catch (InterruptedException e) {
-				com.onError(e.getLocalizedMessage(), true);
-			}
+			com.Sync.signalAgentIsStarting();
 			
-			com.Sync.s_end.release();
 			while (!S.isFinalEnd()) {
 				Action A = siguienteAccion(S);
 
-				State SS = S.move(A);
+				State SS = S.executeAction(A);
 
 				double R = SS.getReward();
 

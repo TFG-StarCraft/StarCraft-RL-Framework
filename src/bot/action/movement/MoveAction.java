@@ -90,11 +90,11 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 		if (correct) {
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
+			com.Sync.signalActionEnded();
 		} else {
 			com.ComData.lastActionOk = false;
 			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
+			com.Sync.signalActionEnded();
 		}
 	}
 

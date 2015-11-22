@@ -16,23 +16,23 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 
 	private Com com;
 	private long frameEnd;
-	
+
 	private boolean firstExec;
-	
+
 	public AtacarVisibles(Com com, Unit atacante) {
 		this.unit = atacante;
 		this.com = com;
-		
+
 		this.firstExec = true;
 	}
 
 	@Override
 	public void checkAndActuate() {
 		if (firstExec) {
-			this.frameEnd = com.bot.frames + 13;
+			this.frameEnd = com.bot.frames + bot.Const.FRAMES_ATTACK;
 			this.firstExec = false;
 		}
-		
+
 		if (com.bot.frames >= frameEnd) {
 			onEndAction(false);
 		} else {
@@ -49,16 +49,15 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 	public void onEndAction(boolean correct) {
 		unRegisterUnitObserver();
 		unRegisterUnitDestroy();
-		
+
 		if (correct) {
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
 		} else {
 			// System.out.println("Miss");
 			com.ComData.lastActionOk = false;
 			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
+			com.Sync.signalActionEnded();
 		}
 	}
 
@@ -69,14 +68,19 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 	}
 
 	@Override
+	public void onUnit(Unit unit) {
+		if (this.unit.equals(unit))
+			checkAndActuate();
+	}
+
+	@Override
 	public void onUnitDestroy(Unit unit) {
-		if (unit.equals(this.unit)) {
+		if (unit.exists() && this.unit.equals(unit)) {
 			com.bot.addEvent(new Event(Event.CODE_KILLED));
 		} else {
 			com.bot.addEvent(new Event(Event.CODE_KILL));
 		}
 		onEndAction(true);
-		
 	}
 
 	@Override
@@ -91,19 +95,12 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 	}
 
 	@Override
-	public void onUnit(Unit unit) {
-		if (this.unit.equals(unit))
-			checkAndActuate();
+	public void unRegisterUnitDestroy() {
+		this.com.bot.unRegisterOnUnitDestroyObserver(this);
 	}
 
 	@Override
 	public Unit getUnit() {
 		return this.unit;
 	}
-
-	@Override
-	public void unRegisterUnitDestroy() {
-		this.com.bot.unRegisterOnUnitDestroyObserver(this);	
-	}
-
 }

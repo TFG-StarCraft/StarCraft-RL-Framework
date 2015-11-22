@@ -3,6 +3,7 @@ package qLearning.enviroment;
 import com.Com;
 
 import qLearning.Const;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SCEnviroment implements AbstractGridEnviroment {
 
@@ -11,11 +12,9 @@ public class SCEnviroment implements AbstractGridEnviroment {
 
 	private int startX = 0;
 	private int startY = 0;
+	
 	private int endX = Const.TAM_X - 1;
 	private int endY = Const.TAM_Y - 1;
-
-	private int[][] grid;
-	private double[][] reward;
 
 	public SCEnviroment(Com com) {
 
@@ -24,22 +23,14 @@ public class SCEnviroment implements AbstractGridEnviroment {
 
 		this.startX = com.ComData.iniX;
 		this.startY = com.ComData.iniY;
-
-		grid = new int[Const.TAM_X][Const.TAM_Y];
-		reward = new double[Const.TAM_X][Const.TAM_Y];
-
-		grid[startX][startY] = Const.TABLERO_INI;
-
-		grid[endX][endY] = Const.TABLERO_FINAL;
-		reward[endX][endY] = Const.RECOMPENSA_FINAL;
 	}
 
 	public double getReward(int x, int y) {
-		return reward[x][y];
+		throw new NotImplementedException();
 	}
 
 	public boolean isValid(int x, int y) {
-		return (x >= 0) && (x < Const.TAM_X) && (y >= 0) && (y < Const.TAM_Y);
+		throw new NotImplementedException();
 	}
 
 	@Override
