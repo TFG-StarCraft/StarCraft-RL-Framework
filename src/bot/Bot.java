@@ -32,7 +32,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private boolean firstStart;
 	private boolean firstExec;
 	private boolean restarting;
-
+	private boolean end;
+	
 	public boolean guiEnabled;
 	public long frames;
 
@@ -86,7 +87,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		this.com.ComData.onFinal = false;
 		this.com.ComData.restart = false;
-
+		this.end = false;
+		
 		this.onUnitDestroyObs.clear();
 		this.genericObservers.clear();
 		this.events.clear();
@@ -127,14 +129,13 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		super.onUnitDestroy(unit);
 	}
-
+	
 	@Override
 	public void onFrame() {
-		boolean end = false;
 		System.out.println("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
-			if (!game.isPaused()) {
+			if (!end && !game.isPaused()) {
 				if (this.firstExec) {
 					firstExecOnFrame();
 					com.Sync.signalInitIsDone();

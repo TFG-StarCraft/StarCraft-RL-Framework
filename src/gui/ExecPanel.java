@@ -93,9 +93,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.textConsole.setEditable(false);
 		this.scroll = new JScrollPane(textConsole);
 		this.scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		this.gui = new JButton("gui");
 		this.gui.addActionListener(new ActionListener() {
@@ -114,7 +111,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.setLayout(new BorderLayout());
 		this.add(this.topPanel, BorderLayout.NORTH);
 		this.add(this.scroll, BorderLayout.CENTER);
-
+		
+		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
 
 	@Override

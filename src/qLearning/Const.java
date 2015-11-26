@@ -24,5 +24,5 @@ public interface Const {
 	
 	public static final double Q_GENERAL = 1;
 	
-	public static final int NUM_EPISODIOS = 400;
+	public static final int NUM_EPISODIOS = 4000000;
 }

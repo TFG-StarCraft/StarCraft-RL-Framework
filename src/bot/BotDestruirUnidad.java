@@ -12,7 +12,6 @@ public class BotDestruirUnidad extends Bot {
 
 	@Override
 	public boolean checkEnd() {
-		com.ComData.onFinal = false;
 		boolean r = false;
 		for (Event event : events) {
 			switch (event.getCode()) {
