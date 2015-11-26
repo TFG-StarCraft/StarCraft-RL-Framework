@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.text.DefaultCaret;
 
 import com.Com;
 import com.observers.ComObserver;
@@ -93,6 +94,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.scroll = new JScrollPane(textConsole);
 		this.scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
+		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
 		this.gui = new JButton("gui");
 		this.gui.addActionListener(new ActionListener() {
 			

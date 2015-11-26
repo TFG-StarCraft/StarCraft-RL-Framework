@@ -47,7 +47,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public abstract void checkEnd();
+	public abstract boolean checkEnd();
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	// BWAPI CALLS ////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	@Override
 	public void onStart() {
 		// onStart is also called after re-start
@@ -110,22 +110,27 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onUnitDestroy(Unit unit) {
 		System.out.println("DESTROY " + frames);
-		int i = 0;
-		while (i < onUnitDestroyObs.size()) {
-			int lastSize = onUnitDestroyObs.size();
-			UnitDestroyObserver observer = onUnitDestroyObs.get(i);
-			observer.onUnitDestroy(unit);
+		/*
+		 * int i = 0; while (i < onUnitDestroyObs.size()) { int lastSize =
+		 * onUnitDestroyObs.size(); UnitDestroyObserver observer =
+		 * onUnitDestroyObs.get(i); observer.onUnitDestroy(unit);
+		 * 
+		 * if (lastSize == onUnitDestroyObs.size()) i++; // else en onUnit se
+		 * llamó a unRegister y se eliminó ese observador }
+		 */
 
-			if (lastSize == onUnitDestroyObs.size())
-				i++;
-			// else en onUnit se llamó a unRegister y se eliminó ese observador
+		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
+			com.bot.addEvent(new Event(Event.CODE_KILLED));
+		} else {
+			com.bot.addEvent(new Event(Event.CODE_KILL));
 		}
 
 		super.onUnitDestroy(unit);
 	}
-	
+
 	@Override
 	public void onFrame() {
+		boolean end = false;
 		System.out.println("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
@@ -134,12 +139,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 					firstExecOnFrame();
 					com.Sync.signalInitIsDone();
 				} else {
-					checkEnd();
-					//for (UnitDestroyObserver observer : unitDestroyQueue) {
-					//	this.onUnitDestroyObs.remove(observer);
-					//}
+					end = checkEnd();
+					// for (UnitDestroyObserver observer : unitDestroyQueue) {
+					// this.onUnitDestroyObs.remove(observer);
+					// }
 					events.clear();
-					unitDestroyQueue.clear();
+					// unitDestroyQueue.clear();
 					// This signals that the PREVIOUS onFrame was executed
 					com.Sync.signalIsEndCanBeChecked();
 				}
@@ -147,38 +152,43 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				this.frames++;
 				showFramesPerSecs();
 
-				ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueue();
+				if (!end) {
+					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueue();
 
-				for (GenericAction action : actionsToRegister) {
-					action.registerUnitObserver();
-				}
+					for (GenericAction action : actionsToRegister) {
+						action.registerUnitObserver();
+					}
 
-				for (Unit rawUnit : self.getUnits()) {
-					ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
-					if (a != null) {
-						int i = 0;
-						while (i < a.size()) {
-							int lastSize = a.size();
-							GenericUnitObserver observer = a.get(i);
-							observer.onUnit(rawUnit);
+					for (Unit rawUnit : self.getUnits()) {
+						ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
+						if (a != null) {
+							int i = 0;
+							while (i < a.size()) {
+								int lastSize = a.size();
+								GenericUnitObserver observer = a.get(i);
+								observer.onUnit(rawUnit);
 
-							if (lastSize == a.size())
-								i++;
-							// else en onUnit se llamó a unRegister y se eliminó
-							// ese observador
+								if (lastSize == a.size())
+									i++;
+								// else en onUnit se llamó a unRegister y se
+								// eliminó
+								// ese observador
+							}
 						}
 					}
+
+					// End check
+
+					// for (Unit unit : self.getUnits()) {
+					// if
+					// (unit.getType().equals(UnitType.Terran_Command_Center)) {
+					// com.ComData.enBaliza =
+					// unit.distanceTo(com.ComData.unit.getUnit().getPosition())
+					// <
+					// 150;
+					// }
+					// }
 				}
-
-				// End check
-
-				// for (Unit unit : self.getUnits()) {
-				// if (unit.getType().equals(UnitType.Terran_Command_Center)) {
-				// com.ComData.enBaliza =
-				// unit.distanceTo(com.ComData.unit.getUnit().getPosition()) <
-				// 150;
-				// }
-				// }
 			}
 			printUnitsInfo();
 		}
@@ -187,7 +197,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	// Called on the first execution of onFrame
 	private void firstExecOnFrame() {
 		for (Unit unit : self.getUnits()) {
@@ -222,7 +232,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	public void registerOnUnitDestroyObserver(UnitDestroyObserver o) {
 		this.onUnitDestroyObs.add(o);
 	}

@@ -11,7 +11,9 @@ public class BotDestruirUnidad extends Bot {
 	}
 
 	@Override
-	public void checkEnd() {
+	public boolean checkEnd() {
+		com.ComData.onFinal = false;
+		boolean r = false;
 		for (Event event : events) {
 			switch (event.getCode()) {
 			case Event.CODE_KILL:
@@ -19,16 +21,26 @@ public class BotDestruirUnidad extends Bot {
 				
 				com.onSendMessage("Randy ha matado :)");
 				com.ComData.onFinal = true;
+				
+				com.Sync.signalActionEnded();
+				
+				r = true;
 				break;
 			case Event.CODE_KILLED:
 				com.onSendMessage("Randy ha muerto :(");
 				com.ComData.onFinal = true;
+
+				com.Sync.signalActionEnded();
+				
+				r = true;
 				break;
 			default:
-				com.ComData.onFinal = false;
+			//	com.ComData.onFinal = false;
 				break;
 			}
 		}
+		
+		return r;
 	}
 
 }

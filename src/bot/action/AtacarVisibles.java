@@ -34,6 +34,7 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 		}
 
 		if (com.bot.frames >= frameEnd) {
+			System.out.println("fin ataque");
 			onEndAction(false);
 		} else {
 			List<Unit> l = this.unit.getUnitsInWeaponRange(WeaponType.Gauss_Rifle);
@@ -53,6 +54,7 @@ public class AtacarVisibles implements GenericAction, UnitDestroyObserver {
 		if (correct) {
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
+			//com.Sync.signalActionEnded();
 		} else {
 			// System.out.println("Miss");
 			com.ComData.lastActionOk = false;
