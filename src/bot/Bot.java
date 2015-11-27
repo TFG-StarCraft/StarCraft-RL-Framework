@@ -304,7 +304,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		if (System.currentTimeMillis() - lastTime > 500) {
 			lastTime = System.currentTimeMillis();
 
-			com.onSendMessage("FPS: " + (frames - lastFrames) / 0.5);
+			com.onFpsAverageAnnouncement((frames - lastFrames) / 0.5);
 
 			lastFrames = frames;
 		}

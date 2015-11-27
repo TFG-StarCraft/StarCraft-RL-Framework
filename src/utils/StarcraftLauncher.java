@@ -11,7 +11,7 @@ import utils.jna.JnaUtil;
 public class StarcraftLauncher {
 
 	private static final String CHAOSLAUNCHER_NAME = "Chaoslauncher";
-	private static final String STARCRAFT_NAME = "Brood";
+	private static final String STARCRAFT_NAME = "Brood War";
 	private static final String CLOSE_COMMAND = "cmd /c start \"\" \"C:\\Users\\Miguel\\Desktop\\forceClose.bat - Acceso directo.lnk\"";
 	private static final String START_CHAOSLAUNCHER = "cmd /c start \"\" \"C:\\Users\\Miguel\\Desktop\\Chaoslauncher.lnk\"";
 
@@ -40,7 +40,7 @@ public class StarcraftLauncher {
 			try {
 				// Close current StarCraft
 				Runtime.getRuntime().exec(CLOSE_COMMAND);
-				Thread.sleep(100);
+				Thread.sleep(1000);
 
 				winNameList = JnaUtil.getAllWindowNames();
 				if (winNameList.contains(STARCRAFT_NAME)) {

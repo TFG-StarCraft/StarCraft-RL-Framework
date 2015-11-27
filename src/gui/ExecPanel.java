@@ -17,6 +17,7 @@ import javax.swing.text.DefaultCaret;
 
 import com.Com;
 import com.observers.ComObserver;
+import javax.swing.JToggleButton;
 
 public class ExecPanel extends JPanel implements ComObserver {
 
@@ -27,7 +28,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	private JPanel topPanel;
 	private JButton run;
-	private JButton gui;
 	private JLabel l_alpha, l_gamma, l_epsilon;
 	private JTextField t_alpha, t_gamma, t_epsilon;
 
@@ -35,24 +35,43 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JTextArea textConsole;
 
 	private Com com;
+	private JPanel panel;
+	private JPanel panel_1;
+	private JButton btnShutsc;
+	private JToggleButton tglbtnGui;
+	private JLabel lblFps;
 
 	public ExecPanel(Com com) {
 		this.com = com;
 		this.com.addObserver(this);
 
 		this.topPanel = new JPanel();
+		topPanel.setLayout(new GridLayout(2, 1, 0, 0));
+
+		panel = new JPanel();
+		topPanel.add(panel);
+		panel.setLayout(new GridLayout(0, 6, 10, 0));
 
 		this.l_alpha = new JLabel("Alpha: ");
-		this.l_gamma = new JLabel("Gamma: ");
-		this.l_epsilon = new JLabel("Epsilon: ");
+		panel.add(l_alpha);
 		this.t_alpha = new JTextField();
+		panel.add(t_alpha);
 		this.t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
+		this.l_gamma = new JLabel("Gamma: ");
+		panel.add(l_gamma);
 		this.t_gamma = new JTextField();
+		panel.add(t_gamma);
 		this.t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
+		this.l_epsilon = new JLabel("Epsilon: ");
+		panel.add(l_epsilon);
 		this.t_epsilon = new JTextField();
+		panel.add(t_epsilon);
 		this.t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
-		this.run = new JButton("Run");
-		this.run.addActionListener(new ActionListener() {
+
+		panel_1 = new JPanel();
+		topPanel.add(panel_1);
+		run = new JButton("Run");
+		run.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -79,39 +98,45 @@ public class ExecPanel extends JPanel implements ComObserver {
 				}
 			}
 		});
+		
+		lblFps = new JLabel("FPS:");
+		panel_1.add(lblFps);
+		panel_1.add(run);
 
-		this.topPanel.setLayout(new GridLayout(1, 7));
-		this.topPanel.add(this.l_alpha);
-		this.topPanel.add(this.t_alpha);
-		this.topPanel.add(this.l_gamma);
-		this.topPanel.add(this.t_gamma);
-		this.topPanel.add(this.l_epsilon);
-		this.topPanel.add(this.t_epsilon);
-		this.topPanel.add(this.run);
+		tglbtnGui = new JToggleButton("GUI");
+		tglbtnGui.setSelected(true);
+		tglbtnGui.addActionListener(new ActionListener() {
+
+			private boolean b = false;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				com.bot.guiEnabled = !b;
+				b = !b;
+				tglbtnGui.setSelected(b);
+			}
+		});
+		panel_1.add(tglbtnGui);
+
+		btnShutsc = new JButton("ShutSc");
+		btnShutsc.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				com.shutSc();
+			}
+		});
+		panel_1.add(btnShutsc);
 
 		this.textConsole = new JTextArea();
 		this.textConsole.setEditable(false);
 		this.scroll = new JScrollPane(textConsole);
 		this.scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		this.gui = new JButton("gui");
-		this.gui.addActionListener(new ActionListener() {
-			
-			private boolean b = false;
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				com.bot.guiEnabled = b;
-				b = !b;
-			}
-		});
-		
-		this.topPanel.add(gui);
-		
+
 		this.setLayout(new BorderLayout());
 		this.add(this.topPanel, BorderLayout.NORTH);
 		this.add(this.scroll, BorderLayout.CENTER);
-		
+
 		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
@@ -148,6 +173,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onError(String s, boolean fatal) {
 		JOptionPane.showMessageDialog(this.getParent(), s, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void onFpsAverageAnnouncement(double fps) {
+		this.lblFps.setText("FPS: " + Double.toString(fps));
 	}
 
 }

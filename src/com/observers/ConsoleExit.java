@@ -35,4 +35,10 @@ public class ConsoleExit implements ComObserver {
 		System.err.println(s);
 	}
 
+	@Override
+	public void onFpsAverageAnnouncement(double fps) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
