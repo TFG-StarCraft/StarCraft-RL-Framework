@@ -16,7 +16,7 @@ public class BotDestruirUnidad extends Bot {
 		for (Event event : events) {
 			switch (event.getCode()) {
 			case Event.CODE_KILL:
-				System.out.println("EVENT KILL " + frames);
+				com.onDebugMessage("EVENT KILL " + frames);
 				
 				com.onSendMessage("Randy ha matado :)");
 				com.ComData.onFinal = true;

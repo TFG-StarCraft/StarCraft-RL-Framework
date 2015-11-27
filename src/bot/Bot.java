@@ -36,6 +36,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	
 	public boolean guiEnabled;
 	public long frames;
+	public int frameSpeed;
+	private int lastFrameSpeed;
 
 	private ArrayList<UnitDestroyObserver> onUnitDestroyObs;
 	protected HashMap<Integer, ArrayList<GenericUnitObserver>> genericObservers;
@@ -60,6 +62,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.firstStart = true;
 		this.guiEnabled = true;
 
+		this.frameSpeed = 0;
+		this.lastFrameSpeed = frameSpeed;
+		
 		this.onUnitDestroyObs = new ArrayList<>();
 		this.genericObservers = new HashMap<>();
 
@@ -78,7 +83,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.game = mirror.getGame();
 		this.self = game.self();
 		this.game.setGUI(guiEnabled);
-		this.game.setLocalSpeed(0);
+		this.game.setLocalSpeed(frameSpeed);
 
 		this.frames = 0;
 		this.firstExec = true;
@@ -111,7 +116,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		System.out.println("DESTROY " + frames);
+		com.onDebugMessage("DESTROY " + frames);
 		/*
 		 * int i = 0; while (i < onUnitDestroyObs.size()) { int lastSize =
 		 * onUnitDestroyObs.size(); UnitDestroyObserver observer =
@@ -132,7 +137,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	
 	@Override
 	public void onFrame() {
-		System.out.println("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
+		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
 			if (!end && !game.isPaused()) {
@@ -154,6 +159,11 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				showFramesPerSecs();
 
 				if (!end) {
+					if (lastFrameSpeed != frameSpeed) {
+						lastFrameSpeed = frameSpeed;
+						this.game.setLocalSpeed(frameSpeed);
+					}
+					
 					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueue();
 
 					for (GenericAction action : actionsToRegister) {
@@ -271,7 +281,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	public void addEvent(Event event) {
-		System.out.println("EVENT " + frames);
+		com.onDebugMessage("EVENT " + frames);
 		this.events.add(event);
 	}
 
@@ -301,10 +311,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private long lastFrames = -1;
 
 	private void showFramesPerSecs() {
-		if (System.currentTimeMillis() - lastTime > 500) {
+		if (System.currentTimeMillis() - lastTime > 100) {
 			lastTime = System.currentTimeMillis();
 
-			com.onFpsAverageAnnouncement((frames - lastFrames) / 0.5);
+			com.onFpsAverageAnnouncement((frames - lastFrames) / 0.1);
 
 			lastFrames = frames;
 		}

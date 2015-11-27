@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,6 +28,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	private static final long serialVersionUID = -624314441968368833L;
 
+	private boolean showDebug;
+	
 	private JPanel topPanel;
 	private JButton run;
 	private JLabel l_alpha, l_gamma, l_epsilon;
@@ -40,10 +44,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JButton btnShutsc;
 	private JToggleButton tglbtnGui;
 	private JLabel lblFps;
+	private JLabel lblSpeed;
+	private JTextField textFieldSpeed;
 
-	public ExecPanel(Com com) {
+	public ExecPanel(Com com, boolean showDebug) {
 		this.com = com;
 		this.com.addObserver(this);
+		this.showDebug = showDebug;
 
 		this.topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2, 1, 0, 0));
@@ -96,6 +103,34 @@ public class ExecPanel extends JPanel implements ComObserver {
 					t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
 					t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
 				}
+			}
+		});
+		
+		lblSpeed = new JLabel("Speed:");
+		panel_1.add(lblSpeed);
+		
+		textFieldSpeed = new JTextField();
+		panel_1.add(textFieldSpeed);
+		textFieldSpeed.setText("0");
+		textFieldSpeed.setColumns(5);
+		textFieldSpeed.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				try {
+					int n = Integer.parseInt(textFieldSpeed.getText());
+					if (n < 0)
+						throw new NumberFormatException();
+					com.bot.frameSpeed = Integer.parseInt(textFieldSpeed.getText());
+				} catch (NumberFormatException e1) {
+					textFieldSpeed.setText(com.bot.frameSpeed + "");
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -178,6 +213,12 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
 		this.lblFps.setText("FPS: " + Double.toString(fps));
+	}
+
+	@Override
+	public void onDebugMessage(String s) {
+		if (showDebug)
+			onSendMessage(s);
 	}
 
 }

@@ -2,6 +2,12 @@ package com.observers;
 
 public class ConsoleExit implements ComObserver {
 
+	private boolean showDebug;
+
+	public ConsoleExit(boolean showDebug) {
+		this.showDebug = showDebug;
+	}
+
 	@Override
 	public void onEndIteration(int i, int movimientos, int nume) {
 		System.out.println("movimientos: " + movimientos + " nume: " + nume + " episodio " + i);
@@ -38,7 +44,13 @@ public class ConsoleExit implements ComObserver {
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void onDebugMessage(String s) {
+		if (showDebug)
+			System.out.println(s);
 	}
 
 }

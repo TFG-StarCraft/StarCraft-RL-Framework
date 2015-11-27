@@ -102,7 +102,21 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			comObserver.onSendMessage(s);
 		}
 	}
+	@Override
+	public void onFpsAverageAnnouncement(double d) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onFpsAverageAnnouncement(d);
+		}
+	}
+	
+	@Override
+	public void onDebugMessage(String s) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onDebugMessage(s);
+		}
+	}
 
+	@Override
 	public void onError(String s, boolean fatal) {
 		for (ComObserver comObserver : observers) {
 			comObserver.onError(s, fatal);
@@ -113,15 +127,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		}
 	}
 	
-	@Override
-	public void onFpsAverageAnnouncement(double d) {
-		for (ComObserver comObserver : observers) {
-			comObserver.onFpsAverageAnnouncement(d);
-		}
-	}
 
+	
 	public void shutSc() {
 		utils.StarcraftLauncher.closeSC(this);
 	}
+
+
 
 }

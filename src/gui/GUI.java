@@ -14,7 +14,7 @@ public class GUI extends JFrame {
 	private JPanel mainPanel;
 
 	public GUI() {
-		this.mainPanel = new ExecPanel(new Com());
+		this.mainPanel = new ExecPanel(new Com(), false);
 		this.setContentPane(mainPanel);
 	}
 
