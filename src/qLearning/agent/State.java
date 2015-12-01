@@ -68,9 +68,9 @@ public class State {
 	}
 
 	public boolean isFinalEnd() {
-		System.out.println("Check end");
+		com.onDebugMessage("Check end");
 		com.Sync.waitForEndOfIterationCanBeChecked();
-		System.out.println("Checked");
+		com.onDebugMessage("Checked");
 		
 		return enFinal;
 	}

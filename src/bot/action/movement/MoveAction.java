@@ -46,8 +46,8 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 
 	@Override
 	public void checkAndActuate() {
-		//System.out.println(" a " + System.currentTimeMillis());
-		//System.out.println(com.bot.frames);
+		//com.onDebugMessage(" a " + System.currentTimeMillis());
+		//com.onDebugMessage(com.bot.frames);
 
 		if (com.bot.frames >= frameEnd && movStarted) {
 			onEndAction(false);

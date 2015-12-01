@@ -17,9 +17,6 @@ public class Sync {
 		s_restartSync = new Semaphore(0);
 		s_end = new Semaphore(0);
 
-		l_private = new Semaphore(1);
-		endCheckIsAvailable = false;
-
 		this.com = com;
 	}
 
@@ -34,9 +31,6 @@ public class Sync {
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
-
-	private Semaphore l_private;
-	private boolean endCheckIsAvailable;
 
 	public void signalAgentIsStarting() {
 		this.s_end.release();

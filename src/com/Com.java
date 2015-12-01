@@ -43,6 +43,8 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	
 	@Override
 	public void run() {
+		utils.StarcraftLauncher.launchChaosLauncher(this);
+		
 		bot = new BotDestruirUnidad(this);
 		Thread t1 = new Thread(bot);
 		t1.start();
@@ -100,7 +102,21 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			comObserver.onSendMessage(s);
 		}
 	}
+	@Override
+	public void onFpsAverageAnnouncement(double d) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onFpsAverageAnnouncement(d);
+		}
+	}
+	
+	@Override
+	public void onDebugMessage(String s) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onDebugMessage(s);
+		}
+	}
 
+	@Override
 	public void onError(String s, boolean fatal) {
 		for (ComObserver comObserver : observers) {
 			comObserver.onError(s, fatal);
@@ -110,5 +126,13 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			System.exit(-1);
 		}
 	}
+	
+
+	
+	public void shutSc() {
+		utils.StarcraftLauncher.closeSC(this);
+	}
+
+
 
 }
