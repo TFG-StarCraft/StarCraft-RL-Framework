@@ -34,16 +34,14 @@ public class StarcraftLauncher {
 	}
 
 	public static void closeSC(Com com) {
-		List<String> winNameList = JnaUtil.getAllWindowNames();
 
-		if (winNameList.contains(STARCRAFT_NAME)) { // SC is already launched
+		if (isSCRunning()) { // SC is already launched
 			try {
 				// Close current StarCraft
 				Runtime.getRuntime().exec(CLOSE_COMMAND);
 				Thread.sleep(1000);
 
-				winNameList = JnaUtil.getAllWindowNames();
-				if (winNameList.contains(STARCRAFT_NAME)) {
+				if (isSCRunning()) {
 					// It should be closed
 					com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecución", true);
 				}
@@ -56,4 +54,9 @@ public class StarcraftLauncher {
 		}
 	}
 
+	public static boolean isSCRunning() {
+		List<String> winNameList = JnaUtil.getAllWindowNames();
+		
+		return winNameList.contains(STARCRAFT_NAME);
+	}
 }

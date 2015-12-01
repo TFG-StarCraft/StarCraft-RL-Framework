@@ -96,6 +96,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 						throw new NumberFormatException();
 					com.configureParams(alpha, gamma, epsilon);
 
+					tglbtnGui.setEnabled(true);
 					run.setEnabled(false);
 					new Thread(com).start();
 				} catch (NumberFormatException e1) {
@@ -139,6 +140,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		panel_1.add(run);
 
 		tglbtnGui = new JToggleButton("GUI");
+		tglbtnGui.setEnabled(false);
 		tglbtnGui.setSelected(true);
 		tglbtnGui.addActionListener(new ActionListener() {
 
