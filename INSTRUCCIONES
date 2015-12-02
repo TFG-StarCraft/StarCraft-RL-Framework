@@ -1,0 +1,3 @@
+La posibilidad de cerrar el StarCraft desde la GUI de la aplicación se realiza mediante el comando taskkill de windows. Sin embargo, para que funcione correctamente se requiere que se ejecute con permisos de administrador. Para conseguir ejecutar el comando con privilegios de administrador desde java, se utiliza el exec de java para crear una nueva terminal, que ejecuta un acceso directo con privilegios de arministrador que apunta al .bat adjunto (que ejecuta taskkill sobre SC). Este acceso directo debe llamarse "forceClose.bat - Acceso directo.lnk"
+
+En cuanto a ejecutar el ChaosLauncher, el programa busca el acceso directo "Chaoslauncher.lnk" que debe apuntar a Chaoslauncher.exe, se recomienda que lo haga con privilegios de administrador
