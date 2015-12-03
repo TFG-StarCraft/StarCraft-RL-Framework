@@ -24,11 +24,11 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	public Game game;
 	public Player self;
 
-	private boolean firstStart;
-	private boolean firstExec;
+	private boolean firstOnStart;
+	private boolean firstOnFrame;
 	private boolean restarting;
 	private boolean endConditionSatisfied;
-	
+
 	public boolean guiEnabled;
 	public long frames;
 	public int frameSpeed;
@@ -51,12 +51,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	public Bot(Com com) {
 		this.com = com;
 		this.mirror = new Mirror();
-		this.firstStart = true;
+		this.firstOnStart = true;
 		this.guiEnabled = true;
 
 		this.frameSpeed = 0;
 		this.lastFrameSpeed = frameSpeed;
-		
+
 		this.genericObservers = new HashMap<>();
 
 		this.events = new ArrayList<>();
@@ -75,17 +75,18 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.game.setLocalSpeed(frameSpeed);
 
 		this.frames = 0;
-		this.firstExec = true;
+		this.firstOnFrame = true;
 		this.restarting = false;
 
 		this.com.ComData.onFinal = false;
 		this.com.ComData.restart = false;
 		this.endConditionSatisfied = false;
-		
+
 		this.genericObservers.clear();
 		this.events.clear();
 
-		if (firstStart) { // Only enters the very first execution (restarts wont
+		if (firstOnStart) { // Only enters the very first execution (restarts
+							// wont
 							// enter here)
 			// Use BWTA to analyze map
 			// This may take a few minutes if the map is processed first time!
@@ -93,7 +94,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			BWTA.readMap();
 			BWTA.analyze();
 			com.onSendMessage("Map data ready");
-			this.firstStart = false;
+			this.firstOnStart = false;
 		}
 
 		this.com.Sync.signalGameIsReady();
@@ -102,14 +103,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onUnitDestroy(Unit unit) {
 		com.onDebugMessage("DESTROY " + frames);
-		/*
-		 * int i = 0; while (i < onUnitDestroyObs.size()) { int lastSize =
-		 * onUnitDestroyObs.size(); UnitDestroyObserver observer =
-		 * onUnitDestroyObs.get(i); observer.onUnitDestroy(unit);
-		 * 
-		 * if (lastSize == onUnitDestroyObs.size()) i++; // else en onUnit se
-		 * llamó a unRegister y se eliminó ese observador }
-		 */
 
 		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
 			com.bot.addEvent(new Event(Event.CODE_KILLED));
@@ -119,14 +112,14 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		super.onUnitDestroy(unit);
 	}
-	
+
 	@Override
 	public void onFrame() {
 		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
 			if (!endConditionSatisfied && !game.isPaused()) {
-				if (this.firstExec) {
+				if (this.firstOnFrame) {
 					firstExecOnFrame();
 					com.Sync.signalInitIsDone();
 				} else {
@@ -144,8 +137,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 						lastFrameSpeed = frameSpeed;
 						this.game.setLocalSpeed(frameSpeed);
 					}
-					
-					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueue();
+
+					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
 
 					for (GenericAction action : actionsToRegister) {
 						action.registerUnitObserver();
@@ -168,18 +161,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 							}
 						}
 					}
-
-					// End check
-
-					// for (Unit unit : self.getUnits()) {
-					// if
-					// (unit.getType().equals(UnitType.Terran_Command_Center)) {
-					// com.ComData.enBaliza =
-					// unit.distanceTo(com.ComData.unit.getUnit().getPosition())
-					// <
-					// 150;
-					// }
-					// }
 				}
 			}
 			printUnitsInfo();
@@ -201,14 +182,20 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			}
 		}
 		com.ComData.onFinal = false;
-		this.firstExec = false;
+		this.firstOnFrame = false;
 	}
 
+	/**
+	 * Checks if the com.ComData.restar flag is true; and if so restarts the
+	 * game
+	 * 
+	 * @return true if the game is restarting or intended to be
+	 */
 	private boolean isRestarting() {
 		if (!restarting) {
 			if (com.ComData.restart) {
 				com.onSendMessage("Restart bot call...");
-				restarting = true;
+				this.restarting = true;
 				game.restartGame();
 			}
 		}

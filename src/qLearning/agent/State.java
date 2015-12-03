@@ -41,7 +41,7 @@ public class State {
 
 	public State executeAction(Action action) {
 
-		com.ComData.actionQueue.put(action);
+		com.ComData.actionQueue.queueAction(action);
 
 		com.Sync.waitForActionEnds();
 
