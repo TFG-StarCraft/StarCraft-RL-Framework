@@ -4,81 +4,54 @@ import com.Com;
 
 import bot.action.GenericAction;
 import bot.event.Event;
-import bot.observers.unit.GenericUnitObserver;
 import bwapi.Position;
 import bwapi.Unit;
 
-public abstract class MoveAction implements GenericAction, GenericUnitObserver {
+public abstract class MoveAction extends GenericAction {
 
-	protected final Unit unit;
-
+	// Initial pos of the unit
 	protected int iniX;
 	protected int iniY;
+	// Target pos of the unit
 	protected int endX;
 	protected int endY;
+	// Movement test position
 	protected int testX;
 	protected int testY;
 
-	private long frameEnd;
-	private boolean movStarted;
-
-	private Com com;
-
-	@Override
-	public void onUnit(Unit unit) {
-		checkAndActuate();
-	}
-	
-	@Override
-	public Unit getUnit() {
-		return this.unit;
-	}
-	
 	public MoveAction(Com com, Unit unit) {
-		this.com = com;
-		this.unit = unit;
+		super(com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();
-		
-		this.movStarted = false;
 	}
 
-	@Override
-	public void checkAndActuate() {
-		//com.onDebugMessage(" a " + System.currentTimeMillis());
-		//com.onDebugMessage(com.bot.frames);
+	/**
+	 * This method sets up endX and endY positions
+	 */
+	protected abstract void setUpMove();
 
-		if (com.bot.frames >= frameEnd && movStarted) {
-			onEndAction(false);
-		} else {
-			if (unit.isMoving()) {
-				int a = unit.getOrderTargetPosition().getX();
-				int b = unit.getOrderTargetPosition().getY();
-				
-				if (a != endX || b != endY) {
-					startMove();
-				} else {
-					if (unit.getX() == endX && unit.getY() == endY) {
-						onEndAction(true);
-					}
-				}
+	@Override
+	public void executeAction() {
+
+		if (unit.isMoving()) {
+			int a = unit.getOrderTargetPosition().getX();
+			int b = unit.getOrderTargetPosition().getY();
+
+			if (a != endX || b != endY) {
+				startAction();
 			} else {
 				if (unit.getX() == endX && unit.getY() == endY) {
 					onEndAction(true);
-				} else {
-					// No se está ejecutando esta acción
-					startMove();
 				}
 			}
-		}
-	}
-
-	private void startMove() {
-		if (!movStarted) {
-			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
-			this.movStarted = true;
-			this.unit.move(new Position(endX, endY));
+		} else {
+			if (unit.getX() == endX && unit.getY() == endY) {
+				onEndAction(true);
+			} else {
+				// No se está ejecutando esta acción
+				startAction();
+			}
 		}
 	}
 
@@ -86,7 +59,7 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 	public void onEndAction(boolean correct) {
 		com.bot.addEvent(new Event(Event.CODE_MOVE));
 		unRegisterUnitObserver();
-		
+
 		if (correct) {
 			com.ComData.lastActionOk = true;
 			com.ComData.unit.removeAction();
@@ -98,21 +71,17 @@ public abstract class MoveAction implements GenericAction, GenericUnitObserver {
 		}
 	}
 
-	protected abstract void setUpMove();
-
 	@Override
 	public boolean isPossible() {
 		return unit.getPosition().hasPath(new Position(testX, testY));
 	}
-	
-	@Override
-	public void registerUnitObserver() {
-		this.com.bot.registerOnUnitObserver(this);	
-	}
-	
-	@Override
-	public void unRegisterUnitObserver() {
-		this.com.bot.unRegisterOnUnitObserver(this);
+
+	protected void startAction() {
+		if (!actionStarted) {
+			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
+			this.actionStarted = true;
+			this.unit.move(new Position(endX, endY));
+		}
 	}
 
 }

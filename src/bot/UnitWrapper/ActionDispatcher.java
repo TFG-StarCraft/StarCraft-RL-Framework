@@ -13,7 +13,7 @@ public class ActionDispatcher {
 
 	public void checkAndDispatchAll() {
 		if (action != null)
-			action.checkAndActuate();
+			action.executeAction();
 	}
 
 	public void addAction(GenericAction action) {

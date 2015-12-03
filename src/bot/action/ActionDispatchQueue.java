@@ -26,8 +26,7 @@ public class ActionDispatchQueue {
 		try {
 			this.sem.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			com.onError(e.getLocalizedMessage(), true);
 		}
 		
 		this.list.add(action);
@@ -39,8 +38,7 @@ public class ActionDispatchQueue {
 		try {
 			this.sem.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			com.onError(e.getLocalizedMessage(), true);
 		}
 		
 		ArrayList<GenericAction> r = new ArrayList<GenericAction>();

@@ -8,8 +8,7 @@ import com.Com;
 import bot.UnitWrapper.BWAPI_UnitToWrapper;
 import bot.UnitWrapper.UnitWrapper;
 import bot.action.GenericAction;
-import bot.observers.UnitDestroyObserver;
-import bot.observers.unit.GenericUnitObserver;
+import bot.observers.GenericUnitObserver;
 import bwapi.DefaultBWListener;
 import bot.event.Event;
 import bwapi.Game;
@@ -32,19 +31,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private boolean firstStart;
 	private boolean firstExec;
 	private boolean restarting;
-	private boolean end;
+	private boolean endConditionSatisfied;
 	
 	public boolean guiEnabled;
 	public long frames;
 	public int frameSpeed;
 	private int lastFrameSpeed;
 
-	private ArrayList<UnitDestroyObserver> onUnitDestroyObs;
 	protected HashMap<Integer, ArrayList<GenericUnitObserver>> genericObservers;
 
 	protected ArrayList<Event> events;
-
-	private ArrayList<UnitDestroyObserver> unitDestroyQueue;
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -65,12 +61,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.frameSpeed = 0;
 		this.lastFrameSpeed = frameSpeed;
 		
-		this.onUnitDestroyObs = new ArrayList<>();
 		this.genericObservers = new HashMap<>();
 
 		this.events = new ArrayList<>();
-
-		this.unitDestroyQueue = new ArrayList<>();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -92,13 +85,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		this.com.ComData.onFinal = false;
 		this.com.ComData.restart = false;
-		this.end = false;
+		this.endConditionSatisfied = false;
 		
-		this.onUnitDestroyObs.clear();
 		this.genericObservers.clear();
 		this.events.clear();
-
-		this.unitDestroyQueue.clear();
 
 		if (firstStart) { // Only enters the very first execution (restarts wont
 							// enter here)
@@ -140,17 +130,13 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
-			if (!end && !game.isPaused()) {
+			if (!endConditionSatisfied && !game.isPaused()) {
 				if (this.firstExec) {
 					firstExecOnFrame();
 					com.Sync.signalInitIsDone();
 				} else {
-					end = checkEnd();
-					// for (UnitDestroyObserver observer : unitDestroyQueue) {
-					// this.onUnitDestroyObs.remove(observer);
-					// }
+					endConditionSatisfied = checkEnd();
 					events.clear();
-					// unitDestroyQueue.clear();
 					// This signals that the PREVIOUS onFrame was executed
 					com.Sync.signalIsEndCanBeChecked();
 				}
@@ -158,7 +144,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				this.frames++;
 				showFramesPerSecs();
 
-				if (!end) {
+				if (!endConditionSatisfied) {
 					if (lastFrameSpeed != frameSpeed) {
 						lastFrameSpeed = frameSpeed;
 						this.game.setLocalSpeed(frameSpeed);
@@ -243,16 +229,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
-
-	public void registerOnUnitDestroyObserver(UnitDestroyObserver o) {
-		this.onUnitDestroyObs.add(o);
-	}
-
-	public void unRegisterOnUnitDestroyObserver(UnitDestroyObserver obs) {
-		// this.unitDestroyQueue.add(obs);
-
-		// this.onUnitDestroyObs.remove(obs);
-	}
 
 	public void registerOnUnitObserver(GenericUnitObserver obs) {
 
