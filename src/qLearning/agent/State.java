@@ -45,7 +45,7 @@ public class State {
 
 		com.Sync.waitForActionEnds();
 
-		State SS = new State(com.ComData.unit.getUnit().getX(), com.ComData.unit.getUnit().getY(), this.enviroment,
+		State SS = new State(com.ComData.unit.getX(), com.ComData.unit.getY(), this.enviroment,
 				this.com);
 		SS.enFinal = com.ComData.onFinal;
 		SS.reward = SS.calculateReward();

@@ -1,11 +1,11 @@
 package com;
 
-import bot.UnitWrapper.UnitWrapper;
 import bot.action.ActionDispatchQueue;
+import bwapi.Unit;
 
 public class ComData {
 
-	public UnitWrapper unit;
+	public Unit unit;
 	public boolean onFinal;
 	public int iniX;
 	public int iniY;

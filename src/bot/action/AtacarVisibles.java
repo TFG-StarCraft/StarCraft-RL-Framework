@@ -35,7 +35,6 @@ public class AtacarVisibles extends GenericAction {
 		} else {
 			// com.onDebugMessage("Miss");
 			com.ComData.lastActionOk = false;
-			com.ComData.unit.removeAction();
 			com.Sync.signalActionEnded();
 		}
 	}

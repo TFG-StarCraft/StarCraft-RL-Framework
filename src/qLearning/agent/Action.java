@@ -15,15 +15,15 @@ public enum Action {
 	public GenericAction toAction(Com com) {
 		switch (this) {
 		case UP:
-			return new MoveUp(com, com.ComData.unit.getUnit());
+			return new MoveUp(com, com.ComData.unit);
 		case DOWN:
-			return new MoveDown(com, com.ComData.unit.getUnit());
+			return new MoveDown(com, com.ComData.unit);
 		case LEFT:
-			return new MoveLeft(com, com.ComData.unit.getUnit());
+			return new MoveLeft(com, com.ComData.unit);
 		case RIGHT:
-			return new MoveRight(com, com.ComData.unit.getUnit());
+			return new MoveRight(com, com.ComData.unit);
 		case ATTACK:
-			return new AtacarVisibles(com, com.ComData.unit.getUnit());
+			return new AtacarVisibles(com, com.ComData.unit);
 		default:
 			throw new IllegalArgumentException("Accion no valida");
 		}

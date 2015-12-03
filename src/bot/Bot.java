@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import com.Com;
 
-import bot.UnitWrapper.BWAPI_UnitToWrapper;
-import bot.UnitWrapper.UnitWrapper;
 import bot.action.GenericAction;
 import bot.observers.GenericUnitObserver;
 import bwapi.DefaultBWListener;
@@ -25,8 +23,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	public Mirror mirror;
 	public Game game;
 	public Player self;
-
-	private BWAPI_UnitToWrapper unitToWrapper;
 
 	private boolean firstStart;
 	private boolean firstExec;
@@ -80,7 +76,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		this.frames = 0;
 		this.firstExec = true;
-		this.unitToWrapper = new BWAPI_UnitToWrapper();
 		this.restarting = false;
 
 		this.com.ComData.onFinal = false;
@@ -199,8 +194,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private void firstExecOnFrame() {
 		for (Unit unit : self.getUnits()) {
 			if (unit.getType().equals(UnitType.Terran_Marine)) {
-				com.ComData.unit = new UnitWrapper(unit);
-				unitToWrapper.put(com.ComData.unit);
+				com.ComData.unit = unit;
 
 				com.ComData.iniX = unit.getX();
 				com.ComData.iniY = unit.getY();

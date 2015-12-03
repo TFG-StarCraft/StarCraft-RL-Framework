@@ -62,11 +62,9 @@ public abstract class MoveAction extends GenericAction {
 
 		if (correct) {
 			com.ComData.lastActionOk = true;
-			com.ComData.unit.removeAction();
 			com.Sync.signalActionEnded();
 		} else {
 			com.ComData.lastActionOk = false;
-			com.ComData.unit.removeAction();
 			com.Sync.signalActionEnded();
 		}
 	}
