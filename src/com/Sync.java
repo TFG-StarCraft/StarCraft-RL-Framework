@@ -37,18 +37,15 @@ public class Sync {
 	}
 
 	public void signalIsEndCanBeChecked() {
-		// Take mutex
 		this.s_end.release();
 	}
 
 	public void waitForEndOfIterationCanBeChecked() {
-
 		try {
 			this.s_end.acquire();
 		} catch (InterruptedException e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
-		// Release mutex
 	}
 
 	public void signalGameIsReady() {

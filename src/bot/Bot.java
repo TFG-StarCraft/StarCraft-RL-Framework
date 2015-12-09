@@ -34,6 +34,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	public int frameSpeed;
 	private int lastFrameSpeed;
 
+	// Maps units (with its unique id) to an arrayList of observers
 	protected HashMap<Integer, ArrayList<GenericUnitObserver>> genericObservers;
 
 	protected ArrayList<Event> events;
@@ -77,17 +78,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.frames = 0;
 		this.firstOnFrame = true;
 		this.restarting = false;
+		this.endConditionSatisfied = false;
 
 		this.com.ComData.onFinal = false;
 		this.com.ComData.restart = false;
-		this.endConditionSatisfied = false;
 
 		this.genericObservers.clear();
 		this.events.clear();
 
 		if (firstOnStart) { // Only enters the very first execution (restarts
-							// wont
-							// enter here)
+							// wont enter here)
 			// Use BWTA to analyze map
 			// This may take a few minutes if the map is processed first time!
 			com.onSendMessage("Analyzing map...");
@@ -105,9 +105,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		com.onDebugMessage("DESTROY " + frames);
 
 		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
-			com.bot.addEvent(new Event(Event.CODE_KILLED));
+			addEvent(new Event(Event.CODE_KILLED));
 		} else {
-			com.bot.addEvent(new Event(Event.CODE_KILL));
+			addEvent(new Event(Event.CODE_KILL));
 		}
 
 		super.onUnitDestroy(unit);
@@ -131,13 +131,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 				this.frames++;
 				showFramesPerSecs();
+				updateGameSpeed();
 
 				if (!endConditionSatisfied) {
-					if (lastFrameSpeed != frameSpeed) {
-						lastFrameSpeed = frameSpeed;
-						this.game.setLocalSpeed(frameSpeed);
-					}
-
 					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
 
 					for (GenericAction action : actionsToRegister) {
@@ -277,4 +273,14 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		}
 	}
 
+	/**
+	 * Updates the current game speed so its running at the desired speed
+	 * (as set in the gui)
+	 */
+	private void updateGameSpeed() {
+		if (lastFrameSpeed != frameSpeed) {
+			lastFrameSpeed = frameSpeed;
+			this.game.setLocalSpeed(frameSpeed);
+		}
+	}
 }

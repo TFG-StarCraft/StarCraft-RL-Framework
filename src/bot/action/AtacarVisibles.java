@@ -7,7 +7,6 @@ import com.Com;
 
 import bwapi.Order;
 import bwapi.Unit;
-import bwapi.WeaponType;
 
 public class AtacarVisibles extends GenericAction {
 
@@ -17,7 +16,7 @@ public class AtacarVisibles extends GenericAction {
 
 	@Override
 	public void executeAction() {
-		List<Unit> l = this.unit.getUnitsInWeaponRange(WeaponType.Gauss_Rifle);
+		List<Unit> l = getGroundUnitsInRange();
 		if (!l.isEmpty()) {
 			if (!unit.getOrder().equals(Order.AttackUnit)) {
 				this.unit.attack(l.get(0));
@@ -41,7 +40,12 @@ public class AtacarVisibles extends GenericAction {
 
 	@Override
 	public boolean isPossible() {
-		List<Unit> l = this.unit.getUnitsInWeaponRange(WeaponType.Gauss_Rifle);
+		// TODO solo válido contra unidades terrestres
+		List<Unit> l = getGroundUnitsInRange();
 		return !l.isEmpty();
+	}
+	
+	private List<Unit> getGroundUnitsInRange() {
+		return this.unit.getUnitsInWeaponRange(this.unit.getType().groundWeapon());
 	}
 }

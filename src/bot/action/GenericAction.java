@@ -26,15 +26,17 @@ public abstract class GenericAction implements GenericUnitObserver {
 	/**
 	 * This method executes the action, this means that it checks the current
 	 * state of the environment (usually related with this.unit) and acts in
-	 * consequence: - if the action hasn't started yet, it starts. - if the
-	 * action isn't finished yet, but no termination condition is satisfied
-	 * (i.e. the unit hasn't arrived to the target position, but keeps moving),
-	 * the action keeps going whitout problem. - if the action has reached its
-	 * goal, onEndAction is called and the agent is usually notified that an
-	 * action has ended correctly. - if the action has't reached its goal, but
-	 * it has been interrupted (i.e. too many frames executing without ending),
-	 * onEndAction(false) is called and the agent is notified than an action
-	 * ended unsuccessfully.
+	 * consequence: 
+	 * - if the action hasn't started yet, it starts. 
+	 * - if the action isn't finished yet, but no termination condition is 
+	 * satisfied (i.e. the unit hasn't arrived to the target position, but 
+	 * keeps moving), the action keeps going whitout problem. 
+	 * - if the action has reached its goal, onEndAction is called and the 
+	 * agent is usually notified that an action has ended correctly. 
+	 * - if the action has't reached its goal, but it has been interrupted 
+	 * (i.e. too many frames executing without ending), onEndAction(false) 
+	 * is called and the agent is notified than an action ended 
+	 * unsuccessfully.
 	 * 
 	 */
 	public abstract void executeAction();
@@ -88,7 +90,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 				executeAction();
 			}
 		} else {
-			// TODO
+			// TODO es necesario? Debería cumplirse
 			throw new RuntimeException();
 		}
 	}
@@ -122,6 +124,11 @@ public abstract class GenericAction implements GenericUnitObserver {
 		this.com.bot.unRegisterOnUnitObserver(this);
 	}
 
+	/**
+	 * 
+	 * @return true if this action has been executing more than
+	 *         maxFramesOfExecuting frames.
+	 */
 	private boolean isFramesLimitsReached() {
 		return com.bot.frames >= this.frameEnd;
 	}
