@@ -80,8 +80,8 @@ public abstract class GenericAction implements GenericUnitObserver {
 	public void onUnit(Unit unit) {
 		if (unit.equals(this.unit)) {
 			if (actionStarted && isFramesLimitsReached()) {
-				if (!(this instanceof AtacarVisibles))
-					System.out.println("miss");
+				//if (!(this instanceof AtacarVisibles))
+				//	System.out.println("miss");
 				onEndAction(false);
 			} else {
 				if (!specialStart) {
