@@ -7,10 +7,12 @@ import com.Com;
 
 import bwapi.Order;
 import bwapi.Unit;
+import bwapi.UnitType;
+import bwapi.WeaponType;
 
-public class AtacarVisibles extends GenericAction {
+public class AttackUnitOnSight extends GenericAction {
 
-	public AtacarVisibles(Com com, Unit atacante) {
+	public AttackUnitOnSight(Com com, Unit atacante) {
 		super(com, atacante, bot.Const.FRAMES_ATTACK, false);
 	}
 
@@ -20,6 +22,7 @@ public class AtacarVisibles extends GenericAction {
 		if (!l.isEmpty()) {
 			if (!unit.getOrder().equals(Order.AttackUnit)) {
 				this.unit.attack(l.get(0));
+				super.order = this.unit.getOrder();
 			}
 		}
 	}
@@ -46,6 +49,11 @@ public class AtacarVisibles extends GenericAction {
 	}
 	
 	private List<Unit> getGroundUnitsInRange() {
-		return this.unit.getUnitsInWeaponRange(this.unit.getType().groundWeapon());
+		
+		Unit u = this.unit;
+		UnitType t = u.getType();
+		WeaponType w = t.groundWeapon();
+		
+		return this.unit.getUnitsInRadius(w.maxRange());
 	}
 }

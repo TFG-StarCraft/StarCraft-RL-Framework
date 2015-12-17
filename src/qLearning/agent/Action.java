@@ -2,7 +2,7 @@ package qLearning.agent;
 
 import com.Com;
 
-import bot.action.AtacarVisibles;
+import bot.action.AttackUnitOnSight;
 import bot.action.GenericAction;
 import bot.action.movement.MoveDown;
 import bot.action.movement.MoveLeft;
@@ -23,7 +23,7 @@ public enum Action {
 		case RIGHT:
 			return new MoveRight(com, com.ComData.unit);
 		case ATTACK:
-			return new AtacarVisibles(com, com.ComData.unit);
+			return new AttackUnitOnSight(com, com.ComData.unit);
 		default:
 			throw new IllegalArgumentException("Accion no valida");
 		}

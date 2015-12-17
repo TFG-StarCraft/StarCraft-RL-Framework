@@ -93,7 +93,8 @@ public abstract class MoveAction extends GenericAction {
 
 	@Override
 	public boolean isPossible() {
-		return unit.getPosition().hasPath(new Position(testX, testY));
+		//return unit.getPosition().hasPath(new Position(testX, testY));
+		return true;
 	}
 
 	protected void startAction() {
@@ -102,6 +103,8 @@ public abstract class MoveAction extends GenericAction {
 			this.actionStarted = true;
 			this.moveOrderHasBeenGiven = true;
 			this.unit.move(new Position(endX, endY));
+			
+			super.order = this.unit.getOrder();
 		}
 	}
 

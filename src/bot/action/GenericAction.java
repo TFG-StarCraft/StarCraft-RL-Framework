@@ -3,6 +3,7 @@ package bot.action;
 import com.Com;
 
 import bot.observers.GenericUnitObserver;
+import bwapi.Order;
 import bwapi.Unit;
 
 public abstract class GenericAction implements GenericUnitObserver {
@@ -76,9 +77,12 @@ public abstract class GenericAction implements GenericUnitObserver {
 		this.specialStart = specialStart;
 	}
 
+	protected Order order;
+	
 	@Override
 	public void onUnit(Unit unit) {
 		if (unit.equals(this.unit)) {
+
 			if (actionStarted && isFramesLimitsReached()) {
 				//if (!(this instanceof AtacarVisibles))
 				//	System.out.println("miss");
@@ -88,6 +92,9 @@ public abstract class GenericAction implements GenericUnitObserver {
 					startAction();
 				}
 				executeAction();
+				if (actionStarted && order != null && order != unit.getOrder()) {
+					onEndAction(false);				
+				}
 			}
 		} else {
 			// TODO es necesario? Debería cumplirse
