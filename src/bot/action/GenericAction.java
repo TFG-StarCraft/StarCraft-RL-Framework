@@ -90,7 +90,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 		if (unit.equals(this.unit)) {
 
 			if (actionStarted && isFramesLimitsReached()) {
-				com.onDebugMessage("End - frame limit", DebugEnum.FRAME_LIMIT);
+				com.onDebugMessage("End - frame limit" + this.getClass(), DebugEnum.FRAME_LIMIT);
 				onEndAction(false);
 			} else {
 				if (!specialStart) {

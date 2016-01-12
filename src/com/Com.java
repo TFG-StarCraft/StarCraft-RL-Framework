@@ -41,15 +41,15 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 
 	public Bot bot;
-	
+
 	@Override
 	public void run() {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
-		
+
 		bot = new BotDestruirUnidad(this);
 		Thread t1 = new Thread(bot);
 		t1.start();
-	
+
 		onSendMessage("Starting q-Learning");
 		Thread t2 = new Thread(new Agent(this, new SCEnviroment(this), alpha, gamma, epsilon));
 		t2.start();
@@ -103,13 +103,14 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			comObserver.onSendMessage(s);
 		}
 	}
+
 	@Override
 	public void onFpsAverageAnnouncement(double d) {
 		for (ComObserver comObserver : observers) {
 			comObserver.onFpsAverageAnnouncement(d);
 		}
 	}
-	
+
 	@Override
 	public void onDebugMessage(String s, DebugEnum eventAtFrame) {
 		for (ComObserver comObserver : observers) {
@@ -127,13 +128,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			System.exit(-1);
 		}
 	}
-	
 
-	
 	public void shutSc() {
 		utils.StarcraftLauncher.closeSC(this);
 	}
-
-
 
 }
