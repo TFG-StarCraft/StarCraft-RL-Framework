@@ -22,44 +22,21 @@ public abstract class GenericAction implements GenericUnitObserver {
 
 	protected boolean actionStarted;
 
-//	protected class DefaultActionEndEvent extends AbstractActionEndEvent {
-//
-//		public DefaultActionEndEvent(GenericAction action, boolean correct) {
-//			super(action);
-//			this.correct = correct;
-//		}
-//
-//		protected boolean correct;
-//
-//		@Override
-//		public void solveEvent(Object... args) {
-//			unRegisterUnitObserver();
-//
-//			if (correct) {
-//				com.ComData.lastActionOk = true;
-//				com.Sync.signalActionEnded();
-//			} else {
-//				com.ComData.lastActionOk = false;
-//				com.Sync.signalActionEnded();
-//			}
-//		}
-//	}
-
 	final protected boolean specialStart;
 
 	/**
 	 * This method executes the action, this means that it checks the current
 	 * state of the environment (usually related with this.unit) and acts in
-	 * consequence: - if the action hasn't started yet, it starts. - if the
-	 * action isn't finished yet, but no termination condition is satisfied
-	 * (i.e. the unit hasn't arrived to the target position, but keeps moving),
-	 * the action keeps going whitout problem. - if the action has reached its
-	 * goal, onEndAction is called and the agent is usually notified that an
-	 * action has ended correctly. - if the action has't reached its goal, but
-	 * it has been interrupted (i.e. too many frames executing without ending),
-	 * onEndAction(false) is called and the agent is notified than an action
-	 * ended unsuccessfully.
-	 * 
+	 * consequence: 
+	 * 	- if the action hasn't started yet, it starts. 
+	 * 	- if the action isn't finished yet, but no termination condition is
+	 *	satisfied (i.e. the unit hasn't arrived to the target position, but
+	 * 	keeps moving), the action keeps going whitout problem. 
+	 * 	- if the action has reached its goal, onEndAction is called and the 
+	 * 	agent is usually notified that an action has ended correctly. 
+	 * 	- if the action has't reached its goal, but it has been interrupted 
+	 * 	(i.e. too many frames executing without ending), onEndAction(false) 
+	 * 	is called and the agent is notified than an action ended unsuccessfully.
 	 */
 	public abstract void executeAction();
 
@@ -112,7 +89,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 		if (unit.equals(this.unit)) {
 
 			if (actionStarted && isFramesLimitsReached()) {
-				System.out.println("End - frame limit");
+				com.onDebugMessage("End - frame limit");
 				onEndAction(false);
 			} else {
 				if (!specialStart) {
@@ -120,7 +97,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 				}
 				executeAction();
 				if (actionStarted && order != null && order != unit.getOrder()) {
-					System.out.println("End - Bad order" + (order == null ? ", null" : ", not equals"));
+					com.onDebugMessage("End - Bad order" + (order == null ? ", null" : ", not equals"));
 					onEndAction(false);
 				}
 			}

@@ -3,9 +3,12 @@ package gui;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.Com;
 
@@ -13,10 +16,35 @@ public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 2941318999657277463L;
 
-	private JPanel mainPanel;
+	private ExecPanel mainPanel;
 
+	private class MyMenuBar extends JMenuBar {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1328830028539474345L;
+		private JCheckBoxMenuItem showDebug;
+		
+		private MyMenuBar() {
+			this.showDebug = new JCheckBoxMenuItem("Show debug info");
+			this.showDebug.setSelected(mainPanel.showDebug);
+			this.showDebug.addChangeListener(new ChangeListener() {
+				
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					mainPanel.showDebug = showDebug.isSelected();
+				}
+			});
+			this.add(showDebug);
+		}
+	}
+	
+	private MyMenuBar menuBar;
+	
 	public GUI() {
 		this.mainPanel = new ExecPanel(new Com(), false);
+		this.menuBar = new MyMenuBar();
 		this.setContentPane(mainPanel);
 	}
 
@@ -24,6 +52,8 @@ public class GUI extends JFrame {
 		this.setSize(600, 600);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+		this.setJMenuBar(menuBar);
+		
 		this.setVisible(true);
 	}
 

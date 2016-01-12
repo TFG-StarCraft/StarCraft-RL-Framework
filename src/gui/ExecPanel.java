@@ -28,7 +28,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	private static final long serialVersionUID = -624314441968368833L;
 
-	private boolean showDebug;
+	boolean showDebug;
 	
 	private JPanel topPanel;
 	private JButton run;
