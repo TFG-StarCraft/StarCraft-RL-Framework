@@ -1,10 +1,6 @@
 package bot;
 
-import java.util.Collection;
-
 import com.Com;
-import com.ComData;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import bot.action.GenericAction;
 import bot.event.AbstractEvent;
