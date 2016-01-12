@@ -1,11 +1,13 @@
 package com.observers;
 
+import utils.DebugEnum;
+
 public class ConsoleExit implements ComObserver {
 
-	private boolean showDebug;
+	private long debugMask;
 
-	public ConsoleExit(boolean showDebug) {
-		this.showDebug = showDebug;
+	public ConsoleExit(long debugMask) {
+		this.debugMask = debugMask;
 	}
 
 	@Override
@@ -48,8 +50,8 @@ public class ConsoleExit implements ComObserver {
 	}
 
 	@Override
-	public void onDebugMessage(String s) {
-		if (showDebug)
+	public void onDebugMessage(String s, DebugEnum level) {
+		if ((debugMask & (1<<level.ordinal())) != 0)
 			System.out.println(s);
 	}
 

@@ -11,6 +11,7 @@ import bot.Bot;
 import bot.BotDestruirUnidad;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
+import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {
 
@@ -110,9 +111,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 	
 	@Override
-	public void onDebugMessage(String s) {
+	public void onDebugMessage(String s, DebugEnum eventAtFrame) {
 		for (ComObserver comObserver : observers) {
-			comObserver.onDebugMessage(s);
+			comObserver.onDebugMessage(s, eventAtFrame);
 		}
 	}
 

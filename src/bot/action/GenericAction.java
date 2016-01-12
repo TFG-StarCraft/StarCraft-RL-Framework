@@ -5,6 +5,7 @@ import com.Com;
 import bot.observers.GenericUnitObserver;
 import bwapi.Order;
 import bwapi.Unit;
+import utils.DebugEnum;
 
 public abstract class GenericAction implements GenericUnitObserver {
 
@@ -89,7 +90,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 		if (unit.equals(this.unit)) {
 
 			if (actionStarted && isFramesLimitsReached()) {
-				com.onDebugMessage("End - frame limit");
+				com.onDebugMessage("End - frame limit", DebugEnum.FRAME_LIMIT);
 				onEndAction(false);
 			} else {
 				if (!specialStart) {
@@ -97,7 +98,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 				}
 				executeAction();
 				if (actionStarted && order != null && order != unit.getOrder()) {
-					com.onDebugMessage("End - Bad order" + (order == null ? ", null" : ", not equals"));
+					com.onDebugMessage("End - Bad order" + (order == null ? ", null" : ", not equals"), DebugEnum.BAD_ORDER);
 					onEndAction(false);
 				}
 			}

@@ -19,6 +19,9 @@ import javax.swing.text.DefaultCaret;
 
 import com.Com;
 import com.observers.ComObserver;
+
+import utils.DebugEnum;
+
 import javax.swing.JToggleButton;
 
 public class ExecPanel extends JPanel implements ComObserver {
@@ -28,7 +31,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	private static final long serialVersionUID = -624314441968368833L;
 
-	boolean showDebug;
+	long debugMask;
 	
 	private JPanel topPanel;
 	private JButton run;
@@ -47,10 +50,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JLabel lblSpeed;
 	private JTextField textFieldSpeed;
 
-	public ExecPanel(Com com, boolean showDebug) {
+	public ExecPanel(Com com) {
 		this.com = com;
 		this.com.addObserver(this);
-		this.showDebug = showDebug;
+		this.debugMask = 0;
 
 		this.topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2, 1, 0, 0));
@@ -218,8 +221,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	}
 
 	@Override
-	public void onDebugMessage(String s) {
-		if (showDebug)
+	public void onDebugMessage(String s, DebugEnum level) {
+		if ((debugMask & (1<<level.ordinal())) != 0)
 			onSendMessage(s);
 	}
 

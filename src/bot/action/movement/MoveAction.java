@@ -6,6 +6,7 @@ import bot.action.GenericAction;
 import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
+import utils.DebugEnum;
 
 public abstract class MoveAction extends GenericAction {
 
@@ -43,10 +44,10 @@ public abstract class MoveAction extends GenericAction {
 		if (moveOrderHasBeenGiven) {
 			if (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack()) {
 				if (unit.getX() == endX && unit.getY() == endY) {
-					com.onDebugMessage("Action OK - In position (1)");
+					com.onDebugMessage("Action OK - In position (1)", DebugEnum.ACTION_OK);
 					onEndAction(true);
 				} else {
-					com.onDebugMessage("Action Fail - Not in position");
+					com.onDebugMessage("Action Fail - Not in position", DebugEnum.ACTION_FAIL);
 					onEndAction(false);
 				}
 			} else if (unit.isMoving()) {
@@ -57,13 +58,13 @@ public abstract class MoveAction extends GenericAction {
 					startAction();
 				} else {
 					if (unit.getX() == endX && unit.getY() == endY) {
-						com.onDebugMessage("Action OK - In position (2)");
+						com.onDebugMessage("Action OK - In position (2)", DebugEnum.ACTION_OK);
 						onEndAction(true);
 					}
 				}
 			} else {
 				if (unit.getX() == endX && unit.getY() == endY) {
-					com.onDebugMessage("Action OK - In position (3)");
+					com.onDebugMessage("Action OK - In position (3)", DebugEnum.ACTION_OK);
 					onEndAction(true);
 				} else {
 					// No se está ejecutando esta acción
@@ -72,7 +73,7 @@ public abstract class MoveAction extends GenericAction {
 			}
 		} else {
 			if (unit.getX() == endX && unit.getY() == endY) {
-				com.onDebugMessage("Action OK - In position (4)");
+				com.onDebugMessage("Action OK - In position (4)", DebugEnum.ACTION_OK);
 				onEndAction(true);
 			} else {
 				// No se está ejecutando esta acción

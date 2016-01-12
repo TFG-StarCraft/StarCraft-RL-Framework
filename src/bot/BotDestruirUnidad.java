@@ -8,6 +8,7 @@ import bot.event.factories.AbstractEventsFactory;
 import bot.event.factories.AEFDestruirUnidad;
 import bwapi.Unit;
 import bwapi.UnitType;
+import utils.DebugEnum;
 
 public class BotDestruirUnidad extends Bot {
 
@@ -27,7 +28,7 @@ public class BotDestruirUnidad extends Bot {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		com.onDebugMessage("DESTROY " + frames);
+		com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
 
 		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
 			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));

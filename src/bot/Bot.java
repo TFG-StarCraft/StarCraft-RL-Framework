@@ -16,6 +16,7 @@ import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
+import utils.DebugEnum;
 
 public abstract class Bot extends DefaultBWListener implements Runnable {
 
@@ -111,7 +112,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	@Override
 	public void onFrame() {
-		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
+		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
 		if (shouldExecuteOnFrame()) {
 			// Draw info even if paused (at the end)
 			if (!endConditionSatisfied && !game.isPaused()) {
@@ -236,7 +237,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	public void addEvent(AbstractEvent event) {
-		com.onDebugMessage("EVENT " + frames);
+		com.onDebugMessage("EVENT " + frames, DebugEnum.EVENT_AT_FRAME);
 		this.events.add(event);
 	}
 	
