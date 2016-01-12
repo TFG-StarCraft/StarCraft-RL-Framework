@@ -7,7 +7,6 @@ public class Sync {
 	private Semaphore s_postAction;
 	private Semaphore s_initSync;
 	private Semaphore s_restartSync;
-	private Semaphore s_end;
 
 	private Com com;
 
@@ -15,7 +14,6 @@ public class Sync {
 		s_postAction = new Semaphore(0);
 		s_initSync = new Semaphore(0);
 		s_restartSync = new Semaphore(0);
-		s_end = new Semaphore(0);
 
 		this.com = com;
 	}
@@ -31,7 +29,7 @@ public class Sync {
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
-
+/*
 	public void signalAgentIsStarting() {
 		this.s_end.release();
 	}
@@ -40,14 +38,14 @@ public class Sync {
 		this.s_end.release();
 	}
 
-	public void waitForEndOfIterationCanBeChecked() {
+	public void waitForIsEndCanBeChecked() {
 		try {
 			this.s_end.acquire();
 		} catch (InterruptedException e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
-
+*/
 	public void signalGameIsReady() {
 		this.s_restartSync.release();
 	}
@@ -60,6 +58,9 @@ public class Sync {
 		}
 	}
 
+	/**
+	 * Returns control to Agent
+	 */
 	public void signalActionEnded() {
 		com.Sync.s_postAction.release();
 	}

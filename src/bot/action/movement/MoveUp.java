@@ -6,8 +6,8 @@ import bwapi.Unit;
 
 public class MoveUp extends MoveAction {
 
-	public MoveUp(Com com, Unit unit) {
-		super(com, unit);
+	public MoveUp(Com com, Unit unit, int epoch) {
+		super(com, unit, epoch);
 	}
 
 	@Override

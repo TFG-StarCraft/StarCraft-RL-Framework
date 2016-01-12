@@ -39,4 +39,8 @@ public class ActionDispatchQueue {
 		return r;
 	}
 
+	public synchronized void clear() {
+		this.list.clear();
+	}
+
 }

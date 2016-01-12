@@ -59,10 +59,10 @@ public class Agent implements Runnable {
 			int movimientos = 0;
 			this.numRandomMoves = 0;
 
-			com.Sync.signalAgentIsStarting();
+			//com.Sync.signalAgentIsStarting();
 			
 			while (!S.isFinalEnd()) {
-				Action A = nextAction(S);
+				Action A = nextAction(S, i);
 
 				// Blocks until action A ends
 				State SS = S.executeAction(A);
@@ -94,7 +94,7 @@ public class Agent implements Runnable {
 		pw.close();
 	}
 
-	public Action nextAction(State S) {
+	public Action nextAction(State S, int epoch) {
 
 		Random r = new Random();
 		double e = r.nextDouble();
@@ -122,6 +122,9 @@ public class Agent implements Runnable {
 				}
 			}
 		}
+		
+		mov.epoch = epoch;
+		
 		return mov;
 	}
 	

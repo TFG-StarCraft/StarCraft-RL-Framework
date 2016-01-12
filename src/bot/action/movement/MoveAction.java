@@ -3,7 +3,6 @@ package bot.action.movement;
 import com.Com;
 
 import bot.action.GenericAction;
-import bot.event.Event;
 import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
@@ -22,11 +21,13 @@ public abstract class MoveAction extends GenericAction {
 
 	protected boolean moveOrderHasBeenGiven;
 
-	public MoveAction(Com com, Unit unit) {
+	public MoveAction(Com com, Unit unit, int agentEpoch) {
 		super(com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();
+		
+		super.agentEpochCreate = agentEpoch;
 
 		moveOrderHasBeenGiven = false;
 	}
@@ -42,10 +43,10 @@ public abstract class MoveAction extends GenericAction {
 		if (moveOrderHasBeenGiven) {
 			if (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack()) {
 				if (unit.getX() == endX && unit.getY() == endY) {
-					System.out.println("true");
+					System.out.println("Action OK - In position (1)");
 					onEndAction(true);
 				} else {
-					System.out.println("false");
+					System.out.println("Action Fail - Not in position");
 					onEndAction(false);
 				}
 			} else if (unit.isMoving()) {
@@ -56,11 +57,13 @@ public abstract class MoveAction extends GenericAction {
 					startAction();
 				} else {
 					if (unit.getX() == endX && unit.getY() == endY) {
+						System.out.println("Action OK - In position (2)");
 						onEndAction(true);
 					}
 				}
 			} else {
 				if (unit.getX() == endX && unit.getY() == endY) {
+					System.out.println("Action OK - In position (3)");
 					onEndAction(true);
 				} else {
 					// No se está ejecutando esta acción
@@ -69,6 +72,7 @@ public abstract class MoveAction extends GenericAction {
 			}
 		} else {
 			if (unit.getX() == endX && unit.getY() == endY) {
+				System.out.println("Action OK - In position (4)");
 				onEndAction(true);
 			} else {
 				// No se está ejecutando esta acción
@@ -78,22 +82,8 @@ public abstract class MoveAction extends GenericAction {
 	}
 
 	@Override
-	public void onEndAction(boolean correct) {
-		com.bot.addEvent(new Event(Event.CODE_MOVE));
-		unRegisterUnitObserver();
-
-		if (correct) {
-			com.ComData.lastActionOk = true;
-			com.Sync.signalActionEnded();
-		} else {
-			com.ComData.lastActionOk = false;
-			com.Sync.signalActionEnded();
-		}
-	}
-
-	@Override
 	public boolean isPossible() {
-		//return unit.getPosition().hasPath(new Position(testX, testY));
+		// return unit.getPosition().hasPath(new Position(testX, testY));
 		return true;
 	}
 
@@ -103,7 +93,7 @@ public abstract class MoveAction extends GenericAction {
 			this.actionStarted = true;
 			this.moveOrderHasBeenGiven = true;
 			this.unit.move(new Position(endX, endY));
-			
+
 			super.order = this.unit.getOrder();
 		}
 	}

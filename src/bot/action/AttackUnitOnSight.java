@@ -1,6 +1,5 @@
 package bot.action;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import com.Com;
@@ -12,8 +11,9 @@ import bwapi.WeaponType;
 
 public class AttackUnitOnSight extends GenericAction {
 
-	public AttackUnitOnSight(Com com, Unit atacante) {
+	public AttackUnitOnSight(Com com, Unit atacante, int epoch) {
 		super(com, atacante, bot.Const.FRAMES_ATTACK, false);
+		super.agentEpochCreate = epoch;
 	}
 
 	@Override
@@ -24,20 +24,6 @@ public class AttackUnitOnSight extends GenericAction {
 				this.unit.attack(l.get(0));
 				super.order = this.unit.getOrder();
 			}
-		}
-	}
-
-	@Override
-	public void onEndAction(boolean correct) {
-		unRegisterUnitObserver();
-
-		if (correct) {
-			// TODO
-			throw new InvalidParameterException();
-		} else {
-			// com.onDebugMessage("Miss");
-			com.ComData.lastActionOk = false;
-			com.Sync.signalActionEnded();
 		}
 	}
 

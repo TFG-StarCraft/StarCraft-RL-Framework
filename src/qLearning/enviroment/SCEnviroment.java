@@ -35,7 +35,7 @@ public class SCEnviroment implements AbstractEnviroment {
 	public State getInitState() {
 		com.Sync.waitForBotEndsInit();
 		
-		return new State(com.ComData.iniX, com.ComData.iniY, this, com);
+		return new State(com.ComData.iniX, com.ComData.iniY, this, com, true);
 	}
 
 }

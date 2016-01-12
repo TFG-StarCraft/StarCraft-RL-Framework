@@ -10,18 +10,18 @@ public class State {
 	private int y;
 
 	private Double reward;
-	
-	private boolean enFinal;
 
 	private AbstractEnviroment enviroment;
 	private Com com;
 
-	public State(int x, int y, AbstractEnviroment e, Com com) {
+	private Boolean finalState;
+
+	public State(int x, int y, AbstractEnviroment e, Com com, boolean initialState) {
 		this.com = com;
 		this.x = x;
 		this.y = y;
-		this.enFinal = false;
 		this.reward = Double.NaN;
+		this.finalState = initialState ? false : null;
 
 		this.enviroment = e;
 	}
@@ -45,20 +45,17 @@ public class State {
 
 		com.Sync.waitForActionEnds();
 
-		State SS = new State(com.ComData.unit.getX(), com.ComData.unit.getY(), this.enviroment,
-				this.com);
-		SS.enFinal = com.ComData.onFinal;
+		State SS = new State(com.ComData.unit.getX(), com.ComData.unit.getY(), this.enviroment, this.com, false);
+		// TODO
+		SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
+
 
 		return SS;
 	}
 
-	public boolean isEnd() {
-		return enFinal;
-	}
-
 	private double calculateReward() {
-		if (isEnd()) {
+		if (finalState) {
 			return Const.RECOMPENSA_FINAL;
 		} else if (com.ComData.lastActionOk) {
 			return Const.RECOMPENSA_GENERAL;
@@ -68,17 +65,13 @@ public class State {
 	}
 
 	public boolean isFinalEnd() {
-		com.onDebugMessage("Check end");
-		com.Sync.waitForEndOfIterationCanBeChecked();
-		com.onDebugMessage("Checked");
-		
-		return enFinal;
+		return finalState;
 	}
 
 	public Double getReward() {
 		if (this.reward.isNaN())
 			throw new RuntimeException("Reward is NaN");
-		
+
 		return this.reward;
 	}
 

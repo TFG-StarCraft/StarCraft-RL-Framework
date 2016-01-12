@@ -8,7 +8,8 @@ import com.Com;
 import bot.action.GenericAction;
 import bot.observers.GenericUnitObserver;
 import bwapi.DefaultBWListener;
-import bot.event.Event;
+import bot.event.AbstractEvent;
+import bot.event.factories.AbstractEventsFactory;
 import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
@@ -37,13 +38,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	// Maps units (with its unique id) to an arrayList of observers
 	protected HashMap<Integer, ArrayList<GenericUnitObserver>> genericObservers;
 
-	protected ArrayList<Event> events;
+	protected ArrayList<AbstractEvent> events;
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public abstract boolean checkEnd();
+	public abstract boolean solveEventsAndCheckEnd();
+	
+	protected final AbstractEventsFactory factory;
+	public abstract AbstractEventsFactory getNewFactory();
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -61,15 +65,19 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.genericObservers = new HashMap<>();
 
 		this.events = new ArrayList<>();
+		this.factory = getNewFactory();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// BWAPI CALLS ////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
+	public int epoch = -1;
+	
 	@Override
 	public void onStart() {
 		// onStart is also called after re-start
+		this.epoch++;
 		this.game = mirror.getGame();
 		this.self = game.self();
 		this.game.setGUI(guiEnabled);
@@ -80,11 +88,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.restarting = false;
 		this.endConditionSatisfied = false;
 
-		this.com.ComData.onFinal = false;
+		this.com.ComData.resetFinal();
 		this.com.ComData.restart = false;
 
 		this.genericObservers.clear();
 		this.events.clear();
+		com.ComData.actionQueue.clear();
 
 		if (firstOnStart) { // Only enters the very first execution (restarts
 							// wont enter here)
@@ -101,19 +110,6 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	@Override
-	public void onUnitDestroy(Unit unit) {
-		com.onDebugMessage("DESTROY " + frames);
-
-		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
-			addEvent(new Event(Event.CODE_KILLED));
-		} else {
-			addEvent(new Event(Event.CODE_KILL));
-		}
-
-		super.onUnitDestroy(unit);
-	}
-
-	@Override
 	public void onFrame() {
 		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size());
 		if (shouldExecuteOnFrame()) {
@@ -123,10 +119,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 					firstExecOnFrame();
 					com.Sync.signalInitIsDone();
 				} else {
-					endConditionSatisfied = checkEnd();
+					endConditionSatisfied = solveEventsAndCheckEnd();
 					events.clear();
+					com.ComData.setOnFinal(endConditionSatisfied);
+					
 					// This signals that the PREVIOUS onFrame was executed
-					com.Sync.signalIsEndCanBeChecked();
+					//com.Sync.signalIsEndCanBeChecked();
 				}
 
 				this.frames++;
@@ -142,7 +140,11 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 					for (Unit rawUnit : self.getUnits()) {
 						ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
+						
 						if (a != null) {
+							if (a.size() > 1) {
+								com.onSendMessage("NumOfActions: " + a.size());			
+							}
 							int i = 0;
 							while (i < a.size()) {
 								int lastSize = a.size();
@@ -177,7 +179,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				com.ComData.iniY = unit.getY();
 			}
 		}
-		com.ComData.onFinal = false;
+		com.ComData.resetFinal();
 		this.firstOnFrame = false;
 	}
 
@@ -233,10 +235,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		}
 	}
 
-	public void addEvent(Event event) {
+	public void addEvent(AbstractEvent event) {
 		com.onDebugMessage("EVENT " + frames);
 		this.events.add(event);
 	}
+	
+	public abstract void onEndAction(GenericAction genericAction, Object...args);
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
