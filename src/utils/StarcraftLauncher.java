@@ -12,7 +12,7 @@ public class StarcraftLauncher {
 
 	private static final String CHAOSLAUNCHER_NAME = "Chaoslauncher";
 	private static final String STARCRAFT_NAME = "Brood War";
-	private static final String CLOSE_COMMAND = "cmd /c start \"\" \"forceClose.bat - Acceso directo.lnk\"";
+	private static final String CLOSE_COMMAND = "cmd /c start \"\" \"forceClose.bat.lnk\"";
 	private static final String START_CHAOSLAUNCHER = "cmd /c start \"\" \"Chaoslauncher.lnk\"";
 
 	public static void launchChaosLauncher(Com com) {
