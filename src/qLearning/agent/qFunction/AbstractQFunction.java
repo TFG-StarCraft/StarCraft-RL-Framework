@@ -3,7 +3,7 @@ package qLearning.agent.qFunction;
 import java.io.FileNotFoundException;
 
 import qLearning.agent.Action;
-import qLearning.agent.estados.State;
+import qLearning.agent.State;
 
 public interface AbstractQFunction {
 

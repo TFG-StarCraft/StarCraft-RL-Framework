@@ -1,5 +1,7 @@
 package com.observers;
 
+import utils.DebugEnum;
+
 public interface ComObserver {
 
 	public void onEndIteration(int i, int movimientos, int nume);
@@ -11,4 +13,6 @@ public interface ComObserver {
 	public void onSendMessage(String s);
 	public void onError(String s, boolean fatal);
 	
+	public void onFpsAverageAnnouncement(double fps);
+	public void onDebugMessage(String s, DebugEnum level);
 }
