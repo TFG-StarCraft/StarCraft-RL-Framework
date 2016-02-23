@@ -98,7 +98,7 @@ public class GUI extends JFrame {
 		if (!a.contains("Chaoslauncher.lnk") || !a.contains("forceClose.bat - Acceso directo.lnk")) {
 			System.err.println("ERROR: se necesita (en el directorio de ejecución) los siguientes accesos directos:\n"
 					+ "\tChaoslauncher.lnk que apunte a Chaoslauncher.exe, CON PRIVILEGIOS DE ADMINISTRADOR\n"
-					+ "\tforceClose.bat - Acceso directo.lnk que apunte al forceClose.bat de este directorio,\n"
+					+ "\tforceClose.bat.lnk que apunte al forceClose.bat de este directorio,\n"
 					+ "\t\tCON PRIVILEGIOS DE ADMINISTRADOR");
 		} else {
 
