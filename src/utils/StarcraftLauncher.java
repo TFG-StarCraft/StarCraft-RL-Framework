@@ -12,9 +12,13 @@ public class StarcraftLauncher {
 
 	private static final String CHAOSLAUNCHER_NAME = "Chaoslauncher";
 	private static final String STARCRAFT_NAME = "Brood War";
-	private static final String CLOSE_COMMAND = "cmd /c start \"\" \"forceClose.bat.lnk\"";
-	private static final String START_CHAOSLAUNCHER = "cmd /c start \"\" \"Chaoslauncher.lnk\"";
 
+	public static final String CHAOSLAUNCHER_LNK = "Chaoslauncher.lnk";
+	public static final String CLOSE_LNK = "forceClose.bat.lnk";
+	
+	private static final String CLOSE_COMMAND = "cmd /c start \"\" \""  + CLOSE_LNK + "\"";
+	private static final String START_CHAOSLAUNCHER = "cmd /c start \"\" \"" + CHAOSLAUNCHER_LNK + "\"";
+	
 	public static void launchChaosLauncher(Com com) {
 
 		// Check if chaosLauncher is already launched
