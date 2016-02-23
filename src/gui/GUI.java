@@ -39,15 +39,15 @@ public class GUI extends JFrame {
 				for (int i = 0; i < DebugEnum.values().length; i++) {
 					DebugEnum e = DebugEnum.values()[i];
 					JCheckBoxMenuItem cb = new JCheckBoxMenuItem(e.toString());
-					cb.setSelected((mainPanel.debugMask & e.getMask()) != 0);
+					cb.setSelected((mainPanel.getDebugMask() & e.getMask()) != 0);
 					cb.addActionListener(new ActionListener() {
 						
 						@Override
 						public void actionPerformed(ActionEvent event) {
 							if (cb.isSelected()) {
-								mainPanel.debugMask |= e.getMask();
+								mainPanel.setDebugMask(mainPanel.getDebugMask() | e.getMask());
 							} else {
-								mainPanel.debugMask &= ~e.getMask();
+								mainPanel.setDebugMask(mainPanel.getDebugMask() & ~e.getMask());
 							}
 						}
 					});
@@ -68,13 +68,15 @@ public class GUI extends JFrame {
 	private MyMenuBar menuBar;
 
 	public GUI() {
+		super("Starcraft GUI ML Launcher");
 		this.mainPanel = new ExecPanel(new Com());
 		this.menuBar = new MyMenuBar();
 		this.setContentPane(mainPanel);
 	}
 
 	public void startGui() {
-		this.setSize(600, 600);
+		this.setSize(575,675);
+		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		this.setJMenuBar(menuBar);
