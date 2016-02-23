@@ -95,10 +95,10 @@ public class GUI extends JFrame {
 			}
 		}
 
-		if (!a.contains("Chaoslauncher.lnk") || !a.contains("forceClose.bat - Acceso directo.lnk")) {
+		if (!a.contains(utils.StarcraftLauncher.CHAOSLAUNCHER_LNK) || !a.contains(utils.StarcraftLauncher.CLOSE_LNK)) {
 			System.err.println("ERROR: se necesita (en el directorio de ejecución) los siguientes accesos directos:\n"
-					+ "\tChaoslauncher.lnk que apunte a Chaoslauncher.exe, CON PRIVILEGIOS DE ADMINISTRADOR\n"
-					+ "\tforceClose.bat.lnk que apunte al forceClose.bat de este directorio,\n"
+					+ "\t" + utils.StarcraftLauncher.CHAOSLAUNCHER_LNK + " que apunte a Chaoslauncher.exe, CON PRIVILEGIOS DE ADMINISTRADOR\n"
+					+ "\t" + utils.StarcraftLauncher.CLOSE_LNK + " que apunte al forceClose.bat de este directorio,\n"
 					+ "\t\tCON PRIVILEGIOS DE ADMINISTRADOR");
 		} else {
 
