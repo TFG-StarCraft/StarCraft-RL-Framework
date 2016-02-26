@@ -2,6 +2,7 @@ package qLearning.enviroment;
 
 import com.Com;
 
+import bwapi.UnitType;
 import qLearning.Const;
 import qLearning.agent.State;
 
@@ -35,7 +36,7 @@ public class SCEnviroment implements AbstractEnviroment {
 	public State getInitState() {
 		com.Sync.waitForBotEndsInit();
 		
-		return new State(com.ComData.iniX, com.ComData.iniY, this, com, true);
+		return new State(9, 9, this, com, true);
 	}
 
 }

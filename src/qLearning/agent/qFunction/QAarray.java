@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import bwapi.UnitType;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.State;
@@ -14,16 +15,14 @@ public class QAarray implements AbstractQFunction {
 
 	private double[][][] arrayQ;
 	private int sizeX;
-	private int sizeY;
 
 	public QAarray(AbstractEnviroment e) {
-		this.sizeX = e.getSizeX();
-		this.sizeY = e.getSizeY();
+		this.sizeX = 10;
 
-		this.arrayQ = new double[sizeX][sizeY][Action.values().length];
+		this.arrayQ = new double[sizeX][sizeX][Action.values().length];
 
 		for (int i = 0; i < sizeX; i++) {
-			for (int j = 0; j < sizeY; j++) {
+			for (int j = 0; j < sizeX; j++) {
 				for (int k = 0; k < Action.values().length; k++) {
 					this.arrayQ[i][j][k] = Const.Q_GENERAL;
 				}
@@ -33,12 +32,12 @@ public class QAarray implements AbstractQFunction {
 
 	@Override
 	public double get(State S, Action A) {
-		return arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][A.ordinal()];
+		return arrayQ[(int)Math.floor(S.getMyLife()*9/UnitType.Terran_Marine.maxHitPoints())][(int)Math.floor(S.getDistance()*9/UnitType.Terran_Marine.sightRange())][A.ordinal()];
 	}
 
 	@Override
 	public void set(State S, Action A, double val) {
-		arrayQ[S.getX() / bot.Const.STEP][S.getY() / bot.Const.STEP][A.ordinal()] = val;
+		arrayQ[(int)Math.floor(S.getMyLife()*9/UnitType.Terran_Marine.maxHitPoints())][(int)Math.floor(S.getDistance()*9/UnitType.Terran_Marine.sightRange())][A.ordinal()] = val;
 	}
 
 	@Override
@@ -46,11 +45,9 @@ public class QAarray implements AbstractQFunction {
 		PrintWriter pw = new PrintWriter(new File(file));
 
 		for (int i = 0; i < sizeX; i++) {
-			for (int j = 0; j < sizeY; j++) {
 				for (int k = 0; k < Action.values().length; k++) {
-					pw.print(this.arrayQ[i][j][k]);
+					pw.print(this.arrayQ[i][k]);
 				}
-			}
 			pw.println("");
 		}
 
@@ -62,7 +59,7 @@ public class QAarray implements AbstractQFunction {
 		Scanner sc = new Scanner(new File(file));
 
 		for (int i = 0; i < sizeX; i++) {
-			for (int j = 0; j < sizeY; j++) {
+			for(int j = 0; j < sizeX; j++){
 				for (int k = 0; k < Action.values().length; k++) {
 					(this.arrayQ[i][j][k]) = sc.nextDouble();
 				}
