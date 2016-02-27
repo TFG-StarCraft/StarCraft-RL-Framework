@@ -40,6 +40,14 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		this.epsilon = epsilon;
 	}
 
+	private boolean startGui;
+	private int startSpeed;
+	
+	public void configureBot(boolean gui, int speed) {
+		this.startGui = gui;
+		this.startSpeed = speed;
+	}
+	
 	public Bot bot;
 
 	@Override
@@ -47,6 +55,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
 		bot = new BotDestruirUnidad(this);
+		bot.frameSpeed = startSpeed;
+		bot.guiEnabled = startGui;
+		
 		Thread t1 = new Thread(bot);
 		t1.start();
 

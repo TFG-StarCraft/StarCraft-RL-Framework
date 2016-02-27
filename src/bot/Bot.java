@@ -269,10 +269,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	private long lastFrames = -1;
 
 	private void showFramesPerSecs() {
-		if (System.currentTimeMillis() - lastTime > 100) {
+		if (System.currentTimeMillis() - lastTime > 50) {
 			lastTime = System.currentTimeMillis();
 
-			com.onFpsAverageAnnouncement((frames - lastFrames) / 0.1);
+			com.onFpsAverageAnnouncement((frames - lastFrames) / 0.05);
 
 			lastFrames = frames;
 		}
