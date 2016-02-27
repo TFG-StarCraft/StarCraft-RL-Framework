@@ -1,15 +1,17 @@
-package qLearning.agent;
+package qLearning.agent.state;
+
+import java.util.ArrayList;
 
 import com.Com;
 
-import bwapi.UnitType;
 import qLearning.Const;
+import qLearning.agent.Action;
 import qLearning.enviroment.AbstractEnviroment;
 
 public class State {
-	private int myLife;
-	private int distance;
-	
+
+	private StateData data;
+
 	private Double reward;
 
 	private AbstractEnviroment enviroment;
@@ -17,22 +19,17 @@ public class State {
 
 	private Boolean finalState;
 
-	public State(int x, int y, AbstractEnviroment e, Com com, boolean initialState) {
+	public State(StateData data, AbstractEnviroment e, Com com, boolean initialState) {
 		this.com = com;
-		this.myLife = x;
-		this.distance = y;
+		this.data = data;
 		this.reward = Double.NaN;
 		this.finalState = initialState ? false : null;
 
 		this.enviroment = e;
 	}
 
-	public int getMyLife() {
-		return myLife;
-	}
-
-	public int getDistance() {
-		return distance;
+	public StateData getData() {
+		return data;
 	}
 
 	public boolean esAccionValida(Action a) {
@@ -46,11 +43,10 @@ public class State {
 
 		com.Sync.waitForActionEnds();
 
-		State SS = new State((int)Math.floor(com.ComData.unit.getHitPoints()*9/UnitType.Terran_Marine.maxHitPoints()), (int)Math.floor(com.ComData.getDistance()*9/UnitType.Terran_Marine.sightRange()), this.enviroment, this.com, false);
+		State SS = new State(this.data.getNewStateData(), this.enviroment, this.com, false);
 		// TODO
 		SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
-
 
 		return SS;
 	}
@@ -76,4 +72,26 @@ public class State {
 		return this.reward;
 	}
 
+	public int hashCode() {
+		// TODO Correct?
+		long r = 0;
+
+		ArrayList<Dimension<?>> a = data.getValues();
+		int desp = 1;
+
+		for (Dimension<?> dimension : a) {
+			r += dimension.discretize() * desp;
+			desp *= dimension.getNumOfValues();
+		}
+
+		if (r > Integer.MAX_VALUE)
+			System.err.println("Warning, more than 2^32");
+
+		return Long.hashCode(r);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj.getClass().equals(State.class) && data.getValues().equals(((State) obj).data.getValues());
+	}
 }

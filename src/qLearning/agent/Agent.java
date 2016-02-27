@@ -9,7 +9,8 @@ import com.Com;
 
 import qLearning.Const;
 import qLearning.agent.qFunction.AbstractQFunction;
-import qLearning.agent.qFunction.QAarray;
+import qLearning.agent.qFunction.QMap;
+import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
 public class Agent implements Runnable {
@@ -35,7 +36,7 @@ public class Agent implements Runnable {
 
 		this.enviroment = e;
 		
-		this.Q = new QAarray(e);
+		this.Q = new QMap(e);
 		
 		this.alpha = qLearning.Const.ALPHA;
 		this.gamma = qLearning.Const.GAMMA;
