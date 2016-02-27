@@ -6,13 +6,18 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 
 import com.Com;
 
+import utils.BwapiConfig;
+import utils.Config;
 import utils.DebugEnum;
 
 public class GUI extends JFrame {
@@ -57,10 +62,94 @@ public class GUI extends JFrame {
 			}
 		}
 
+		private class FileMenu extends JMenu {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 5375254598780074049L;
+			
+			private FileMenu() {
+				super("File");
+				JMenuItem selectStarCraftFolder = new JMenuItem("StarCraft Folder");
+				selectStarCraftFolder.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fc = new JFileChooser(); 
+						fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					    // disable the "All files" option.
+						fc.setAcceptAllFileFilterUsed(false);
+						int r = fc.showOpenDialog(GUI.this);
+						
+						if (r == JFileChooser.APPROVE_OPTION) {
+							Config.set(Config.SC_PATH_PROP, fc.getSelectedFile().getAbsolutePath());
+						}
+					}
+				});
+				
+				JMenuItem selectMapsFolder = new JMenuItem("DevMaps Folder");
+				selectMapsFolder.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fc = new JFileChooser(); 
+						fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					    // disable the "All files" option.
+						fc.setAcceptAllFileFilterUsed(false);
+						int r = fc.showOpenDialog(GUI.this);
+						
+						if (r == JFileChooser.APPROVE_OPTION) {
+							Config.set(Config.SC_DEV_MAPS_PATH_PROP, fc.getSelectedFile().getAbsolutePath());
+						}
+					}
+				});
+				
+				JMenuItem selectCurrentMap = new JMenuItem("Choose map");
+				selectCurrentMap.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fc = new JFileChooser(new File(Config.get(Config.SC_DEV_MAPS_PATH_PROP))); 
+						fc.setFileFilter(new FileFilter() {
+							
+							@Override
+							public String getDescription() {
+								return "StarCraft map files";
+							}
+							
+							@Override
+							public boolean accept(File f) {
+								return f.isDirectory() || f.getName().endsWith(".scm");
+							}
+						});
+					    // disable the "All files" option.
+						fc.setAcceptAllFileFilterUsed(false);
+						int r = fc.showOpenDialog(GUI.this);
+						
+						if (r == JFileChooser.APPROVE_OPTION) {
+							Config.set(Config.SC_CURRENT_MAP, fc.getSelectedFile().getName());
+							
+							BwapiConfig.rewriteBwapi_ini("map = ", fc.getSelectedFile().getAbsolutePath());
+						}
+					}
+				});
+				
+
+				this.add(selectCurrentMap);
+				this.addSeparator();
+				this.add(selectStarCraftFolder);
+				this.add(selectMapsFolder);
+			}
+		}
+		
 		private DebugMenu debugMenu;
+		private FileMenu fileMenu;
 
 		private MyMenuBar() {
 			this.debugMenu = new DebugMenu();
+			this.fileMenu = new FileMenu();
+			this.add(fileMenu);
 			this.add(debugMenu);
 		}
 	}
@@ -102,6 +191,11 @@ public class GUI extends JFrame {
 					+ "\t\tCON PRIVILEGIOS DE ADMINISTRADOR");
 		} else {
 
+			Config.init();
+
+			System.out.println(Config.get(Config.SC_PATH_PROP));
+			System.out.println(Config.get(Config.SC_DEV_MAPS_PATH_PROP));
+			
 			GUI gui = new GUI();
 
 			SwingUtilities.invokeLater(new Runnable() {
