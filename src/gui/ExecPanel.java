@@ -27,7 +27,6 @@ import javax.swing.text.DefaultCaret;
 import org.math.plot.Plot2DPanel;
 import com.Com;
 import com.observers.ComObserver;
-import com.sun.jna.platform.win32.OaIdl.ARRAYDESC;
 
 import utils.DebugEnum;
 
