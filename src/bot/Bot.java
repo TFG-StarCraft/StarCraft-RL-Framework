@@ -46,8 +46,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 
 	public abstract boolean solveEventsAndCheckEnd();
-	
+
 	protected final AbstractEventsFactory factory;
+
 	public abstract AbstractEventsFactory getNewFactory();
 
 	///////////////////////////////////////////////////////////////////////////
@@ -74,95 +75,103 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 
 	public int epoch = -1;
-	
+
 	@Override
 	public void onStart() {
-		// onStart is also called after re-start
-		this.epoch++;
-		this.game = mirror.getGame();
-		this.self = game.self();
-		this.game.setGUI(guiEnabled);
-		this.game.setLocalSpeed(frameSpeed);
-
-		this.frames = 0;
-		this.firstOnFrame = true;
-		this.restarting = false;
-		this.endConditionSatisfied = false;
-
-		this.com.ComData.resetFinal();
-		this.com.ComData.restart = false;
-
-		this.genericObservers.clear();
-		this.events.clear();
-		com.ComData.actionQueue.clear();
-
-		if (firstOnStart) { // Only enters the very first execution (restarts
-							// wont enter here)
-			// Use BWTA to analyze map
-			// This may take a few minutes if the map is processed first time!
-			com.onSendMessage("Analyzing map...");
-			BWTA.readMap();
-			BWTA.analyze();
-			com.onSendMessage("Map data ready");
-			this.firstOnStart = false;
+		try {
+			// onStart is also called after re-start
+			this.epoch++;
+			this.game = mirror.getGame();
+			this.self = game.self();
+			this.game.setGUI(guiEnabled);
+			this.game.setLocalSpeed(frameSpeed);
+	
+			this.frames = 0;
+			this.firstOnFrame = true;
+			this.restarting = false;
+			this.endConditionSatisfied = false;
+	
+			this.com.ComData.resetFinal();
+			this.com.ComData.restart = false;
+	
+			this.genericObservers.clear();
+			this.events.clear();
+			com.ComData.actionQueue.clear();
+	
+			if (firstOnStart) { // Only enters the very first execution (restarts
+								// wont enter here)
+				// Use BWTA to analyze map
+				// This may take a few minutes if the map is processed first time!
+				com.onSendMessage("Analyzing map...");
+				BWTA.readMap();
+				BWTA.analyze();
+				com.onSendMessage("Map data ready");
+				this.firstOnStart = false;
+			}
+	
+			this.com.Sync.signalGameIsReady();
+		} catch (Throwable e) {
+			com.onError(e.getLocalizedMessage(), true);
 		}
-
-		this.com.Sync.signalGameIsReady();
 	}
 
 	@Override
 	public void onFrame() {
-		com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
-		if (shouldExecuteOnFrame()) {
-			// Draw info even if paused (at the end)
-			if (!endConditionSatisfied && !game.isPaused()) {
-				if (this.firstOnFrame) {
-					firstExecOnFrame();
-					com.Sync.signalInitIsDone();
-				} else {
-					endConditionSatisfied = solveEventsAndCheckEnd();
-					events.clear();
-					com.ComData.setOnFinal(endConditionSatisfied);
-					
-					// This signals that the PREVIOUS onFrame was executed
-					//com.Sync.signalIsEndCanBeChecked();
-				}
+		try {
+			com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
+			if (shouldExecuteOnFrame()) {
+				// Draw info even if paused (at the end)
+				if (!endConditionSatisfied && !game.isPaused()) {
+					if (this.firstOnFrame) {
+						firstExecOnFrame();
+						com.Sync.signalInitIsDone();
+					} else {
+						endConditionSatisfied = solveEventsAndCheckEnd();
+						events.clear();
+						com.ComData.setOnFinal(endConditionSatisfied);
 
-				this.frames++;
-				showFramesPerSecs();
-				updateGameSpeed();
-
-				if (!endConditionSatisfied) {
-					ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
-
-					for (GenericAction action : actionsToRegister) {
-						action.registerUnitObserver();
+						// This signals that the PREVIOUS onFrame was executed
+						// com.Sync.signalIsEndCanBeChecked();
 					}
 
-					for (Unit rawUnit : self.getUnits()) {
-						ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
-						
-						if (a != null) {
-							if (a.size() > 1) {
-								com.onSendMessage("NumOfActions: " + a.size());			
-							}
-							int i = 0;
-							while (i < a.size()) {
-								int lastSize = a.size();
-								GenericUnitObserver observer = a.get(i);
-								observer.onUnit(rawUnit);
+					this.frames++;
+					showFramesPerSecs();
+					updateGameSpeed();
 
-								if (lastSize == a.size())
-									i++;
-								// else en onUnit se llamó a unRegister y se
-								// eliminó
-								// ese observador
+					if (!endConditionSatisfied) {
+						ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
+
+						for (GenericAction action : actionsToRegister) {
+							action.registerUnitObserver();
+						}
+
+						for (Unit rawUnit : self.getUnits()) {
+							ArrayList<GenericUnitObserver> a = genericObservers.get(rawUnit.getID());
+
+							if (a != null) {
+								if (a.size() > 1) {
+									com.onSendMessage("NumOfActions: " + a.size());
+								}
+								int i = 0;
+								while (i < a.size()) {
+									int lastSize = a.size();
+									GenericUnitObserver observer = a.get(i);
+									observer.onUnit(rawUnit);
+
+									if (lastSize == a.size())
+										i++;
+									// else en onUnit se llamó a unRegister y se
+									// eliminó
+									// ese observador
+								}
 							}
 						}
 					}
 				}
+				printUnitsInfo();
 			}
-			printUnitsInfo();
+		} catch (Throwable e) {
+			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
 
@@ -240,8 +249,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		com.onDebugMessage("EVENT " + frames, DebugEnum.EVENT_AT_FRAME);
 		this.events.add(event);
 	}
-	
-	public abstract void onEndAction(GenericAction genericAction, Object...args);
+
+	public abstract void onEndAction(GenericAction genericAction, Object... args);
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -279,8 +288,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	/**
-	 * Updates the current game speed so its running at the desired speed
-	 * (as set in the gui)
+	 * Updates the current game speed so its running at the desired speed (as
+	 * set in the gui)
 	 */
 	private void updateGameSpeed() {
 		if (lastFrameSpeed != frameSpeed) {

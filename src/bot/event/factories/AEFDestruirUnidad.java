@@ -56,6 +56,11 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				public boolean isFinalEvent() {
 					return false;
 				}
+
+				@Override
+				public boolean returnsControlToAgent() {
+					return true;
+				}
 			};
 		case CODE_KILL:
 			if (args.length != 0) {
@@ -74,6 +79,11 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				public boolean isFinalEvent() {
 					return true;
 				}
+
+				@Override
+				public boolean returnsControlToAgent() {
+					return true;
+				}
 			};
 		case CODE_KILLED:
 			if (args.length != 0) {
@@ -90,6 +100,11 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public boolean isFinalEvent() {
+					return true;
+				}
+
+				@Override
+				public boolean returnsControlToAgent() {
 					return true;
 				}
 			};

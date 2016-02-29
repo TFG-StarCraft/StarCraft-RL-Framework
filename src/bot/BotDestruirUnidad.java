@@ -28,25 +28,26 @@ public class BotDestruirUnidad extends Bot {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
-
-		if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
-			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
-		} else {
-			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
+		try {
+			com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
+	
+			if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
+				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
+			} else {
+				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
+			}
+	
+			super.onUnitDestroy(unit);
+		} catch (Throwable e) {
+			com.onError(e.getLocalizedMessage(), true);
 		}
-
-		super.onUnitDestroy(unit);
 	}
 
 	@Override
 	public boolean solveEventsAndCheckEnd() {
 		// TODO DEBUG assert pre
 		if (com.ComData.getOnFinalUpdated())
-			throw new AssertionError("Called solveEventsAndCheck while onFinal");
-		if (events.size() > 2)	
-			throw new AssertionError("More than 2 events");
-		
+			com.onError("Called solveEventsAndCheck while onFinal", true);
 		
 		/* Three possible scenarios:
 		 * 1 - No events (and therefore no end)
@@ -57,26 +58,27 @@ public class BotDestruirUnidad extends Bot {
 		// Descending order (attend first more prio. events)
 		java.util.Collections.sort(events, AbstractEvent.getPrioCompDescend());	
 		
-		if (!events.isEmpty()) {
-			AbstractEvent event = events.get(0);
-			
-			// TODO DEBUG ASSERT CODE
-			if (events.size() == 2 && event.getCode() == AEFDestruirUnidad.CODE_DEFAULT_ACTION)	
-				throw new AssertionError("2 events of default action");
-			
-			isFinal = isFinal | event.isFinalEvent();
-			// on final is set *** BEFORE *** calling solveEvent, therefore is
-			// set BEFORE returning the control to Agent
-			com.ComData.setOnFinal(isFinal);
-			event.solveEvent();
-		}
-//		for (AbstractEvent event : events) {
+//		if (!events.isEmpty()) {
+//			AbstractEvent event = events.get(0);
+//			
 //			isFinal = isFinal | event.isFinalEvent();
 //			// on final is set *** BEFORE *** calling solveEvent, therefore is
 //			// set BEFORE returning the control to Agent
 //			com.ComData.setOnFinal(isFinal);
 //			event.solveEvent();
 //		}
+		for (AbstractEvent event : events) {
+			isFinal = isFinal | event.isFinalEvent();
+			// on final is set *** BEFORE *** calling solveEvent, therefore is
+			// set BEFORE returning the control to Agent
+
+			com.ComData.setOnFinal(isFinal);
+			event.solveEvent();
+
+			if (event.returnsControlToAgent()) {
+				break;
+			}
+		}
 
 		return isFinal;
 	}
