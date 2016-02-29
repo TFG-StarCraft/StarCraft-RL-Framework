@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +27,7 @@ import javax.swing.text.DefaultCaret;
 import org.math.plot.Plot2DPanel;
 import com.Com;
 import com.observers.ComObserver;
+import com.sun.jna.platform.win32.OaIdl.ARRAYDESC;
 
 import utils.DebugEnum;
 
@@ -59,8 +62,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JTabbedPane topTabbedPanel;
 	/** Panel with the console. */
 	private JPanel panelConsole;
-	/** Panel with the graph. */
-	private JPanel panelGraphic;
 	/** Panel with buttons and console. */
 	private JPanel contentPanel;
 	/** Panel with the buttons */
@@ -82,20 +83,12 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JTextField textFieldSpeed;
 
 	/** Panel with the plot of the movements per iteration. */
-	private Plot2DPanel graphic_movements;
-
-	/** Array with the movements. */
-	private double[] movements;
-	/** Array with the iterations. */
-	private double[] iterations;
-	/** Length of the arrays. */
-	private int lengthData;
-
+	private PanelGrafica graficaIters;
+	private PanelGrafica graficaAciertos;
 
 	private boolean b = true;
 	private int frameSpeed;
-	
-	
+
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
@@ -113,12 +106,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		this.topTabbedPanel = new JTabbedPane();
 		this.topTabbedPanel.setSize(getWidth(), getHeight());
-		this.graphic_movements = new Plot2DPanel();
-		this.movements = new double[0];
-		this.iterations = new double[0];
 
 		panelConsole = new JPanel();
-		panelGraphic = new JPanel();
 		panelButtons = new JPanel();
 		this.panelButtons.setLayout(new GridBagLayout());
 		this.l_alpha = new JLabel("Alpha: ", SwingConstants.RIGHT);
@@ -149,7 +138,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 					if (epsilon < 0 || epsilon >= 1)
 						throw new NumberFormatException();
 					com.configureParams(alpha, gamma, epsilon);
-					com.configureBot(b,frameSpeed);
+					com.configureBot(b, frameSpeed);
 
 					tglbtnGui.setEnabled(true);
 					run.setEnabled(false);
@@ -224,7 +213,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.setLayout(new BorderLayout());
 		this.add(this.topTabbedPanel, BorderLayout.CENTER);
 		createConsolePanel();
-		createGraphicPanel();
+
+		this.graficaIters = new PanelGrafica("Episodes", "Movs");
+		this.graficaAciertos = new PanelGrafica("Episodes", "Kills");
+
 		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
@@ -233,14 +225,72 @@ public class ExecPanel extends JPanel implements ComObserver {
 	/* GUI METHOD */
 	/**************/
 
-	/**
-	 * Create the panel with the graph.
-	 */
-	public void createGraphicPanel() {
-		panelGraphic.setLayout(new GridLayout(1, 1));
-		topTabbedPanel.addTab("Graphic", panelGraphic);
-		this.graphic_movements.setAxisLabels("Episodes", "Movs");
-		this.panelGraphic.add(this.graphic_movements);
+	private class PanelGrafica extends JPanel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1290634325178686829L;
+		private Plot2DPanel grafica;
+
+		private double[] xx;
+		private double[] yy;
+
+		private int length;
+		private int pos;
+
+		private PanelGrafica(String sx, String sy) {
+			this.grafica = new Plot2DPanel();
+
+			this.length = 512;
+			this.pos = 0;
+			this.xx = new double[length];
+			this.yy = new double[length];
+
+			this.setLayout(new GridLayout(1, 1));
+			topTabbedPanel.addTab(sy, this);
+			this.grafica.setAxisLabels(sx, sy);
+			this.add(this.grafica);
+		}
+
+		private void update(double x, double y) {
+			this.resize();
+
+			xx[pos] = x;
+			yy[pos] = y;
+			pos++;
+
+			if (pos % 10 == 0) {
+				this.grafica.removeAllPlots();
+				this.grafica.addLinePlot("Movements per iteration.", Color.BLUE, Arrays.copyOf(xx, pos),
+						Arrays.copyOf(yy, pos));
+				this.grafica.repaint();
+				this.repaint();
+			}
+		}
+
+		/**
+		 * Resize the arrays of movements and iterations.
+		 */
+		private void resize() {
+			if (pos < length)
+				return;
+
+			double[] xa, ya;
+			xa = new double[length * 2];
+			ya = new double[length * 2];
+
+			System.arraycopy(xx, 0, xa, 0, length);
+			System.arraycopy(yy, 0, ya, 0, length);
+
+			this.length *= 2;
+			this.xx = xa;
+			this.yy = ya;
+		}
+
+		public void update(double y) {
+			update(pos, y);
+		}
+
 	}
 
 	/**
@@ -367,27 +417,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 		return debugMask;
 	}
 
-	/******************/
-	/* PRIVATE METHOD */
-	/******************/
-
-	/**
-	 * Resize the arrays of movements and iterations.
-	 */
-	private void resize() {
-		double[] movAux, iterAux;
-		movAux = new double[lengthData + 1];
-		iterAux = new double[lengthData + 1];
-
-		for (int i = 0; i < this.lengthData; i++) {
-			movAux[i] = movements[i];
-			iterAux[i] = iterations[i];
-		}
-		this.lengthData++;
-		this.movements = movAux;
-		this.iterations = iterAux;
-	}
-
 	/*******************/
 	/* OVERRIDE METHOD */
 	/*******************/
@@ -406,16 +435,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	public void onEndIteration(int i, int movimientos, int nume) {
 		// TODO Auto-generated method stub
 		this.textConsole.append("movimientos: " + movimientos + " nume: " + nume + " episodio " + i + "\n");
-		this.resize();
-		// Save movements.
-		this.movements[i] = movimientos;
-		this.iterations[i] = i;
 		// Paint the plot.
-		this.panelGraphic.remove(this.graphic_movements);
-		this.graphic_movements = new Plot2DPanel();
-		this.graphic_movements.addLinePlot("Movements per iteration.", Color.BLUE, this.iterations, this.movements);
-		this.graphic_movements.setAxisLabels("Episodes", "Movs");
-		this.panelGraphic.add(this.graphic_movements);
+		this.graficaIters.update(i, movimientos);
 	}
 
 	/**
@@ -427,6 +448,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onSendMessage(String s) {
 		this.textConsole.append(s + "\n");
+		
+		//TODO
+		if (s.contains("matado")) {
+			graficaAciertos.update(1);
+		} else if (s.contains("muerto")) {
+			graficaAciertos.update(0);
+		}
 	}
 
 	/**
