@@ -9,6 +9,7 @@ import com.observers.ComObserver;
 
 import bot.Bot;
 import bot.BotDestruirUnidad;
+import bot.event.AbstractEvent;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
 import utils.DebugEnum;
@@ -108,6 +109,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	}
 
+	public void onEvent(AbstractEvent abstractEvent) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onEvent(abstractEvent);
+		}
+	}
+	
 	@Override
 	public void onSendMessage(String s) {
 		for (ComObserver comObserver : observers) {
@@ -143,5 +150,6 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	public void shutSc() {
 		utils.StarcraftLauncher.closeSC(this);
 	}
+
 
 }

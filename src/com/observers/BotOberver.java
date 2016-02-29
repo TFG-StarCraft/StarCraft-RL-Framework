@@ -1,11 +1,14 @@
 package com.observers;
 
+import bot.event.AbstractEvent;
 import utils.DebugEnum;
 
 public interface BotOberver {
-
-	public void onSendMessage(String s);
-	public void onError(String s, boolean fatal);
-	public void onDebugMessage(String s, DebugEnum level);
-	public void onFpsAverageAnnouncement(double d);
+	
+	void onEvent(AbstractEvent code);
+	void onSendMessage(String s);
+	void onError(String s, boolean fatal);
+	void onDebugMessage(String s, DebugEnum level);
+	void onFpsAverageAnnouncement(double d);
+	
 }

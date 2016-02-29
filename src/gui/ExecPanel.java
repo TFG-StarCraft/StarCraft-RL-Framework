@@ -28,6 +28,8 @@ import org.math.plot.Plot2DPanel;
 import com.Com;
 import com.observers.ComObserver;
 
+import bot.event.AbstractEvent;
+import bot.event.factories.AEFDestruirUnidad;
 import utils.DebugEnum;
 
 import javax.swing.JToggleButton;
@@ -84,6 +86,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 	/** Panel with the plot of the movements per iteration. */
 	private PanelGrafica graficaIters;
 	private PanelGrafica graficaAciertos;
+	
+	private JLabel lblTxtKills, lblTxtDeaths, lblKills, lblDeaths;
+	private int kills = 0, deaths = 0;
 
 	private boolean b = true;
 	private int frameSpeed;
@@ -204,6 +209,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 			}
 		});
 
+		this.lblTxtDeaths = new JLabel("Muertes: ");
+		this.lblDeaths = new JLabel();
+		this.lblTxtKills = new JLabel("Asesinatos: ");
+		this.lblKills = new JLabel();
+				
 		this.textConsole = new JTextArea();
 		this.textConsole.setEditable(false);
 		this.scroll = new JScrollPane(textConsole);
@@ -373,7 +383,20 @@ public class ExecPanel extends JPanel implements ComObserver {
 		c.gridx = 2;
 		c.gridy = 0;
 		panelButtons.add(btnShutsc, c);
-
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		panelButtons.add(this.lblTxtDeaths, c);
+		c.gridx = 1;
+		c.gridy = 1;
+		panelButtons.add(this.lblDeaths, c);
+		c.gridx = 0;
+		c.gridy = 2;
+		panelButtons.add(this.lblTxtKills, c);
+		c.gridx = 1;
+		c.gridy = 2;
+		panelButtons.add(this.lblKills, c);
+		
 		// Add the panel with the buttons.
 		c.gridwidth = 4;
 		c.gridx = 0;
@@ -390,7 +413,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		contentPanel.add(this.scroll, c);
 		tglbtnGui.setEnabled(false);
 		tglbtnGui.setSelected(true);
-
+		
 	}
 
 	/*******************/
@@ -438,6 +461,24 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.graficaIters.update(i, movimientos);
 	}
 
+	@Override
+	public void onEvent(AbstractEvent abstractEvent) {
+		switch (abstractEvent.getCode()) {
+		case AEFDestruirUnidad.CODE_KILL:
+			graficaAciertos.update(1);
+			this.kills++;
+			this.lblKills.setText(Integer.toString(kills));
+			break;
+		case AEFDestruirUnidad.CODE_KILLED:
+			graficaAciertos.update(0);
+			this.deaths++;
+			this.lblDeaths.setText(Integer.toString(deaths));
+			break;
+		default:
+			break;
+		}
+	}
+
 	/**
 	 * Listener on sending a message.
 	 * 
@@ -447,13 +488,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onSendMessage(String s) {
 		this.textConsole.append(s + "\n");
-		
-		//TODO
-		if (s.contains("matado")) {
-			graficaAciertos.update(1);
-		} else if (s.contains("muerto")) {
-			graficaAciertos.update(0);
-		}
 	}
 
 	/**
