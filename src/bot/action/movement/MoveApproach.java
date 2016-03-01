@@ -71,10 +71,17 @@ public class MoveApproach extends MoveAction{
 			vX /= modulo;
 			vY /= modulo;
 			
-			//Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
-
+			double mov = Math.sqrt(vX * bot.Const.STEP + vY * bot.Const.STEP);
+			
+			if (mov < modulo) {
+				//Advance step from target to target.
+				this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
+				this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
+			} else {
+				// Stay in position
+				this.endX = unit.getX();
+				this.endY = unit.getY();
+			}
 		}
 		//Otherwise, do nothing.
 		else{
