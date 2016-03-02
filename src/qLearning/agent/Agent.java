@@ -91,6 +91,8 @@ public class Agent implements Runnable {
 			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
 			
+			com.onFullQUpdate(Q.showQ());
+			
 			/*
 			Q.showQ();
 			try {

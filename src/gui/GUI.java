@@ -165,7 +165,7 @@ public class GUI extends JFrame {
 
 	public void startGui() {
 		this.setSize(575,675);
-		this.setResizable(false);
+		//this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		this.setJMenuBar(menuBar);

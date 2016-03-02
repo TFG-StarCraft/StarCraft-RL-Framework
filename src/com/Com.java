@@ -3,6 +3,8 @@ package com;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import com.observers.AgentObserver;
 import com.observers.BotOberver;
 import com.observers.ComObserver;
@@ -151,5 +153,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		utils.StarcraftLauncher.closeSC(this);
 	}
 
+	@Override
+	public void onFullQUpdate(JPanel panel) {
+		if (panel != null)
+			for (ComObserver comObserver : observers) {
+				comObserver.onFullQUpdate(panel);
+			}
+	}
 
 }

@@ -1,5 +1,7 @@
 package com.observers;
 
+import javax.swing.JPanel;
+
 import bot.event.AbstractEvent;
 import utils.DebugEnum;
 
@@ -59,6 +61,12 @@ public class ConsoleExit implements ComObserver {
 	@Override
 	public void onEvent(AbstractEvent abstractEvent) {
 		System.out.println(abstractEvent.toString());
+	}
+
+	@Override
+	public void onFullQUpdate(JPanel panel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

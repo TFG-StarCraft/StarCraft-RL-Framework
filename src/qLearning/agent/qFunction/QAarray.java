@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
+import javax.swing.JPanel;
+
 import bwapi.UnitType;
 import qLearning.Const;
 import qLearning.agent.Action;
@@ -92,9 +94,9 @@ public class QAarray implements AbstractQFunction {
 	}
 
 	@Override
-	public void showQ() {
+	public JPanel showQ() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

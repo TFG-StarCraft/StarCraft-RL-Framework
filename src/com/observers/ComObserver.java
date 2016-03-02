@@ -1,5 +1,7 @@
 package com.observers;
 
+import javax.swing.JPanel;
+
 import bot.event.AbstractEvent;
 import utils.DebugEnum;
 
@@ -17,4 +19,5 @@ public interface ComObserver {
 	public void onFpsAverageAnnouncement(double fps);
 	public void onDebugMessage(String s, DebugEnum level);
 	public void onEvent(AbstractEvent abstractEvent);
+	public void onFullQUpdate(JPanel panel);
 }

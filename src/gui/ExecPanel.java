@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -86,12 +87,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 	/** Panel with the plot of the movements per iteration. */
 	private PanelGrafica graficaIters;
 	private PanelGrafica graficaAciertos;
-	
+
 	private JLabel lblTxtKills, lblTxtDeaths, lblKills, lblDeaths;
 	private int kills = 0, deaths = 0;
 
 	private boolean b = true;
 	private int frameSpeed;
+	private JPanel qtab;
 
 	/***************/
 	/* CONSTRUCTOR */
@@ -213,7 +215,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.lblDeaths = new JLabel();
 		this.lblTxtKills = new JLabel("Asesinatos: ");
 		this.lblKills = new JLabel();
-				
+
 		this.textConsole = new JTextArea();
 		this.textConsole.setEditable(false);
 		this.scroll = new JScrollPane(textConsole);
@@ -228,6 +230,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		DefaultCaret caret = (DefaultCaret) textConsole.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
+		// TODO
+		qtab = new JPanel(new FlowLayout());
+		
+		topTabbedPanel.add("QTable", qtab);
 	}
 
 	/**************/
@@ -383,7 +390,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		c.gridx = 2;
 		c.gridy = 0;
 		panelButtons.add(btnShutsc, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 1;
 		panelButtons.add(this.lblTxtDeaths, c);
@@ -396,7 +403,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		c.gridx = 1;
 		c.gridy = 2;
 		panelButtons.add(this.lblKills, c);
-		
+
 		// Add the panel with the buttons.
 		c.gridwidth = 4;
 		c.gridx = 0;
@@ -413,7 +420,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		contentPanel.add(this.scroll, c);
 		tglbtnGui.setEnabled(false);
 		tglbtnGui.setSelected(true);
-		
+
 	}
 
 	/*******************/
@@ -527,6 +534,14 @@ public class ExecPanel extends JPanel implements ComObserver {
 		if ((debugMask & (1 << level.ordinal())) != 0)
 			onSendMessage(s);
 	}
+	
+	@Override
+	public void onFullQUpdate(JPanel panel) {
+		qtab.removeAll();
+		qtab.add(panel);
+		qtab.repaint();
+	}
+
 
 	/*****************/
 	/* UNUSED METHOD */
