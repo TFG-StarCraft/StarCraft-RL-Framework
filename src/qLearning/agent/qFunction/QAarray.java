@@ -3,15 +3,10 @@ package qLearning.agent.qFunction;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
-import bwapi.UnitType;
-import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
@@ -19,7 +14,6 @@ import qLearning.enviroment.AbstractEnviroment;
 public class QAarray implements AbstractQFunction {
 
 	private double[][] arrayQ;
-	private ArrayList<Integer> sizes;
 	private int size;
 
 	public QAarray(AbstractEnviroment e) {

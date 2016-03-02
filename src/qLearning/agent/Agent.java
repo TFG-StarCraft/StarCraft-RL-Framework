@@ -2,7 +2,6 @@ package qLearning.agent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 
@@ -92,16 +91,7 @@ public class Agent implements Runnable {
 			pw.flush();
 			
 			com.onFullQUpdate(Q.showQ());
-			
-			/*
-			Q.showQ();
-			try {
-				System.in.read();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-			
+
 			com.restart();
 		}
 		com.onEndTrain();

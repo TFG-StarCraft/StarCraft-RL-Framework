@@ -4,10 +4,7 @@ import com.Com;
 
 import bot.action.AttackUnitOnSight;
 import bot.action.GenericAction;
-import bot.action.movement.MoveApproach;
-import bot.action.movement.MoveAroundLeft;
 import bot.action.movement.MoveAroundRight;
-import bot.action.movement.MoveAway;
 
 public enum Action {
 	MOVEAROUNDRIGHT, ATTACK;
