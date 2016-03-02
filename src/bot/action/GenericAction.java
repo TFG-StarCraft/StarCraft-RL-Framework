@@ -52,6 +52,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 	 * @param correct
 	 */
 	public void onEndAction(boolean correct) {
+		com.onDebugMessage("Correct: " + correct + ", " + this.getClass().getName(), DebugEnum.ACTION_OK);
 		com.bot.onEndAction(this, correct);
 	}
 
@@ -103,7 +104,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 				}
 			}
 		} else {
-			// TODO es necesario? Debería cumplirse
+			// TODO es necesario? Deberï¿½a cumplirse
 			throw new RuntimeException();
 		}
 	}
