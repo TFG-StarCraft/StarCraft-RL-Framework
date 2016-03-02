@@ -20,7 +20,12 @@ public class BwapiConfig {
 			while (sc.hasNextLine()) {
 				String string = (String) sc.nextLine();
 				if (string.startsWith(key)) {
-					string = key + name.substring((Config.get(Config.SC_PATH_PROP)).length()).replace("\\", "/");
+					String value = name.substring((Config.get(Config.SC_PATH_PROP)).length()).replace("\\", "/");
+					// Prevent adding an / before the path (dosnt work)
+					if (value.startsWith("/")) {
+						value = value.substring(1);
+					}
+					string = key + value;
 				}
 				a.add(string);
 			}
