@@ -6,7 +6,6 @@ import com.Com;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwapi.WeaponType;
 
 /**
  * Movement. Moving away from a target unit.
@@ -42,12 +41,10 @@ public class MoveAway extends MoveAction{
 	 * @return A list with the units in the range.
 	 */
 	private List<Unit> getGroundUnitsInRange() {
-		
 		Unit u = this.unit;
 		UnitType t = u.getType();
-		WeaponType w = t.groundWeapon();
 		
-		return this.unit.getUnitsInRadius(w.maxRange());
+		return this.unit.getUnitsInRadius(t.sightRange());
 	}
 
 	

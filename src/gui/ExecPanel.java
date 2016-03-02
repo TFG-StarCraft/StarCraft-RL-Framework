@@ -3,15 +3,18 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,6 +34,7 @@ import com.observers.ComObserver;
 
 import bot.event.AbstractEvent;
 import bot.event.factories.AEFDestruirUnidad;
+import bwapi.Unit;
 import utils.DebugEnum;
 
 import javax.swing.JToggleButton;
@@ -58,6 +62,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private TabConsole tabConsole;
 	private TabGraph tabGraphActions;
 	private TabGraph tabGraphKills;
+	private TabDanger tabDanger;
 
 	private JScrollPane qTabScroll;
 	private JPanel qPanel;
@@ -86,11 +91,15 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.tabConsole = new TabConsole();
 		this.topTabbedPanel.add("Console", tabConsole);
 
+
 		this.tabGraphActions = new TabGraph("Episodes", "Movs");
 		this.topTabbedPanel.add("Movs", tabGraphActions);
 
 		this.tabGraphKills = new TabGraph("Episodes", "Kills");
 		this.topTabbedPanel.add("Kills", tabGraphKills);
+		
+		this.tabDanger = new TabDanger();
+		this.topTabbedPanel.add("Danger", tabDanger);
 
 		// TODO
 		qPanel = new JPanel(new FlowLayout());
@@ -465,7 +474,54 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	}
 
+	private class TabDanger extends JPanel {
 
+		private static final long serialVersionUID = -429614650656376442L;
+
+		public void paint(Graphics g){
+			super.paint(g); 
+			int sizeX = this.getWidth();
+			int sizeY = this.getHeight();
+
+			Unit unit = com.ComData.unit;
+			if(unit != null){		
+				
+				Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
+			
+				g.setColor(new Color(0.0f, 0.0f, 0.1f, 0.5f));
+				g.fillOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
+				g.setColor(Color.BLACK);
+				g.drawOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
+
+				
+				Unit anotherUnit;
+				List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
+
+				for(int i = 0; i < list.size(); i++){
+					anotherUnit = list.get(i);
+					int distX = (unit.getX() - anotherUnit.getX());
+					int distY = (unit.getY() - anotherUnit.getY());
+					
+					Point centerAux = new Point(center.x-distX, center.y-distY);
+			
+					
+					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
+						g.setColor(new Color(0.0f, 1.0f, 0.0f, 0.5f));
+						g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						g.setColor(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+						g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+					}else{
+						g.setColor(new Color(1.0f, 0.0f, 0.0f, 0.5f));
+						g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						g.setColor(Color.BLACK);
+						g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+					}
+				
+				}
+			}
+		}
+	};
+	
 	/*******************/
 	// GETTER / SETTER //
 	/////////////////////
@@ -548,6 +604,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
 		this.tabConsole.onFpsAverageAnnoucement(fps);
+		this.tabDanger.repaint();
 	}
 
 	/**

@@ -6,7 +6,6 @@ import com.Com;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwapi.WeaponType;
 
 /**
  * Movement. Approaching to a target unit.
@@ -42,12 +41,10 @@ public class MoveApproach extends MoveAction{
 	 * @return A list with the units in the range.
 	 */
 	private List<Unit> getGroundUnitsInRange() {
-		
 		Unit u = this.unit;
 		UnitType t = u.getType();
-		WeaponType w = t.groundWeapon();
 		
-		return this.unit.getUnitsInRadius(w.maxRange());
+		return this.unit.getUnitsInRadius(t.sightRange());
 	}
 
 	
@@ -72,7 +69,7 @@ public class MoveApproach extends MoveAction{
 			vY /= modulo;
 			
 			double mov = Math.sqrt(vX * bot.Const.STEP + vY * bot.Const.STEP);
-			
+
 			if (mov < modulo) {
 				//Advance step from target to target.
 				this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
@@ -82,6 +79,7 @@ public class MoveApproach extends MoveAction{
 				this.endX = unit.getX();
 				this.endY = unit.getY();
 			}
+			
 		}
 		//Otherwise, do nothing.
 		else{

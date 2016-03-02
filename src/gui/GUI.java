@@ -158,6 +158,7 @@ public class GUI extends JFrame {
 
 	public GUI() {
 		super("Starcraft GUI ML Launcher");
+		this.setSize(575,675);
 		this.mainPanel = new ExecPanel(new Com());
 		this.menuBar = new MyMenuBar();
 		this.setContentPane(mainPanel);
@@ -165,7 +166,7 @@ public class GUI extends JFrame {
 
 	public void startGui() {
 		this.setSize(575,675);
-		//this.setResizable(false);
+
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		this.setJMenuBar(menuBar);
