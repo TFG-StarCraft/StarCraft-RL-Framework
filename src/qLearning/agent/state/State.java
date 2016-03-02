@@ -53,7 +53,11 @@ public class State {
 
 	private double calculateReward() {
 		if (finalState) {
-			return Const.RECOMPENSA_FINAL;
+			if (com.ComData.isFinalStateGoal)
+				return Const.RECOMPENSA_FINAL;
+			else {
+				return Const.RECOMPENSA_ERROR;
+			}
 		} else if (com.ComData.lastActionOk) {
 			return Const.RECOMPENSA_GENERAL;
 		} else {

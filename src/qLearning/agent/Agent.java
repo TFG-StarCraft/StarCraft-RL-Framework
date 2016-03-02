@@ -69,7 +69,7 @@ public class Agent implements Runnable {
 				State SS = S.executeAction(A);
 
 				Double R = SS.getReward();
-
+				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 				double maxq = Double.NEGATIVE_INFINITY;
 				// Probar movimientos
 				for (int k = 0; k < Action.values().length; k++) {

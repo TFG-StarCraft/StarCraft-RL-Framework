@@ -29,6 +29,7 @@ public class ComData {
 //	private boolean isUpdated;
 //	private Semaphore s = new Semaphore(0);
 //	private Semaphore mutex = new Semaphore(1);
+	public boolean isFinalStateGoal;
 
 	// TODO
 	public void setOnFinal(boolean onFinal) {

@@ -73,6 +73,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha matado :)");
+					com.ComData.isFinalStateGoal = true;
 					com.onEvent(this);
 					com.Sync.signalActionEnded();
 				}
@@ -97,6 +98,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha muerto :(");
+					com.ComData.isFinalStateGoal = false;
 					com.onEvent(this);
 					com.Sync.signalActionEnded();
 				}

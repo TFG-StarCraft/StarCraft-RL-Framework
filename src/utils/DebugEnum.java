@@ -2,7 +2,7 @@ package utils;
 
 public enum DebugEnum {
 
-	ACTION_OK, ACTION_FAIL, FRAME_LIMIT, BAD_ORDER, FRAMES, EVENT_AT_FRAME, ON_UNIT_DESTROY;
+	ACTION_OK, ACTION_FAIL, FRAME_LIMIT, BAD_ORDER, FRAMES, EVENT_AT_FRAME, ON_UNIT_DESTROY, REWARD;
 
 	public String toString() {
 		switch (this) {
@@ -20,7 +20,8 @@ public enum DebugEnum {
 			return "Frames count";
 		case ON_UNIT_DESTROY:
 			return "On unit destroy";
-
+		case REWARD:
+			return "Reward";
 		default:
 			return null;
 		}
