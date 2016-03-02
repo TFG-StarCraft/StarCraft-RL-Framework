@@ -19,10 +19,19 @@ public class AttackUnitOnSight extends GenericAction {
 	@Override
 	public void executeAction() {
 		List<Unit> l = getGroundUnitsInRange();
+		boolean found = false;
+		int i = 0;
 		if (!l.isEmpty()) {
 			if (!unit.getOrder().equals(Order.AttackUnit)) {
-				this.unit.attack(l.get(0));
-				super.order = this.unit.getOrder();
+				while(!found && i < l.size()){
+						if(!l.get(i).getPlayer().isAlly(unit.getPlayer())){
+							found = true;
+							this.unit.attack(l.get(i));
+							super.order = this.unit.getOrder();
+						}
+						i++;
+				}
+				
 			}
 		}
 	}
