@@ -2,15 +2,20 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,10 +31,12 @@ import javax.swing.text.DefaultCaret;
 
 import org.math.plot.Plot2DPanel;
 import com.Com;
+import com.ComData;
 import com.observers.ComObserver;
 
 import bot.event.AbstractEvent;
 import bot.event.factories.AEFDestruirUnidad;
+import bwapi.Unit;
 import utils.DebugEnum;
 
 import javax.swing.JToggleButton;
@@ -67,7 +74,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private JPanel contentPanel;
 	/** Panel with the buttons */
 	private JPanel panelButtons;
-
+	/**	Panel with danger representation */
+	private JPanel panelDanger;
+	
 	/** Run button. */
 	private JButton run;
 	/** Shut starcraft button. */
@@ -113,6 +122,54 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		panelConsole = new JPanel();
 		panelButtons = new JPanel();
+		
+		panelDanger = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
+			public void paint(Graphics g){
+				super.paint(g); 
+				int sizeX = this.getWidth();
+				int sizeY = this.getHeight();
+
+				Unit unit = com.ComData.unit;
+				if(unit != null){		
+					
+					Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
+				
+					g.setColor(new Color(0.0f, 0.0f, 0.1f, 0.5f));
+					g.fillOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
+					g.setColor(Color.BLACK);
+					g.drawOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
+	
+					
+					Unit anotherUnit;
+					List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
+
+					for(int i = 0; i < list.size(); i++){
+						anotherUnit = list.get(i);
+						int distX = (unit.getX() - anotherUnit.getX());
+						int distY = (unit.getY() - anotherUnit.getY());
+						
+						Point centerAux = new Point(center.x-distX, center.y-distY);
+				
+						
+						if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
+							g.setColor(new Color(0.0f, 1.0f, 0.0f, 0.5f));
+							g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+							g.setColor(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+							g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						}else{
+							g.setColor(new Color(1.0f, 0.0f, 0.0f, 0.5f));
+							g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+							g.setColor(Color.BLACK);
+							g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						}
+					
+					}
+				}
+			}
+		};
+		
 		this.panelButtons.setLayout(new GridBagLayout());
 		this.l_alpha = new JLabel("Alpha: ", SwingConstants.RIGHT);
 		this.t_alpha = new JTextField();
@@ -222,7 +279,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.setLayout(new BorderLayout());
 		this.add(this.topTabbedPanel, BorderLayout.CENTER);
 		createConsolePanel();
-
+		createDangerPanel();
+		
 		this.graficaIters = new PanelGrafica("Episodes", "Movs");
 		this.graficaAciertos = new PanelGrafica("Episodes", "Kills");
 
@@ -302,6 +360,16 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	}
 
+
+	
+	public void createDangerPanel(){
+		topTabbedPanel.addTab("Danger", panelDanger);
+		
+		
+
+	}
+	
+	
 	/**
 	 * Create the panel with the console.
 	 */
@@ -512,6 +580,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
 		this.lblFps.setText("FPS: " + Double.toString(fps));
+		this.panelDanger.repaint();
 	}
 
 	/**
