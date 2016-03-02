@@ -2,50 +2,42 @@ package qLearning.agent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 
 import com.Com;
 
 import qLearning.Const;
-import qLearning.agent.estados.State;
-import qLearning.agent.estados.StateContainer;
 import qLearning.agent.qFunction.AbstractQFunction;
-import qLearning.agent.qFunction.QAarray;
-import qLearning.enviroment.AbstractGridEnviroment;
+import qLearning.agent.qFunction.QMap;
+import qLearning.agent.state.State;
+import qLearning.enviroment.AbstractEnviroment;
 
 public class Agent implements Runnable {
-	private StateContainer estados;
 	private AbstractQFunction Q;
 
-	private AbstractGridEnviroment enviroment;
+	private AbstractEnviroment enviroment;
 	private Com com;
-	private int nume;
-
-	private int sizeX;
-	private int sizeY;
+	private int numRandomMoves;
 
 	private double epsilon;
 	private double alpha;
 	private double gamma;
 
-	public Agent(Com com, AbstractGridEnviroment e, double alpha, double gamma, double epsilon) {
+	public Agent(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
 		this(com, e);
 		this.alpha = alpha;
 		this.gamma = gamma;
 		this.epsilon = epsilon;
 	}
 	
-	public Agent(Com com, AbstractGridEnviroment e) {
+	public Agent(Com com, AbstractEnviroment e) {
 		this.com = com;
-		
-		sizeX = e.getSizeX();
-		sizeY = e.getSizeY();
 
 		this.enviroment = e;
-		this.estados = new StateContainer(enviroment, this.com);
 		
-		this.Q = new QAarray(e, estados);
+		this.Q = new QMap(e);
 		
 		this.alpha = qLearning.Const.ALPHA;
 		this.gamma = qLearning.Const.GAMMA;
@@ -56,36 +48,34 @@ public class Agent implements Runnable {
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(new File("results " + "e = " + epsilon + " a = " + alpha + " g = " + gamma));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (FileNotFoundException e) {
+			com.onError(e.getLocalizedMessage(), false);
 		}
 
 		com.onSendMessage("q-Learning started");
 		for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
-			State S = estados.getEstadoInicial();
-			int movimientos = 0;
-			nume = 0;
 
-			try {
-				com.Sync.s_restartSync.acquire();
-			} catch (InterruptedException e) {
-				com.onError(e.getLocalizedMessage(), true);
-			}
+			com.Sync.waitForBotGameIsStarted();		
 			
-			com.Sync.s_end.release();
+			State S = enviroment.getInitState();
+			int movimientos = 0;
+			this.numRandomMoves = 0;
+
+			//com.Sync.signalAgentIsStarting();
+			
 			while (!S.isFinalEnd()) {
-				Action A = siguienteAccion(S);
+				Action A = nextAction(S, i);
 
-				State SS = S.move(A);
+				// Blocks until action A ends
+				State SS = S.executeAction(A);
 
-				double R = SS.getReward();
-
+				Double R = SS.getReward();
+				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 				double maxq = Double.NEGATIVE_INFINITY;
 				// Probar movimientos
 				for (int k = 0; k < Action.values().length; k++) {
 					Action a = Action.values()[k];
-					// Hasta encontrar uno valido, y ademas sela el mejor
+					// Hasta encontrar uno valido, y ademas sea el mejor
 					// (greedy)
 					if (Q.get(SS, a) >= maxq && SS.esAccionValida(a)) {
 						maxq = Q.get(SS, a);
@@ -97,46 +87,26 @@ public class Agent implements Runnable {
 				movimientos++;
 			}
 			// Iteration end
-			com.onEndIteration(movimientos, nume, i);
-			pw.println(i + "\t" + movimientos + "\t" + nume);
+			com.onEndIteration(movimientos, numRandomMoves, i);
+			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
+			
+			/*
+			Q.showQ();
+			try {
+				System.in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+			
 			com.restart();
 		}
 		com.onEndTrain();
 		pw.close();
-		// printPolicy();
 	}
 
-	public void printPolicy() {
-		for (int j = sizeY - 1; j >= 0; j--) {
-			for (int i = 0; i < sizeX; i++) {
-				State S = estados.getEstado(i, j);
-				// Probar movimientos
-				double maxq = Double.NEGATIVE_INFINITY;
-				Action A = Action.UP;
-				for (int k = 0; k < Action.values().length; k++) {
-					Action a = Action.values()[k];
-					// Hasta encontrar uno valido, y ademas sela el mejor
-					// (greedy)
-					if (Q.get(S, a) >= maxq && S.esAccionValida(a)) {
-						maxq = Q.get(S, a);
-						A = a;
-					}
-				}
-				if (S.isStart())
-					System.out.print("|" + "000" + "");
-				else if (S.isEnd())
-					System.out.print("|" + "XXX" + "");
-				else if (enviroment.isValid(i, j))
-					System.out.print("|" + A + "");
-				else
-					System.out.print("|" + "***" + "");
-			}
-			com.onSendMessage("|");
-		}
-	}
-
-	public Action siguienteAccion(State S) {
+	public Action nextAction(State S, int epoch) {
 
 		Random r = new Random();
 		double e = r.nextDouble();
@@ -155,7 +125,7 @@ public class Agent implements Runnable {
 				}
 			}
 		} else {
-			nume++;
+			numRandomMoves++;
 			// Tomar un movimiento aleatorio valido
 			while (mov == null) {
 				Action A = Action.values()[r.nextInt(Action.values().length)];
@@ -164,6 +134,9 @@ public class Agent implements Runnable {
 				}
 			}
 		}
+		
+		mov.epoch = epoch;
+		
 		return mov;
 	}
 	

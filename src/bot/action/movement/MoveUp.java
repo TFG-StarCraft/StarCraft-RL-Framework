@@ -4,12 +4,38 @@ import com.Com;
 
 import bwapi.Unit;
 
+/**
+ * Movement. Move up.
+ * @author Alberto Casas Ortiz.
+ * @author Raúl Martín Guadaño
+ * @author Miguel Ascanio Gómez.
+ */
 public class MoveUp extends MoveAction {
-
-	public MoveUp(Com com, Unit unit) {
-		super(com, unit);
+	
+	
+	/***************/
+	/* CONSTRUCTOR */
+	/***************/
+	
+	/**
+	 * Constructor of the class MoveUp.
+	 * @param com Comunication.
+	 * @param unit Unit to move.
+	 * @param agentEpoch 
+	 */
+	public MoveUp(Com com, Unit unit, int epoch) {
+		super(com, unit, epoch);
 	}
 
+	
+	
+	/*******************/
+	/* OVERRIDE METHOD */
+	/*******************/
+	
+	/**
+	 * Do the move up movement.
+	 */
 	@Override
 	protected void setUpMove() {
 		this.endX = unit.getX();

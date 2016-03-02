@@ -3,116 +3,142 @@ package bot.action.movement;
 import com.Com;
 
 import bot.action.GenericAction;
-import bot.event.Event;
-import bot.observers.unit.GenericUnitObserver;
+import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
+import utils.DebugEnum;
 
-public abstract class MoveAction implements GenericAction, GenericUnitObserver {
+/**
+ * MoveAction. Parent of all movement actions. Execute the movement.
+ * @author Alberto Casas Ortiz
+ * @author Raúl Martín Guadaño
+ * @author Miguel Ascanio Gómez
+ */
+public abstract class MoveAction extends GenericAction {
+	/** Initial pos of the unit. */
+	protected int iniX, iniY;
+	/** Target pos of the unit. */
+	protected int endX, endY;
+	/** Movement test position. */
+	protected int testX, testY;
 
-	protected final Unit unit;
+	/** True if the order has been given. */
+	protected boolean moveOrderHasBeenGiven;
 
-	protected int iniX;
-	protected int iniY;
-	protected int endX;
-	protected int endY;
-	protected int testX;
-	protected int testY;
-
-	private long frameEnd;
-	private boolean movStarted;
-
-	private Com com;
-
-	@Override
-	public void onUnit(Unit unit) {
-		checkAndActuate();
-	}
 	
-	@Override
-	public Unit getUnit() {
-		return this.unit;
-	}
 	
-	public MoveAction(Com com, Unit unit) {
-		this.com = com;
-		this.unit = unit;
+	/***************/
+	/* CONSTRUCTOR */
+	/***************/
+	
+	/**
+	 * Constructor of the class MoveAction.
+	 * @param com Comunication.
+	 * @param unit Unit to move.
+	 * @param agentEpoch 
+	 */
+	public MoveAction(Com com, Unit unit, int agentEpoch) {
+		super(com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();
 		
-		this.movStarted = false;
+		super.agentEpochCreate = agentEpoch;
+
+		moveOrderHasBeenGiven = false;
 	}
 
-	@Override
-	public void checkAndActuate() {
-		//System.out.println(" a " + System.currentTimeMillis());
-		//System.out.println(com.bot.frames);
+	
+	
+	/****************/
+	/* CLASS METHOD */
+	/****************/
+	
+	/**
+	 * Start an action.
+	 */
+	protected void startAction() {
+		if (!actionStarted) {
+			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
+			this.actionStarted = true;
+			this.moveOrderHasBeenGiven = true;
+			this.unit.move(new Position(endX, endY));
 
-		if (com.bot.frames >= frameEnd && movStarted) {
-			onEndAction(false);
-		} else {
-			if (unit.isMoving()) {
+			super.order = this.unit.getOrder();
+		}
+	}
+
+	
+	
+	/*******************/
+	/* OVERRIDE METHOD */
+	/*******************/
+	
+	/**
+	 * Executes the action.
+	 */
+	@Override
+	public void executeAction() {
+
+		if (moveOrderHasBeenGiven) {
+			if (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack()) {
+				if (unit.getX() == endX && unit.getY() == endY) {
+					com.onDebugMessage("Action OK - In position (1)", DebugEnum.ACTION_OK);
+					onEndAction(true);
+				} else {
+					com.onDebugMessage("Action Fail - Not in position", DebugEnum.ACTION_FAIL);
+					onEndAction(false);
+				}
+			} else if (unit.isMoving()) {
 				int a = unit.getOrderTargetPosition().getX();
 				int b = unit.getOrderTargetPosition().getY();
-				
+
 				if (a != endX || b != endY) {
-					startMove();
+					startAction();
 				} else {
 					if (unit.getX() == endX && unit.getY() == endY) {
+						com.onDebugMessage("Action OK - In position (2)", DebugEnum.ACTION_OK);
 						onEndAction(true);
 					}
 				}
 			} else {
 				if (unit.getX() == endX && unit.getY() == endY) {
+					com.onDebugMessage("Action OK - In position (3)", DebugEnum.ACTION_OK);
 					onEndAction(true);
 				} else {
-					// No se est� ejecutando esta acci�n
-					startMove();
+					// No se está ejecutando esta acción
+					startAction();
 				}
+			}
+		} else {
+			if (unit.getX() == endX && unit.getY() == endY) {
+				com.onDebugMessage("Action OK - In position (4)", DebugEnum.ACTION_OK);
+				onEndAction(true);
+			} else {
+				// No se está ejecutando esta acción
+				startAction();
 			}
 		}
 	}
 
-	private void startMove() {
-		if (!movStarted) {
-			this.frameEnd = com.bot.frames + 50;
-			this.movStarted = true;
-			this.unit.move(new Position(endX, endY));
-		}
-	}
-
-	@Override
-	public void onEndAction(boolean correct) {
-		com.bot.addEvent(new Event(Event.CODE_MOVE));
-		unRegister();
-		
-		if (correct) {
-			com.ComData.lastActionOk = true;
-			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
-		} else {
-			com.ComData.lastActionOk = false;
-			com.ComData.unit.removeAction();
-			com.Sync.s_postAction.release();
-		}
-	}
-
-	protected abstract void setUpMove();
-
+	/**
+	 * Set if the movement is possible.
+	 */
 	@Override
 	public boolean isPossible() {
-		return unit.getPosition().hasPath(new Position(testX, testY));
+		// return unit.getPosition().hasPath(new Position(testX, testY));
+		return true;
 	}
+
 	
-	@Override
-	public void register() {
-		this.com.bot.registerOnUnitObserver(this);	
-	}
 	
-	@Override
-	public void unRegister() {
-		this.com.bot.unRegisterOnUnitObserver(this);
-	}
+	/*******************/
+	/* ABSTRACT METHOD */
+	/*******************/
+	
+	/**
+	 * This method sets up endX and endY positions
+	 */
+	protected abstract void setUpMove();
 
 }

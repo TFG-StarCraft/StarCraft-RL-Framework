@@ -9,8 +9,10 @@ import com.observers.ComObserver;
 
 import bot.Bot;
 import bot.BotDestruirUnidad;
+import bot.event.AbstractEvent;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
+import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {
 
@@ -27,7 +29,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	public Com() {
 		this.ComData = new ComData(this);
-		this.Sync = new Sync();
+		this.Sync = new Sync(this);
 		this.observers = new ArrayList<>();
 	}
 
@@ -39,22 +41,28 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		this.epsilon = epsilon;
 	}
 
-	public Bot bot;
+	private boolean startGui;
+	private int startSpeed;
 	
+	public void configureBot(boolean gui, int speed) {
+		this.startGui = gui;
+		this.startSpeed = speed;
+	}
+	
+	public Bot bot;
+
 	@Override
 	public void run() {
+		utils.StarcraftLauncher.launchChaosLauncher(this);
+
 		bot = new BotDestruirUnidad(this);
+		bot.frameSpeed = startSpeed;
+		bot.guiEnabled = startGui;
+		
 		Thread t1 = new Thread(bot);
 		t1.start();
 
-		try {
-			this.Sync.s_initSync.acquire();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		onSendMessage("Starting q-Learning");
-
 		Thread t2 = new Thread(new Agent(this, new SCEnviroment(this), alpha, gamma, epsilon));
 		t2.start();
 
@@ -62,14 +70,13 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 			t1.join();
 			t2.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			onError(e.getLocalizedMessage(), true);
 		}
 
 	}
 
 	public void restart() {
-		onSendMessage("Restart1...");
+		onSendMessage("Com Restart call...");
 		this.ComData.restart = true;
 	}
 
@@ -102,6 +109,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	}
 
+	public void onEvent(AbstractEvent abstractEvent) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onEvent(abstractEvent);
+		}
+	}
+	
 	@Override
 	public void onSendMessage(String s) {
 		for (ComObserver comObserver : observers) {
@@ -109,12 +122,34 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		}
 	}
 
+	@Override
+	public void onFpsAverageAnnouncement(double d) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onFpsAverageAnnouncement(d);
+		}
+	}
+
+	@Override
+	public void onDebugMessage(String s, DebugEnum eventAtFrame) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onDebugMessage(s, eventAtFrame);
+		}
+	}
+
+	@Override
 	public void onError(String s, boolean fatal) {
 		for (ComObserver comObserver : observers) {
 			comObserver.onError(s, fatal);
 		}
-		if (fatal)
+		if (fatal) {
+			System.err.println(s);
 			System.exit(-1);
+		}
 	}
+
+	public void shutSc() {
+		utils.StarcraftLauncher.closeSC(this);
+	}
+
 
 }

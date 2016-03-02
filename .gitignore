@@ -4,7 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -12,3 +11,7 @@
 hs_err_pid*
 
 /results*
+*.lnk
+/bin/
+/bwapi-data/
+config.properties
