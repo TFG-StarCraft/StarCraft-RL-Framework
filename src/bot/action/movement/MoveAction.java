@@ -10,6 +10,7 @@ import utils.DebugEnum;
 
 /**
  * MoveAction. Parent of all movement actions. Execute the movement.
+ * 
  * @author Alberto Casas Ortiz
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
@@ -25,35 +26,34 @@ public abstract class MoveAction extends GenericAction {
 	/** True if the order has been given. */
 	protected boolean moveOrderHasBeenGiven;
 
-	
-	
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
-	
+
 	/**
 	 * Constructor of the class MoveAction.
-	 * @param com Comunication.
-	 * @param unit Unit to move.
-	 * @param agentEpoch 
+	 * 
+	 * @param com
+	 *            Comunication.
+	 * @param unit
+	 *            Unit to move.
+	 * @param agentEpoch
 	 */
 	public MoveAction(Com com, Unit unit, int agentEpoch) {
 		super(com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();
-		
+
 		super.agentEpochCreate = agentEpoch;
 
 		moveOrderHasBeenGiven = false;
 	}
 
-	
-	
 	/****************/
 	/* CLASS METHOD */
 	/****************/
-	
+
 	/**
 	 * Start an action.
 	 */
@@ -68,12 +68,10 @@ public abstract class MoveAction extends GenericAction {
 		}
 	}
 
-	
-	
 	/*******************/
 	/* OVERRIDE METHOD */
 	/*******************/
-	
+
 	/**
 	 * Executes the action.
 	 */
@@ -81,15 +79,7 @@ public abstract class MoveAction extends GenericAction {
 	public void executeAction() {
 
 		if (moveOrderHasBeenGiven) {
-			if (!unit.isMoving() && (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack())) {
-				if (unit.getX() == endX && unit.getY() == endY) {
-					com.onDebugMessage("Action OK - In position (1)", DebugEnum.ACTION_OK);
-					onEndAction(true);
-				} else {
-					com.onDebugMessage("Action Fail - Not in position", DebugEnum.ACTION_FAIL);
-					onEndAction(false);
-				}
-			} else if (unit.isMoving()) {
+			if (unit.isMoving()) {
 				int a = unit.getOrderTargetPosition().getX();
 				int b = unit.getOrderTargetPosition().getY();
 
@@ -97,9 +87,18 @@ public abstract class MoveAction extends GenericAction {
 					startAction();
 				} else {
 					if (unit.getX() == endX && unit.getY() == endY) {
-						com.onDebugMessage("Action OK - In position (2)", DebugEnum.ACTION_OK);
+						com.onDebugMessage("Action OK - In position (1)", DebugEnum.ACTION_OK);
 						onEndAction(true);
 					}
+				}
+				// !unitIsMoving
+			} else if (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack()) {
+				if (unit.getX() == endX && unit.getY() == endY) {
+					com.onDebugMessage("Action OK - In position (2)", DebugEnum.ACTION_OK);
+					onEndAction(true);
+				} else {
+					com.onDebugMessage("Action Fail - Not in position", DebugEnum.ACTION_FAIL);
+					onEndAction(false);
 				}
 			} else {
 				if (unit.getX() == endX && unit.getY() == endY) {
@@ -130,12 +129,10 @@ public abstract class MoveAction extends GenericAction {
 		return true;
 	}
 
-	
-	
 	/*******************/
 	/* ABSTRACT METHOD */
 	/*******************/
-	
+
 	/**
 	 * This method sets up endX and endY positions
 	 */

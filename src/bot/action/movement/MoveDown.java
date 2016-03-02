@@ -6,9 +6,9 @@ import bwapi.Unit;
 
 /**
  * Movement. Move down.
- * @author Alberto Casas Ortiz.
+ * @author Alberto Casas Ortiz
  * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez.
+ * @author Miguel Ascanio Gómez
  */
 public class MoveDown extends MoveAction {
 	

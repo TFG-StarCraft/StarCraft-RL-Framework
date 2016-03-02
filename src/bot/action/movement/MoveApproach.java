@@ -9,9 +9,9 @@ import bwapi.UnitType;
 
 /**
  * Movement. Approaching to a target unit.
- * @author Alberto Casas Ortiz.
+ * @author Alberto Casas Ortiz
  * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez.
+ * @author Miguel Ascanio Gómez
  */
 public class MoveApproach extends MoveAction{
 	

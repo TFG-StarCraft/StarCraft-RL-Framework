@@ -42,9 +42,9 @@ import javax.swing.JToggleButton;
 /**
  * Class with the panels of the GUI.
  * 
- * @author Alberto Casas Ortiz.
- * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez.
+ * @author Alberto Casas Ortiz
+ * @author RaÃºl MartÃ­n GuadaÃ±o
+ * @author Miguel Ascanio GÃ³mez
  */
 public class ExecPanel extends JPanel implements ComObserver {
 
