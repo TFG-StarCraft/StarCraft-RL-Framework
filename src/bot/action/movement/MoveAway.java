@@ -6,7 +6,6 @@ import com.Com;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwapi.WeaponType;
 
 /**
  * Movement. Moving away from a target unit.

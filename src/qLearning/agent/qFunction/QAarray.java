@@ -5,11 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
-
-import bwapi.UnitType;
-import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
