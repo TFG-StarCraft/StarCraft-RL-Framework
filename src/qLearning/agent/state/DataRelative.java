@@ -8,13 +8,13 @@ import bwapi.UnitType;
 
 public class DataRelative extends StateData {
 
-	private static final int MAX_LIFE_DISCRETE = 9;
-	private static final int MAX_DISTANCE_DISCRETE = 9;
+	private static final int MAX_LIFE_DISCRETE = 5;
+	private static final int MAX_DISTANCE_DISCRETE = 5;
 
 	public class MyLife extends Dimension<Integer> {
 
 		public MyLife(Integer value) {
-			super(value, MAX_LIFE_DISCRETE);
+			super(value, MAX_LIFE_DISCRETE, "MyLife");
 		}
 
 		@Override
@@ -24,14 +24,14 @@ public class DataRelative extends StateData {
 
 		@Override
 		public MyLife getNewDimension() {
-			int newLife = (int) Math.floor(com.ComData.unit.getHitPoints() * 9 / UnitType.Terran_Marine.maxHitPoints());
+			int newLife = (int) Math.floor(com.ComData.unit.getHitPoints() * getMaxDiscreteValue() / UnitType.Terran_Marine.maxHitPoints());
 			return new MyLife(newLife);
 		}
 	}
 
 	public class Distance extends Dimension<Double> {
 		public Distance(Double value) {
-			super(value, MAX_DISTANCE_DISCRETE);
+			super(value, MAX_DISTANCE_DISCRETE, "Distance");
 		}
 
 		@Override
@@ -41,7 +41,7 @@ public class DataRelative extends StateData {
 
 		@Override
 		public Distance getNewDimension() {
-			double newDistance = Math.floor(com.ComData.getDistance() * 9 / UnitType.Terran_Marine.sightRange());
+			double newDistance = Math.floor(com.ComData.getDistance() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange());
 			return new Distance(newDistance);
 		}
 	}

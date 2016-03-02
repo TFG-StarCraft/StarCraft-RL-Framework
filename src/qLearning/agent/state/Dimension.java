@@ -4,10 +4,12 @@ public abstract class Dimension<T> {
 
 	private T value;
 	private int max;
-
-	public Dimension(T value, int max) {
+	private String name;
+	
+	public Dimension(T value, int max, String name) {
 		this.value = value;
 		this.max = max;
+		this.name = name;
 	}
 
 	public T getValue() {
@@ -24,6 +26,10 @@ public abstract class Dimension<T> {
 	
 	public int getNumOfValues() {
 		return max+1;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

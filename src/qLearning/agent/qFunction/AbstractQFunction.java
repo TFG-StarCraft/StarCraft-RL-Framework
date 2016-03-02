@@ -13,4 +13,6 @@ public interface AbstractQFunction {
 	public void writeToFile(String file) throws FileNotFoundException;
 	public void readFromFile(String file) throws FileNotFoundException;
 	
+	public void showQ();
+	
 }

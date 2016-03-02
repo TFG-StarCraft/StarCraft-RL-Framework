@@ -91,4 +91,10 @@ public class QAarray implements AbstractQFunction {
 		sc.close();
 	}
 
+	@Override
+	public void showQ() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
