@@ -3,6 +3,7 @@ package qLearning.agent.qFunction;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -71,6 +72,8 @@ public class QMap implements AbstractQFunction {
 	public void readFromFile(String file) throws FileNotFoundException {
 		throw new RuntimeException("Not implemented");
 	}
+	
+	private static final DecimalFormat df = new DecimalFormat("0.#####E0"); 
 
 	private class QCell extends JPanel {
 
@@ -78,7 +81,6 @@ public class QMap implements AbstractQFunction {
 		 * 
 		 */
 		private static final long serialVersionUID = 2526531823051036225L;
-
 
 		private QCell() {
 			super(new GridLayout(Action.values().length, 1));
@@ -90,7 +92,7 @@ public class QMap implements AbstractQFunction {
 		}
 
 		private void set(int n, double d) {
-			((JLabel) getComponent(n)).setText("" + d);
+			((JLabel) getComponent(n)).setText(df.format(d));
 			repaint();
 		}
 		
