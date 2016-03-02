@@ -81,7 +81,7 @@ public abstract class MoveAction extends GenericAction {
 	public void executeAction() {
 
 		if (moveOrderHasBeenGiven) {
-			if (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack()) {
+			if (!unit.isMoving() && (unit.getOrder().equals(Order.PlayerGuard) || unit.isAttacking() || unit.isStartingAttack())) {
 				if (unit.getX() == endX && unit.getY() == endY) {
 					com.onDebugMessage("Action OK - In position (1)", DebugEnum.ACTION_OK);
 					onEndAction(true);
