@@ -48,6 +48,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				public void solveEvent() {
 					action.unRegisterUnitObserver();
 
+					com.onEvent(this);
 					com.ComData.lastActionOk = correct;
 					com.Sync.signalActionEnded();
 				}
@@ -55,6 +56,11 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public boolean isFinalEvent() {
 					return false;
+				}
+
+				@Override
+				public boolean returnsControlToAgent() {
+					return true;
 				}
 			};
 		case CODE_KILL:
@@ -67,11 +73,18 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha matado :)");
+					com.ComData.isFinalStateGoal = true;
+					com.onEvent(this);
 					com.Sync.signalActionEnded();
 				}
 
 				@Override
 				public boolean isFinalEvent() {
+					return true;
+				}
+
+				@Override
+				public boolean returnsControlToAgent() {
 					return true;
 				}
 			};
@@ -85,11 +98,18 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha muerto :(");
+					com.ComData.isFinalStateGoal = false;
+					com.onEvent(this);
 					com.Sync.signalActionEnded();
 				}
 
 				@Override
 				public boolean isFinalEvent() {
+					return true;
+				}
+
+				@Override
+				public boolean returnsControlToAgent() {
 					return true;
 				}
 			};

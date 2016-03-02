@@ -1,5 +1,6 @@
 package com.observers;
 
+import bot.event.AbstractEvent;
 import utils.DebugEnum;
 
 public class ConsoleExit implements ComObserver {
@@ -53,6 +54,11 @@ public class ConsoleExit implements ComObserver {
 	public void onDebugMessage(String s, DebugEnum level) {
 		if ((debugMask & (1<<level.ordinal())) != 0)
 			System.out.println(s);
+	}
+
+	@Override
+	public void onEvent(AbstractEvent abstractEvent) {
+		System.out.println(abstractEvent.toString());
 	}
 
 }

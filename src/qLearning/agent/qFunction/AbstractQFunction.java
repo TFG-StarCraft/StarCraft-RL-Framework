@@ -3,7 +3,7 @@ package qLearning.agent.qFunction;
 import java.io.FileNotFoundException;
 
 import qLearning.agent.Action;
-import qLearning.agent.State;
+import qLearning.agent.state.State;
 
 public interface AbstractQFunction {
 
@@ -12,5 +12,7 @@ public interface AbstractQFunction {
 
 	public void writeToFile(String file) throws FileNotFoundException;
 	public void readFromFile(String file) throws FileNotFoundException;
+	
+	public void showQ();
 	
 }

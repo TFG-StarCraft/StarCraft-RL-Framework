@@ -1,11 +1,11 @@
 package qLearning.enviroment;
 
-import qLearning.agent.State;
+import java.util.ArrayList;
+
+import qLearning.agent.state.State;
 
 public interface AbstractEnviroment {
-
-	public int getSizeX();
-	public int getSizeY();
-
-	public State getInitState();
+	State getInitState();
+	int getNumDims();
+	ArrayList<Integer> getNumValuesPerDims();
 }

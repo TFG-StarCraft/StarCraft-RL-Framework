@@ -9,6 +9,7 @@ import com.observers.ComObserver;
 
 import bot.Bot;
 import bot.BotDestruirUnidad;
+import bot.event.AbstractEvent;
 import qLearning.agent.Agent;
 import qLearning.enviroment.SCEnviroment;
 import utils.DebugEnum;
@@ -40,6 +41,14 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		this.epsilon = epsilon;
 	}
 
+	private boolean startGui;
+	private int startSpeed;
+	
+	public void configureBot(boolean gui, int speed) {
+		this.startGui = gui;
+		this.startSpeed = speed;
+	}
+	
 	public Bot bot;
 
 	@Override
@@ -47,6 +56,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
 		bot = new BotDestruirUnidad(this);
+		bot.frameSpeed = startSpeed;
+		bot.guiEnabled = startGui;
+		
 		Thread t1 = new Thread(bot);
 		t1.start();
 
@@ -97,6 +109,12 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	}
 
+	public void onEvent(AbstractEvent abstractEvent) {
+		for (ComObserver comObserver : observers) {
+			comObserver.onEvent(abstractEvent);
+		}
+	}
+	
 	@Override
 	public void onSendMessage(String s) {
 		for (ComObserver comObserver : observers) {
@@ -132,5 +150,6 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	public void shutSc() {
 		utils.StarcraftLauncher.closeSC(this);
 	}
+
 
 }

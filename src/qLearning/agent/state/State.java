@@ -1,13 +1,16 @@
-package qLearning.agent;
+package qLearning.agent.state;
+
+import java.util.ArrayList;
 
 import com.Com;
 
 import qLearning.Const;
+import qLearning.agent.Action;
 import qLearning.enviroment.AbstractEnviroment;
 
 public class State {
-	private int x;
-	private int y;
+
+	private StateData data;
 
 	private Double reward;
 
@@ -16,22 +19,17 @@ public class State {
 
 	private Boolean finalState;
 
-	public State(int x, int y, AbstractEnviroment e, Com com, boolean initialState) {
+	public State(StateData data, AbstractEnviroment e, Com com, boolean initialState) {
 		this.com = com;
-		this.x = x;
-		this.y = y;
+		this.data = data;
 		this.reward = Double.NaN;
 		this.finalState = initialState ? false : null;
 
 		this.enviroment = e;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
+	public StateData getData() {
+		return data;
 	}
 
 	public boolean esAccionValida(Action a) {
@@ -45,18 +43,21 @@ public class State {
 
 		com.Sync.waitForActionEnds();
 
-		State SS = new State(com.ComData.unit.getX(), com.ComData.unit.getY(), this.enviroment, this.com, false);
+		State SS = new State(this.data.getNewStateData(), this.enviroment, this.com, false);
 		// TODO
 		SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
-
 
 		return SS;
 	}
 
 	private double calculateReward() {
 		if (finalState) {
-			return Const.RECOMPENSA_FINAL;
+			if (com.ComData.isFinalStateGoal)
+				return Const.RECOMPENSA_FINAL;
+			else {
+				return Const.RECOMPENSA_ERROR;
+			}
 		} else if (com.ComData.lastActionOk) {
 			return Const.RECOMPENSA_GENERAL;
 		} else {
@@ -75,4 +76,26 @@ public class State {
 		return this.reward;
 	}
 
+	public int hashCode() {
+		// TODO Correct?
+		long r = 0;
+
+		ArrayList<Dimension<?>> a = data.getValues();
+		int desp = 1;
+
+		for (Dimension<?> dimension : a) {
+			r += dimension.discretize() * desp;
+			desp *= dimension.getNumOfValues();
+		}
+
+		if (r > Integer.MAX_VALUE)
+			System.err.println("Warning, more than 2^32");
+
+		return Long.hashCode(r);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj.getClass().equals(State.class) && data.getValues().equals(((State) obj).data.getValues());
+	}
 }

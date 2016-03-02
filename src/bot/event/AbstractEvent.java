@@ -25,6 +25,8 @@ public abstract class AbstractEvent {
 	public abstract void solveEvent();
 
 	public abstract boolean isFinalEvent();
+	
+	public abstract boolean returnsControlToAgent();
 
 	public static Comparator<AbstractEvent> getPrioCompAscend() {
 		return new Comparator<AbstractEvent>() {

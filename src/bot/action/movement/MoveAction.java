@@ -8,20 +8,35 @@ import bwapi.Position;
 import bwapi.Unit;
 import utils.DebugEnum;
 
+/**
+ * MoveAction. Parent of all movement actions. Execute the movement.
+ * @author Alberto Casas Ortiz
+ * @author Raúl Martín Guadaño
+ * @author Miguel Ascanio Gómez
+ */
 public abstract class MoveAction extends GenericAction {
+	/** Initial pos of the unit. */
+	protected int iniX, iniY;
+	/** Target pos of the unit. */
+	protected int endX, endY;
+	/** Movement test position. */
+	protected int testX, testY;
 
-	// Initial pos of the unit
-	protected int iniX;
-	protected int iniY;
-	// Target pos of the unit
-	protected int endX;
-	protected int endY;
-	// Movement test position
-	protected int testX;
-	protected int testY;
-
+	/** True if the order has been given. */
 	protected boolean moveOrderHasBeenGiven;
 
+	
+	
+	/***************/
+	/* CONSTRUCTOR */
+	/***************/
+	
+	/**
+	 * Constructor of the class MoveAction.
+	 * @param com Comunication.
+	 * @param unit Unit to move.
+	 * @param agentEpoch 
+	 */
 	public MoveAction(Com com, Unit unit, int agentEpoch) {
 		super(com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
@@ -33,11 +48,35 @@ public abstract class MoveAction extends GenericAction {
 		moveOrderHasBeenGiven = false;
 	}
 
+	
+	
+	/****************/
+	/* CLASS METHOD */
+	/****************/
+	
 	/**
-	 * This method sets up endX and endY positions
+	 * Start an action.
 	 */
-	protected abstract void setUpMove();
+	protected void startAction() {
+		if (!actionStarted) {
+			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
+			this.actionStarted = true;
+			this.moveOrderHasBeenGiven = true;
+			this.unit.move(new Position(endX, endY));
 
+			super.order = this.unit.getOrder();
+		}
+	}
+
+	
+	
+	/*******************/
+	/* OVERRIDE METHOD */
+	/*******************/
+	
+	/**
+	 * Executes the action.
+	 */
 	@Override
 	public void executeAction() {
 
@@ -67,7 +106,7 @@ public abstract class MoveAction extends GenericAction {
 					com.onDebugMessage("Action OK - In position (3)", DebugEnum.ACTION_OK);
 					onEndAction(true);
 				} else {
-					// No se est� ejecutando esta acci�n
+					// No se está ejecutando esta acción
 					startAction();
 				}
 			}
@@ -76,27 +115,30 @@ public abstract class MoveAction extends GenericAction {
 				com.onDebugMessage("Action OK - In position (4)", DebugEnum.ACTION_OK);
 				onEndAction(true);
 			} else {
-				// No se est� ejecutando esta acci�n
+				// No se está ejecutando esta acción
 				startAction();
 			}
 		}
 	}
 
+	/**
+	 * Set if the movement is possible.
+	 */
 	@Override
 	public boolean isPossible() {
 		// return unit.getPosition().hasPath(new Position(testX, testY));
 		return true;
 	}
 
-	protected void startAction() {
-		if (!actionStarted) {
-			this.frameEnd = com.bot.frames + bot.Const.FRAMES_MOVE;
-			this.actionStarted = true;
-			this.moveOrderHasBeenGiven = true;
-			this.unit.move(new Position(endX, endY));
-
-			super.order = this.unit.getOrder();
-		}
-	}
+	
+	
+	/*******************/
+	/* ABSTRACT METHOD */
+	/*******************/
+	
+	/**
+	 * This method sets up endX and endY positions
+	 */
+	protected abstract void setUpMove();
 
 }

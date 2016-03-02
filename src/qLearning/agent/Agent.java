@@ -2,6 +2,7 @@ package qLearning.agent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 
@@ -9,7 +10,8 @@ import com.Com;
 
 import qLearning.Const;
 import qLearning.agent.qFunction.AbstractQFunction;
-import qLearning.agent.qFunction.QAarray;
+import qLearning.agent.qFunction.QMap;
+import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
 public class Agent implements Runnable {
@@ -35,7 +37,7 @@ public class Agent implements Runnable {
 
 		this.enviroment = e;
 		
-		this.Q = new QAarray(e);
+		this.Q = new QMap(e);
 		
 		this.alpha = qLearning.Const.ALPHA;
 		this.gamma = qLearning.Const.GAMMA;
@@ -68,7 +70,7 @@ public class Agent implements Runnable {
 				State SS = S.executeAction(A);
 
 				Double R = SS.getReward();
-
+				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 				double maxq = Double.NEGATIVE_INFINITY;
 				// Probar movimientos
 				for (int k = 0; k < Action.values().length; k++) {
@@ -88,6 +90,16 @@ public class Agent implements Runnable {
 			com.onEndIteration(movimientos, numRandomMoves, i);
 			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
+			
+			/*
+			Q.showQ();
+			try {
+				System.in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+			
 			com.restart();
 		}
 		com.onEndTrain();

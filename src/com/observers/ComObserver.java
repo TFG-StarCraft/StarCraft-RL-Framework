@@ -1,5 +1,6 @@
 package com.observers;
 
+import bot.event.AbstractEvent;
 import utils.DebugEnum;
 
 public interface ComObserver {
@@ -15,4 +16,5 @@ public interface ComObserver {
 	
 	public void onFpsAverageAnnouncement(double fps);
 	public void onDebugMessage(String s, DebugEnum level);
+	public void onEvent(AbstractEvent abstractEvent);
 }
