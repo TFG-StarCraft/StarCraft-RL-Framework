@@ -41,6 +41,7 @@ public class GUI extends JFrame {
 
 			private DebugMenu() {
 				super("Debug");
+				
 				for (int i = 0; i < DebugEnum.values().length; i++) {
 					DebugEnum e = DebugEnum.values()[i];
 					JCheckBoxMenuItem cb = new JCheckBoxMenuItem(e.toString());

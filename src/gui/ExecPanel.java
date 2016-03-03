@@ -220,8 +220,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 		private PanelButtons panelButtons;
 
 		/** Label for frames per second. */
-		private JLabel lblFps;
-
+		private JLabel lblTextFps;
+		private JTextField t_FPS;
+		
 		/** Label for speed. */
 		private JLabel lblSpeed;
 		/** Text field for speed. */
@@ -235,16 +236,19 @@ public class ExecPanel extends JPanel implements ComObserver {
 		/** Text console. */
 		private JTextArea textConsole;
 
+		private JPanel panelControl;
+		
 		private TabConsole() {
-			super(new GridBagLayout());
-
+			this.setLayout(new GridBagLayout());
+			
 			this.panelButtons = new PanelButtons();
-
+			this.panelButtons.setFocusable(false);
+			
 			this.l_alpha = new JLabel("Alpha: ", SwingConstants.RIGHT);
 			this.t_alpha = new JTextField();
 			this.t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
 			this.t_alpha.setColumns(5);
-
+			
 			this.l_gamma = new JLabel("Gamma: ", SwingConstants.RIGHT);
 			this.t_gamma = new JTextField();
 			this.t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
@@ -256,7 +260,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.t_epsilon.setColumns(5);
 
 			lblSpeed = new JLabel("Speed:", SwingConstants.RIGHT);
-
+			
 			textFieldSpeed = new JTextField();
 			textFieldSpeed.setText("0");
 			textFieldSpeed.setColumns(5);
@@ -283,15 +287,21 @@ public class ExecPanel extends JPanel implements ComObserver {
 				}
 			});
 
-			lblFps = new JLabel("FPS:", SwingConstants.CENTER);
-
-			this.lblTxtDeaths = new JLabel("Muertes: ");
-			this.lblDeaths = new JLabel();
-			this.lblTxtKills = new JLabel("Asesinatos: ");
-			this.lblKills = new JLabel();
+			lblTextFps = new JLabel("FPS: ", SwingConstants.RIGHT);
+			t_FPS = new JTextField("", JLabel.LEFT);
+			this.t_FPS.setColumns(5);
+			this.t_FPS.setEditable(false);
+			
+			this.lblTxtDeaths = new JLabel("Muertes: ", SwingConstants.RIGHT);
+			this.lblDeaths = new JLabel("", SwingConstants.LEFT);
+			this.lblTxtKills = new JLabel("Asesinatos: ", SwingConstants.RIGHT);
+			this.lblKills = new JLabel("", SwingConstants.LEFT);
 
 			this.textConsole = new JTextArea();
 			this.textConsole.setEditable(false);
+
+			this.panelControl = new JPanel(new GridBagLayout());
+			
 			this.scrollConsole = new JScrollPane(textConsole);
 			this.scrollConsole.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -302,79 +312,90 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 		private void locateElements() {
+			
+			//Locate elements of the control panel
 			GridBagConstraints c = new GridBagConstraints();
-
+			
 			// Add parameters alpha, epsillon and lambda.
+			c.insets = new Insets(20, 0, 0, 0);
 			c.gridheight = 1;
 			c.gridwidth = 1;
-
 			c.weightx = 1;
 			
 			c.gridx = 0;
 			c.gridy = 0;
-			add(l_alpha, c);
+			panelControl.add(l_alpha, c);
 			c.gridx = 1;
 			c.gridy = 0;
 			c.weightx = 1;
-			add(t_alpha, c);
+			panelControl.add(t_alpha, c);
 
 			c.gridx = 2;
 			c.gridy = 0;
-			add(l_gamma, c);
+			panelControl.add(l_gamma, c);
 			c.gridx = 3;
 			c.gridy = 0;
-			add(t_gamma, c);
+			panelControl.add(t_gamma, c);
 
 			c.gridx = 4;
 			c.gridy = 0;
-			add(l_epsilon, c);
+			panelControl.add(l_epsilon, c);
 			c.gridx = 5;
 			c.gridy = 0;
-			add(t_epsilon, c);
+			panelControl.add(t_epsilon, c);
 
 			// Add the information of speed and fps.
 			c.gridheight = 1;
 			c.gridwidth = 1;
 			c.gridx = 0;
 			c.gridy = 1;
-			add(lblFps, c);
-
+			panelControl.add(lblTextFps, c);
+			
 			c.gridx = 1;
 			c.gridy = 1;
-			add(lblSpeed, c);
+			panelControl.add(t_FPS, c);
+
 			c.gridx = 2;
 			c.gridy = 1;
-			add(textFieldSpeed, c);
+			panelControl.add(lblSpeed, c);
+			c.gridx = 3;
+			c.gridy = 1;
+			panelControl.add(textFieldSpeed, c);
 
 			// Add the panel with the buttons.
 			c.gridwidth = 6;
 			c.gridx = 0;
 			c.gridy = 2;
-			add(this.panelButtons, c);
+			panelControl.add(this.panelButtons, c);
 
 			// Add the counters of kills and deaths
 			c.gridwidth = 2;
 			c.gridx = 0;
 			c.gridy = 3;
-			add(this.lblTxtDeaths, c);
+			panelControl.add(this.lblTxtDeaths, c);
 			c.gridx = 1;
 			c.gridy = 3;
-			add(this.lblDeaths, c);
-			c.gridx = 0;
-			c.gridy = 4;
-			add(this.lblTxtKills, c);
-			c.gridx = 1;
-			c.gridy = 4;
-			add(this.lblKills, c);
+			panelControl.add(this.lblDeaths, c);
+			c.gridx = 2;
+			c.gridy = 3;
+			panelControl.add(this.lblTxtKills, c);
+			c.gridx = 3;
+			c.gridy = 3;
+			panelControl.add(this.lblKills, c);
 
-			// Add the scroll panel with the text view of the console.
-			c.gridwidth = 6;
-			c.gridx = 0;
-			c.gridy = 5;
+			// Add controlPanel an scrollPanel to main panel.
 
-			c.weighty = 1;
+			c.gridwidth = 1;
+			c.gridwidth = 1;
 			c.fill = GridBagConstraints.BOTH;
-			add(this.scrollConsole, c);
+			c.gridx = 0;
+			c.gridy = 0;
+			this.add(panelControl, c);
+			c.weightx = 1.0;
+			c.weighty = 1.0;
+			c.gridx = 0;
+			c.gridy = 1;
+			this.add(this.scrollConsole, c);
 		}
 
 		public void onEndIteration(int i, int movimientos, int nume) {
@@ -404,7 +425,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 		public void onFpsAverageAnnoucement(double fps) {
-			this.lblFps.setText("FPS: " + Double.toString(fps));
+			this.t_FPS.setText(Double.toString(fps));
 		}
 
 	}
