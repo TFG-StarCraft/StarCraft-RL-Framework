@@ -426,7 +426,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 		public void onFpsAverageAnnoucement(double fps) {
-			this.t_FPS.setText(Double.toString(fps));
+			this.t_FPS.setText(Double.toString(Math.abs(fps)));
 		}
 
 	}
