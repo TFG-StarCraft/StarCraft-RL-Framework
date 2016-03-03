@@ -291,6 +291,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			t_FPS = new JTextField("", JLabel.LEFT);
 			this.t_FPS.setColumns(5);
 			this.t_FPS.setEditable(false);
+			this.t_FPS.setBorder(null);
 			
 			this.lblTxtDeaths = new JLabel("Muertes: ", SwingConstants.RIGHT);
 			this.lblDeaths = new JLabel("", SwingConstants.LEFT);
