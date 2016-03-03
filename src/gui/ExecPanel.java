@@ -189,6 +189,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						topTabbedPanel.setEnabledAt(3, false);
 						com.shutSc();
 					}
 				});
