@@ -7,6 +7,7 @@ import com.Com;
 
 import bot.action.GenericAction;
 import bot.observers.GenericUnitObserver;
+import bwapi.Color;
 import bwapi.DefaultBWListener;
 import bot.event.AbstractEvent;
 import bot.event.factories.AbstractEventsFactory;
@@ -85,30 +86,32 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			this.self = game.self();
 			this.game.setGUI(guiEnabled);
 			this.game.setLocalSpeed(frameSpeed);
-	
+
 			this.frames = 0;
 			this.firstOnFrame = true;
 			this.restarting = false;
 			this.endConditionSatisfied = false;
-	
+
 			this.com.ComData.resetFinal();
 			this.com.ComData.restart = false;
-	
+
 			this.genericObservers.clear();
 			this.events.clear();
 			com.ComData.actionQueue.clear();
-	
-			if (firstOnStart) { // Only enters the very first execution (restarts
+
+			if (firstOnStart) { // Only enters the very first execution
+								// (restarts
 								// wont enter here)
 				// Use BWTA to analyze map
-				// This may take a few minutes if the map is processed first time!
+				// This may take a few minutes if the map is processed first
+				// time!
 				com.onSendMessage("Analyzing map...");
 				BWTA.readMap();
 				BWTA.analyze();
 				com.onSendMessage("Map data ready");
 				this.firstOnStart = false;
 			}
-	
+
 			this.com.Sync.signalGameIsReady();
 		} catch (Throwable e) {
 			com.onError(e.getLocalizedMessage(), true);
@@ -160,8 +163,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 									if (lastSize == a.size())
 										i++;
-									// else en onUnit se llamó a unRegister y se
-									// eliminó
+									// else en onUnit se llamï¿½ a unRegister y se
+									// eliminï¿½
 									// ese observador
 								}
 							}
@@ -263,6 +266,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	private void printUnitsInfo() {
+		// Draw current actions
 		for (Unit myUnit : self.getUnits()) {
 			if (myUnit.getType().equals(UnitType.Terran_Marine)) {
 				game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
@@ -270,8 +274,41 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
 						myUnit.getOrderTargetPosition().getX(), myUnit.getOrderTargetPosition().getY(),
 						bwapi.Color.Red);
+				
+				printDanger(myUnit);
 			}
 		}
+
+		// Draw weapon range
+		for (Unit unit : game.getAllUnits()) {
+			game.drawCircleMap(unit.getX(), unit.getY(), unit.getType().groundWeapon().maxRange(),
+					unit.getPlayer() == self ? Color.Blue : Color.Red);
+		}
+	}
+	
+	private void printDanger(Unit u) {
+		// 0 1 2
+		// 3 4 5
+		// 6 7 8
+
+		// 0
+		game.drawBoxMap(u.getX() - 60, u.getY() - 60, u.getX() - 20, u.getY() - 20, Color.Red);
+		// 1
+		game.drawBoxMap(u.getX() - 20, u.getY() - 60, u.getX() + 20, u.getY() - 20, Color.Red);
+		// 2
+		game.drawBoxMap(u.getX() + 20, u.getY() - 60, u.getX() + 60, u.getY() - 20, Color.Red);
+		// 3
+		game.drawBoxMap(u.getX() - 60, u.getY() - 20, u.getX() - 20, u.getY() + 20, Color.Red);
+		// 4
+		game.drawBoxMap(u.getX() - 20, u.getY() - 20, u.getX() + 20, u.getY() + 20, Color.Red);
+		// 5
+		game.drawBoxMap(u.getX() + 20, u.getY() - 20, u.getX() + 60, u.getY() + 20, Color.Red);
+		// 6
+		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() - 20, u.getY() + 60, Color.Red);
+		// 7
+		game.drawBoxMap(u.getX() - 20, u.getY() + 20, u.getX() + 20, u.getY() + 60, Color.Red);
+		// 8
+		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() + 60, u.getY() + 60, Color.Red);
 	}
 
 	private long lastTime = System.currentTimeMillis();
