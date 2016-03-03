@@ -2,7 +2,9 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,7 +17,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -99,7 +103,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.topTabbedPanel.add("Kills", tabGraphKills);
 		
 		this.tabDanger = new TabDanger();
-		this.topTabbedPanel.add("Danger", tabDanger);
+		this.topTabbedPanel.add("Units", tabDanger);
 
 		// TODO
 		qPanel = new JPanel(new FlowLayout());
@@ -474,12 +478,36 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	}
 
-	private class TabDanger extends JPanel {
-
+	private class TabDanger extends JPanel {		
 		private static final long serialVersionUID = -429614650656376442L;
+		private JLabel labelAllies;
+		private JLabel labelEnemies;
+		private BoxLayout layoutgb;
+		private Graphics g;
+		
+		public TabDanger(){
+			this.layoutgb = new BoxLayout(this, BoxLayout.Y_AXIS);
+			
+			this.setLayout(layoutgb);
+			
+			this.labelAllies = new JLabel(" Allies: 0");
+			this.labelEnemies = new JLabel(" Enemies: 0");
+			this.labelAllies.setForeground(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+			this.labelEnemies.setForeground(new Color(1.0f, 0.0f, 0.0f, 1.0f));
 
+			Font font = new Font(labelAllies.getFont().getName(), Font.BOLD, (int)Math.ceil(labelAllies.getFont().getSize()*1.5));
+			this.labelAllies.setFont(font);
+			this.labelEnemies.setFont(font);
+			
+			this.add(this.labelEnemies);
+			this.add(this.labelAllies);
+		}
+		
 		public void paint(Graphics g){
-			super.paint(g); 
+			super.paint(g);
+			this.g = g;
+			
+			this.setBackground(Color.BLACK);
 			int sizeX = this.getWidth();
 			int sizeY = this.getHeight();
 
@@ -487,11 +515,12 @@ public class ExecPanel extends JPanel implements ComObserver {
 			if(unit != null){		
 				
 				Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
-			
-				g.setColor(new Color(0.0f, 0.0f, 0.1f, 0.5f));
-				g.fillOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
-				g.setColor(Color.BLACK);
-				g.drawOval(center.x, center.y, unit.getType().sightRange(), unit.getType().sightRange());
+				Point centerRect = (Point) center.clone();			
+				centerRect.setLocation(center.getX()+unit.getType().sightRange()/2-unit.getType().width()/2, center.getY()+unit.getType().sightRange()/2-unit.getType().height()/2);
+
+				paintCircle(center, unit.getType().sightRange(), new Color(0.0f, 1.0f, 1.0f, 0.5f));
+
+				paintRectangle(centerRect, new Dimension(unit.getType().width(), unit.getType().height()), new Color(0.0f, 1.0f, 1.0f, 0.8f));		
 
 				
 				Unit anotherUnit;
@@ -502,23 +531,51 @@ public class ExecPanel extends JPanel implements ComObserver {
 					int distX = (unit.getX() - anotherUnit.getX());
 					int distY = (unit.getY() - anotherUnit.getY());
 					
-					Point centerAux = new Point(center.x-distX, center.y-distY);
-			
-					
+					Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
+					Point centerRectAux =  (Point) centerAux.clone();
+					centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+
 					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
-						g.setColor(new Color(0.0f, 1.0f, 0.0f, 0.5f));
-						g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
-						g.setColor(new Color(0.0f, 1.0f, 0.0f, 1.0f));
-						g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(0.0f, 1.0f, 0.0f, 0.5f));
+						
+						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(0.0f, 1.0f, 0.0f, 0.8f));
 					}else{
-						g.setColor(new Color(1.0f, 0.0f, 0.0f, 0.5f));
-						g.fillOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
-						g.setColor(Color.BLACK);
-						g.drawOval(centerAux.x, centerAux.y, anotherUnit.getType().sightRange(), anotherUnit.getType().sightRange());
+						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(1.0f, 0.0f, 0.0f, 0.5f));
+						
+						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(1.0f, 0.0f, 0.0f, 0.8f));
 					}
 				
 				}
+				this.updateUnitsAround();
 			}
+		}
+
+		private void paintCircle(Point position, int radius, Color color){
+			g.setColor(color);
+			g.fillOval(position.x, position.y, radius, radius);
+			g.setColor(Color.BLACK);
+			g.drawOval(position.x, position.y, radius, radius);
+		}
+		
+		private void paintRectangle(Point position, Dimension dimension, Color color){
+			g.setColor(color);
+			g.fillRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
+			g.setColor(Color.BLACK);
+			g.drawRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
+		}
+		
+		public void updateUnitsAround(){
+			List<Unit> list = com.ComData.unit.getUnitsInRadius(com.ComData.unit.getType().sightRange());
+			int ally = 0, enemy = 0;
+			for(int i = 0; i < list.size(); i++){
+				if(list.get(i).getPlayer().isAlly(com.ComData.unit.getPlayer()))
+					ally++;
+				else
+					enemy++;
+			}
+			this.labelAllies.setText(" Allies: " + ally);
+			this.labelEnemies.setText(" Enemies: " + enemy);
+			
 		}
 	};
 	

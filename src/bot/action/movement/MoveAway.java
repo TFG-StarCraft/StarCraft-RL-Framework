@@ -69,8 +69,8 @@ public class MoveAway extends MoveAction{
 			vY /= modulo;
 
 			//Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
+			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
 			
 			
 

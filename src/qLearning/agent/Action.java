@@ -5,17 +5,18 @@ import com.Com;
 import bot.action.AttackUnitOnSight;
 import bot.action.GenericAction;
 import bot.action.movement.MoveAroundRight;
+import bot.action.movement.MoveAway;
 
 public enum Action {
-	MOVEAROUNDRIGHT, ATTACK;
+	MOVEAWAY, ATTACK;
 
 	int epoch;
 	
 	public GenericAction toAction(Com com) {
 		switch (this) {
 
-		case MOVEAROUNDRIGHT:
-			return new MoveAroundRight(com, com.ComData.unit, epoch);
+		case MOVEAWAY:
+			return new MoveAway(com, com.ComData.unit, epoch);
 		case ATTACK:
 			return new AttackUnitOnSight(com, com.ComData.unit, epoch);
 		default:
