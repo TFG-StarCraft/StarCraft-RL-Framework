@@ -531,15 +531,19 @@ public class ExecPanel extends JPanel implements ComObserver {
 					int distX = (unit.getX() - anotherUnit.getX());
 					int distY = (unit.getY() - anotherUnit.getY());
 					
-					Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
-					Point centerRectAux =  (Point) centerAux.clone();
-					centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
-
 					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
+						Point centerAux = new Point(center.x-distX-20, center.y-distY-20);
+						Point centerRectAux =  (Point) centerAux.clone();
+						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+
 						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(0.0f, 1.0f, 0.0f, 0.5f));
 						
 						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(0.0f, 1.0f, 0.0f, 0.8f));
 					}else{
+						Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
+						Point centerRectAux =  (Point) centerAux.clone();
+						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+
 						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(1.0f, 0.0f, 0.0f, 0.5f));
 						
 						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(1.0f, 0.0f, 0.0f, 0.8f));
