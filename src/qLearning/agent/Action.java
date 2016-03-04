@@ -4,11 +4,11 @@ import com.Com;
 
 import bot.action.AttackUnitOnSight;
 import bot.action.GenericAction;
-import bot.action.movement.MoveAroundRight;
+import bot.action.movement.MoveApproach;
 import bot.action.movement.MoveAway;
 
 public enum Action {
-	MOVEAWAY, ATTACK;
+	MOVEAWAY, MOVEAPPROACH, ATTACK;
 
 	int epoch;
 	
@@ -17,6 +17,8 @@ public enum Action {
 
 		case MOVEAWAY:
 			return new MoveAway(com, com.ComData.unit, epoch);
+		case MOVEAPPROACH:
+			return new MoveApproach(com, com.ComData.unit, epoch);
 		case ATTACK:
 			return new AttackUnitOnSight(com, com.ComData.unit, epoch);
 		default:

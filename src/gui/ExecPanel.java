@@ -17,8 +17,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -371,7 +369,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			panelControl.add(this.panelButtons, c);
 
 			// Add the counters of kills and deaths
-			c.gridwidth = 2;
+			c.gridwidth = 3;
 			c.gridx = 0;
 			c.gridy = 3;
 			panelControl.add(this.lblTxtDeaths, c);
