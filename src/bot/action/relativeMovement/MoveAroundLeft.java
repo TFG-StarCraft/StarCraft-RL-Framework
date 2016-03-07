@@ -1,15 +1,16 @@
-package bot.action.movement;
+package bot.action.relativeMovement;
 
 import java.util.List;
 
 import com.Com;
 
+import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundRight extends MoveAction {
+public class MoveAroundLeft extends MoveAction {
 
-	public MoveAroundRight(Com com, Unit unit) {
+	public MoveAroundLeft(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
@@ -46,10 +47,10 @@ public class MoveAroundRight extends MoveAction {
 
 			double s = Math.sin(Math.PI/16);
 			double c = Math.cos(Math.PI/16);
-
 			
-			this.endX += (int) Math.floor((unit.getX() - u.getX()) * c - (unit.getY() - u.getY()) * s) + u.getX();
-			this.endY += (int) Math.floor((unit.getX() - u.getX()) * s + (unit.getY() - u.getY()) * c) + u.getY();
+			
+			this.endX += (int) Math.floor((unit.getX() - u.getX()) * c + (unit.getY() - u.getY()) * s) + u.getX();
+			this.endY += (int) Math.floor(- (unit.getX() - u.getX()) * s + (unit.getY() - u.getY()) * c) + u.getY();
 
 		}
 		else{
