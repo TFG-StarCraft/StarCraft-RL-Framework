@@ -4,18 +4,6 @@ import com.Com;
 
 import bot.action.AttackUnitOnSight;
 import bot.action.GenericAction;
-import bot.action.movement.MoveDown;
-import bot.action.movement.MoveLeft;
-import bot.action.movement.MoveRight;
-import bot.action.movement.MoveUp;
-import bot.action.relativeMovement.MoveApproach;
-import bot.action.relativeMovement.MoveAroundClockwise;
-import bot.action.relativeMovement.MoveAroundLCounterclockwise;
-import bot.action.relativeMovement.MoveAway;
-import bot.action.relativeMovement.RelativeToGroup.MoveAroundAlliesClockwise;
-import bot.action.relativeMovement.RelativeToGroup.MoveAroundAlliesCounterclockwise;
-import bot.action.relativeMovement.RelativeToGroup.MoveAroundEnemiesClockwise;
-import bot.action.relativeMovement.RelativeToGroup.MoveAroundEnemiesCounterclockwise;
 import bot.action.relativeMovement.RelativeToGroup.MoveFromAllies;
 import bot.action.relativeMovement.RelativeToGroup.MoveFromEnemies;
 import bot.action.relativeMovement.RelativeToGroup.MoveToAllies;

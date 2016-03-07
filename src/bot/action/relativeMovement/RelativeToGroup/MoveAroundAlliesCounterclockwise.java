@@ -56,9 +56,8 @@ public class MoveAroundAlliesCounterclockwise extends MoveAction {
 			pX /= cont;
 			pY /= cont;
 			
-			//Calculate vector to point.
-			double vX = pX - unit.getX();
-			double vY = pY - unit.getY();
+			unit.getX();
+			unit.getY();
 			
 			double s = Math.sin(Math.PI/16);
 			double c = Math.cos(Math.PI/16);
