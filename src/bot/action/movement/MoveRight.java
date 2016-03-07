@@ -10,8 +10,7 @@ import bwapi.Unit;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveRight extends MoveAction {
-	
+public class MoveRight extends MoveAction {	
 	
 	/***************/
 	/* CONSTRUCTOR */
@@ -23,11 +22,9 @@ public class MoveRight extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveRight(Com com, Unit unit, int e) {
-		super(com, unit, e);
-	}
-
-	
+	public MoveRight(Com com, Unit unit) {
+		super(com, unit);
+	}	
 	
 	/*******************/
 	/* OVERRIDE METHOD */

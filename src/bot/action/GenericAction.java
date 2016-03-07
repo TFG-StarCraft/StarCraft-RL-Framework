@@ -71,13 +71,9 @@ public abstract class GenericAction implements GenericUnitObserver {
 	 *            therefore it wont be called in onUnit
 	 */
 
-	public int botEpochCreate;
-	public int agentEpochCreate;
-
 	public GenericAction(Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
 		this.com = com;
 		this.unit = unit;
-		this.botEpochCreate = com.bot.epoch;
 
 		this.maxFramesOfExecuting = maxFramesOfExecuting;
 		this.actionStarted = false;

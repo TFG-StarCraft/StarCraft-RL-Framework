@@ -7,7 +7,6 @@ import bot.event.AbstractEvent;
 import bot.event.factories.AbstractEventsFactory;
 import bot.event.factories.AEFDestruirUnidad;
 import bwapi.Unit;
-import bwapi.UnitType;
 import utils.DebugEnum;
 
 public class BotDestruirUnidad extends Bot {
@@ -30,9 +29,6 @@ public class BotDestruirUnidad extends Bot {
 	public void onUnitDestroy(Unit unit) {
 		try {
 			com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
-	
-			System.out.println("Mi id: " + com.ComData.unit.getID());
-			System.out.println("Muerto: " +  unit.getID());
 			
 			if (unit.getID() == (com.ComData.unit.getID())) {
 				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));

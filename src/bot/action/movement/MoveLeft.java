@@ -23,11 +23,9 @@ public class MoveLeft extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveLeft(Com com, Unit unit, int e) {
-		super(com, unit, e);
+	public MoveLeft(Com com, Unit unit) {
+		super(com, unit);
 	}
-
-	
 	
 	/*******************/
 	/* OVERRIDE METHOD */

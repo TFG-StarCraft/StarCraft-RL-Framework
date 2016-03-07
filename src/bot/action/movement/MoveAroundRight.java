@@ -7,13 +7,11 @@ import com.Com;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundRight extends MoveAction{
+public class MoveAroundRight extends MoveAction {
 
-	public MoveAroundRight(Com com, Unit unit, int agentEpoch) {
-		super(com, unit, agentEpoch);
+	public MoveAroundRight(Com com, Unit unit) {
+		super(com, unit);
 	}
-
-	
 	
 	/******************/
 	/* PRIVATE METHOD */

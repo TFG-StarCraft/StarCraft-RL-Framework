@@ -57,7 +57,7 @@ public class OneStepQ extends AbstractAlgorithm {
 			//com.Sync.signalAgentIsStarting();
 			
 			while (!S.isFinalEnd()) {
-				Action A = nextAction(S, i);
+				Action A = nextAction(S);
 
 				// Blocks until action A ends
 				State SS = S.executeAction(A);
@@ -92,7 +92,7 @@ public class OneStepQ extends AbstractAlgorithm {
 		pw.close();
 	}
 
-	public Action nextAction(State S, int epoch) {
+	public Action nextAction(State S) {
 
 		Random r = new Random();
 		double e = r.nextDouble();
@@ -120,8 +120,6 @@ public class OneStepQ extends AbstractAlgorithm {
 				}
 			}
 		}
-		
-		mov.epoch = epoch;
 		
 		return mov;
 	}

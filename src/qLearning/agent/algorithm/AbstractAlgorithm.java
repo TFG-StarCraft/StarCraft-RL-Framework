@@ -8,7 +8,7 @@ import qLearning.enviroment.AbstractEnviroment;
 
 public abstract class AbstractAlgorithm implements Runnable {
 	public abstract void run();
-	public abstract Action nextAction(State S, int epoch);
+	public abstract Action nextAction(State S);
 	    
 	protected AbstractEnviroment enviroment;
 	protected Com com;

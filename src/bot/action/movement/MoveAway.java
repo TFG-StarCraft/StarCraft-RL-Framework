@@ -13,8 +13,7 @@ import bwapi.UnitType;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez.
  */
-public class MoveAway extends MoveAction{
-	
+public class MoveAway extends MoveAction {	
 	
 	/***************/
 	/* CONSTRUCTOR */
@@ -24,13 +23,10 @@ public class MoveAway extends MoveAction{
 	 * Constructor of the class MoveAway.
 	 * @param com Comunication.
 	 * @param unit Unit to move.
-	 * @param agentEpoch 
 	 */
-	public MoveAway(Com com, Unit unit, int agentEpoch) {
-		super(com, unit, agentEpoch);
-	}
-
-	
+	public MoveAway(Com com, Unit unit) {
+		super(com, unit);
+	}	
 	
 	/******************/
 	/* PRIVATE METHOD */

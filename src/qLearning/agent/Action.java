@@ -9,18 +9,16 @@ import bot.action.movement.MoveAway;
 
 public enum Action {
 	MOVEAWAY, MOVEAPPROACH, ATTACK;
-
-	public int epoch;
 	
 	public GenericAction toAction(Com com) {
 		switch (this) {
 
 		case MOVEAWAY:
-			return new MoveAway(com, com.ComData.unit, epoch);
+			return new MoveAway(com, com.ComData.unit);
 		case MOVEAPPROACH:
-			return new MoveApproach(com, com.ComData.unit, epoch);
+			return new MoveApproach(com, com.ComData.unit);
 		case ATTACK:
-			return new AttackUnitOnSight(com, com.ComData.unit, epoch);
+			return new AttackUnitOnSight(com, com.ComData.unit);
 		default:
 			throw new IllegalArgumentException("Accion no valida");
 		}

@@ -23,11 +23,9 @@ public class MoveUp extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveUp(Com com, Unit unit, int epoch) {
-		super(com, unit, epoch);
+	public MoveUp(Com com, Unit unit) {
+		super(com, unit);
 	}
-
-	
 	
 	/*******************/
 	/* OVERRIDE METHOD */

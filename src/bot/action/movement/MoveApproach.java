@@ -13,7 +13,7 @@ import bwapi.UnitType;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveApproach extends MoveAction{
+public class MoveApproach extends MoveAction {
 	
 	
 	/***************/
@@ -26,8 +26,8 @@ public class MoveApproach extends MoveAction{
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveApproach(Com com, Unit unit, int agentEpoch) {
-		super(com, unit, agentEpoch);
+	public MoveApproach(Com com, Unit unit) {
+		super(com, unit);
 	}
 
 	

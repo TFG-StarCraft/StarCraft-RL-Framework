@@ -55,7 +55,7 @@ public class LambdaQ extends AbstractAlgorithm {
 				com.Sync.waitForBotGameIsStarted();
 
 				State S = enviroment.getInitState();
-				Action A = nextAction(S, i);
+				Action A = nextAction(S);
 				int steps = 0;
 				this.numRandomMoves = 0;
 				this.QE.resetE();
@@ -74,8 +74,8 @@ public class LambdaQ extends AbstractAlgorithm {
 					Double R = SS.getReward();
 					com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 
-					AA = nextAction(SS, i);
-					AStar = nextOptimalAction(SS, i);
+					AA = nextAction(SS);
+					AStar = nextOptimalAction(SS);
 
 					delta = R + gamma * QE.getQ(SS, AStar) - QE.getQ(S, A);
 
@@ -116,7 +116,7 @@ public class LambdaQ extends AbstractAlgorithm {
 		com.onEndTrain();
 	}
 
-	public Action nextOptimalAction(State S, int epoch) {
+	public Action nextOptimalAction(State S) {
 		double q = Double.NEGATIVE_INFINITY;
 		Action mov = null;
 		// Probar movimientos
@@ -132,13 +132,13 @@ public class LambdaQ extends AbstractAlgorithm {
 		return mov;
 	}
 
-	public Action nextAction(State S, int epoch) {
+	public Action nextAction(State S) {
 		Random r = new Random();
 		double e = r.nextDouble();
 		Action mov = null;
 
 		if (e < epsilon) {
-			mov = nextOptimalAction(S, epoch);
+			mov = nextOptimalAction(S);
 		} else {
 			numRandomMoves++;
 			// Tomar un movimiento aleatorio valido
@@ -149,8 +149,6 @@ public class LambdaQ extends AbstractAlgorithm {
 				}
 			}
 		}
-
-		mov.epoch = epoch;
 
 		return mov;
 	}
