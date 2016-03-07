@@ -37,6 +37,7 @@ import com.observers.ComObserver;
 import bot.event.AbstractEvent;
 import bot.event.factories.AEFDestruirUnidad;
 import bwapi.Unit;
+import qLearning.agent.Action;
 import utils.DebugEnum;
 
 import javax.swing.JToggleButton;
@@ -54,6 +55,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private long debugMask;
 
 	private Com com;
+	private GUI gui;
 
 	private boolean b = true;
 	private int frameSpeed;
@@ -79,7 +81,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 * @param com
 	 *            = Comunication.
 	 */
-	public ExecPanel(Com com) {
+	public ExecPanel(GUI gui, Com com) {
+		this.gui = gui;
 		this.com = com;
 		this.com.addObserver(this);
 		this.debugMask = 0;
@@ -157,6 +160,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 							tglbtnGui.setEnabled(true);
 							run.setEnabled(false);
+							Action.init();
+							gui.menuBar.actionMenu.setEnabled(false);
 							new Thread(com).start();
 						} catch (NumberFormatException e1) {
 							t_alpha.setText(Double.toString(qLearning.Const.ALPHA));

@@ -53,6 +53,12 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
+		
+		if (A == null)
+			System.err.println("A null");
+		if (S == null)
+			System.err.println("S null");
+		
 		return Long.hashCode(S.hashCode() + last * A.ordinal());
 	}
 

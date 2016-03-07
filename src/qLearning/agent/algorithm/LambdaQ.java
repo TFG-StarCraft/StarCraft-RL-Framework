@@ -121,11 +121,11 @@ public class LambdaQ extends AbstractAlgorithm {
 		Action mov = null;
 		// Probar movimientos
 		for (int i = 0; i < Action.values().length; i++) {
-			Action A = Action.values()[i];
+			Action A = new Action(i);
 			// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
 			if (QE.getQ(S, A) >= q && S.esAccionValida(A)) {
 				q = QE.getQ(S, A);
-				mov = Action.values()[i];
+				mov = A;
 			}
 		}
 
@@ -143,7 +143,7 @@ public class LambdaQ extends AbstractAlgorithm {
 			numRandomMoves++;
 			// Tomar un movimiento aleatorio valido
 			while (mov == null) {
-				Action A = Action.values()[r.nextInt(Action.values().length)];
+				Action A = new Action(r.nextInt(Action.values().length));
 				if (S.esAccionValida(A)) {
 					mov = A;
 				}
