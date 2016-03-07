@@ -1,4 +1,4 @@
-package qLearning.agent;
+package qLearning.agent.algorithm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,23 +8,33 @@ import java.util.Random;
 import com.Com;
 
 import qLearning.Const;
+import qLearning.agent.Action;
+import qLearning.agent.qFunction.AbstractQFunction;
+import qLearning.agent.qFunction.QMap;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
-public class LambdaQ extends AbstractAlgorithm {
+public class OneStepQ extends AbstractAlgorithm {
 	
-	private double lambda;
+	private AbstractQFunction Q;
 
-	public LambdaQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon, double lambda) {
-		super(com, e, alpha, gamma, epsilon);
-		
-		this.lambda = lambda;
+	public OneStepQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
+		this(com, e);
+		this.alpha = alpha;
+		this.gamma = gamma;
+		this.epsilon = epsilon;
 	}
 
-	public LambdaQ(Com com, AbstractEnviroment e) {
-		super(com, e);
-		
-		this.lambda = 0.1;
+	public OneStepQ(Com com, AbstractEnviroment e) {
+		this.com = com;
+
+		this.enviroment = e;
+
+		this.Q = new QMap(e);
+
+		this.alpha = qLearning.Const.ALPHA;
+		this.gamma = qLearning.Const.GAMMA;
+		this.epsilon = qLearning.Const.EPSLLON_EGREEDY;
 	}
 
 	public void run() {
@@ -38,70 +48,48 @@ public class LambdaQ extends AbstractAlgorithm {
 		com.onSendMessage("q-Learning started");
 		for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
 
-			com.Sync.waitForBotGameIsStarted();
-
+			com.Sync.waitForBotGameIsStarted();		
+			
 			State S = enviroment.getInitState();
-			Action A = nextAction(S, i);
 			int movimientos = 0;
 			this.numRandomMoves = 0;
-			this.Q.resetE();
 
-			// com.Sync.signalAgentIsStarting();
-
+			//com.Sync.signalAgentIsStarting();
+			
 			while (!S.isFinalEnd()) {
+				Action A = nextAction(S, i);
+
 				// Blocks until action A ends
-				Action AA, AStar;
-				double delta;
-				
-				double E;
-				
 				State SS = S.executeAction(A);
 
 				Double R = SS.getReward();
 				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
-				
-				AA = nextAction(SS, i);
-				AStar = nextOptimalAction(SS, i);
-				
-				delta = R + gamma * Q.getQ(SS, AStar) - Q.getQ(S, A);
-				
-				E = Q.getE(S, A) + 1;
-				// E = 1;
-				// E = (1 - alpha) * Q.getE(S, A) + 1;
-				
-				Q.bucle(alpha, delta, gamma, lambda, AA, AStar);			
+				double maxq = Double.NEGATIVE_INFINITY;
+				// Probar movimientos
+				for (int k = 0; k < Action.values().length; k++) {
+					Action a = Action.values()[k];
+					// Hasta encontrar uno valido, y ademas sea el mejor
+					// (greedy)
+					if (Q.get(SS, a) >= maxq && SS.esAccionValida(a)) {
+						maxq = Q.get(SS, a);
+					}
+				}
 
+				Q.set(S, A, Q.get(S, A) + alpha * (R + gamma * maxq - Q.get(S, A)));
 				S = SS;
-				A = AA;
 				movimientos++;
 			}
 			// Iteration end
 			com.onEndIteration(movimientos, numRandomMoves, i);
 			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
-
+			
 			com.onFullQUpdate(Q.showQ());
 
 			com.restart();
 		}
 		com.onEndTrain();
 		pw.close();
-	}
-
-	public Action nextOptimalAction(State S, int epoch) {
-		double q = Double.NEGATIVE_INFINITY;
-		Action mov = null;
-		// Probar movimientos
-		for (int i = 0; i < Action.values().length; i++) {
-			Action A = Action.values()[i];
-			// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
-			if (Q.getQ(S, A) >= q && S.esAccionValida(A)) {
-				q = Q.getQ(S, A);
-				mov = Action.values()[i];
-			}
-		}
-
-		return mov;
 	}
 
 	public Action nextAction(State S, int epoch) {
@@ -111,7 +99,17 @@ public class LambdaQ extends AbstractAlgorithm {
 		Action mov = null;
 
 		if (e < epsilon) {
-			mov = nextOptimalAction(S, epoch);
+			double q = Double.NEGATIVE_INFINITY;
+
+			// Probar movimientos
+			for (int i = 0; i < Action.values().length; i++) {
+				Action A = Action.values()[i];
+				// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
+				if (Q.get(S, A) >= q && S.esAccionValida(A)) {
+					q = Q.get(S, A);
+					mov = Action.values()[i];
+				}
+			}
 		} else {
 			numRandomMoves++;
 			// Tomar un movimiento aleatorio valido
@@ -122,10 +120,10 @@ public class LambdaQ extends AbstractAlgorithm {
 				}
 			}
 		}
-
+		
 		mov.epoch = epoch;
-
+		
 		return mov;
 	}
-
+	
 }

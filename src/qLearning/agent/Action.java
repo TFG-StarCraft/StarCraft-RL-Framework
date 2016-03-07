@@ -10,7 +10,7 @@ import bot.action.movement.MoveAway;
 public enum Action {
 	MOVEAWAY, MOVEAPPROACH, ATTACK;
 
-	int epoch;
+	public int epoch;
 	
 	public GenericAction toAction(Com com) {
 		switch (this) {
