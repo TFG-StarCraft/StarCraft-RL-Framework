@@ -35,7 +35,7 @@ public class QAarray implements AbstractQFunction {
 	}
 
 	@Override
-	public double get(State S, Action A) {
+	public double getQ(State S, Action A) {
 		int stride = 0;
 		/*
 		 * stride =

@@ -31,7 +31,10 @@ public class BotDestruirUnidad extends Bot {
 		try {
 			com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
 	
-			if (unit.exists() && unit.getType().equals(UnitType.Terran_Marine)) {
+			System.out.println("Mi id: " + com.ComData.unit.getID());
+			System.out.println("Muerto: " +  unit.getID());
+			
+			if (unit.getID() == (com.ComData.unit.getID())) {
 				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
 			} else {
 				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));

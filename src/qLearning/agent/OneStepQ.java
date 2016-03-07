@@ -8,39 +8,17 @@ import java.util.Random;
 import com.Com;
 
 import qLearning.Const;
-import qLearning.agent.qFunction.AbstractQFunction;
-import qLearning.agent.qFunction.QMap;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
-public class Agent implements Runnable {
-	private AbstractQFunction Q;
+public class OneStepQ extends AbstractAlgorithm {
 
-	private AbstractEnviroment enviroment;
-	private Com com;
-	private int numRandomMoves;
-
-	private double epsilon;
-	private double alpha;
-	private double gamma;
-
-	public Agent(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
-		this(com, e);
-		this.alpha = alpha;
-		this.gamma = gamma;
-		this.epsilon = epsilon;
+	public OneStepQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
+		super(com, e, alpha, gamma, epsilon);
 	}
 	
-	public Agent(Com com, AbstractEnviroment e) {
-		this.com = com;
-
-		this.enviroment = e;
-		
-		this.Q = new QMap(e);
-		
-		this.alpha = qLearning.Const.ALPHA;
-		this.gamma = qLearning.Const.GAMMA;
-		this.epsilon = qLearning.Const.EPSLLON_EGREEDY;
+	public OneStepQ(Com com, AbstractEnviroment e) {
+		super(com, e);
 	}
 
 	public void run() {
@@ -76,12 +54,12 @@ public class Agent implements Runnable {
 					Action a = Action.values()[k];
 					// Hasta encontrar uno valido, y ademas sea el mejor
 					// (greedy)
-					if (Q.get(SS, a) >= maxq && SS.esAccionValida(a)) {
-						maxq = Q.get(SS, a);
+					if (Q.getQ(SS, a) >= maxq && SS.esAccionValida(a)) {
+						maxq = Q.getQ(SS, a);
 					}
 				}
 
-				Q.set(S, A, Q.get(S, A) + alpha * (R + gamma * maxq - Q.get(S, A)));
+				Q.set(S, A, Q.getQ(S, A) + alpha * (R + gamma * maxq - Q.getQ(S, A)));
 				S = SS;
 				movimientos++;
 			}
@@ -111,8 +89,8 @@ public class Agent implements Runnable {
 			for (int i = 0; i < Action.values().length; i++) {
 				Action A = Action.values()[i];
 				// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
-				if (Q.get(S, A) >= q && S.esAccionValida(A)) {
-					q = Q.get(S, A);
+				if (Q.getQ(S, A) >= q && S.esAccionValida(A)) {
+					q = Q.getQ(S, A);
 					mov = Action.values()[i];
 				}
 			}

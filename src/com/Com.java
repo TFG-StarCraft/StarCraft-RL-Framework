@@ -12,7 +12,8 @@ import com.observers.ComObserver;
 import bot.Bot;
 import bot.BotDestruirUnidad;
 import bot.event.AbstractEvent;
-import qLearning.agent.Agent;
+import qLearning.agent.LambdaQ;
+import qLearning.agent.OneStepQ;
 import qLearning.enviroment.SCEnviroment;
 import utils.DebugEnum;
 
@@ -65,7 +66,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		t1.start();
 
 		onSendMessage("Starting q-Learning");
-		Thread t2 = new Thread(new Agent(this, new SCEnviroment(this), alpha, gamma, epsilon));
+
+		// TODO cambiar algoritmo
+		Thread t2 = new Thread(new LambdaQ(this, new SCEnviroment(this), alpha, gamma, epsilon, 0.5));
 		t2.start();
 
 		try {
