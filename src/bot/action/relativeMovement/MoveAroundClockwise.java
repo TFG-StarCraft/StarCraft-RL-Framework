@@ -8,9 +8,9 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundLeft extends MoveAction {
+public class MoveAroundClockwise extends MoveAction {
 
-	public MoveAroundLeft(Com com, Unit unit) {
+	public MoveAroundClockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
@@ -47,10 +47,10 @@ public class MoveAroundLeft extends MoveAction {
 
 			double s = Math.sin(Math.PI/16);
 			double c = Math.cos(Math.PI/16);
+
 			
-			
-			this.endX += (int) Math.floor((unit.getX() - u.getX()) * c + (unit.getY() - u.getY()) * s) + u.getX();
-			this.endY += (int) Math.floor(- (unit.getX() - u.getX()) * s + (unit.getY() - u.getY()) * c) + u.getY();
+			this.endX += (int) Math.floor((unit.getX() - u.getX()) * c - (unit.getY() - u.getY()) * s) + u.getX();
+			this.endY += (int) Math.floor((unit.getX() - u.getX()) * s + (unit.getY() - u.getY()) * c) + u.getY();
 
 		}
 		else{

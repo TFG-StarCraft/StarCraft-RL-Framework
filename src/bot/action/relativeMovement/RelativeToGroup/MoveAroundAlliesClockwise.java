@@ -8,9 +8,9 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundAlliesRight extends MoveAction {
+public class MoveAroundAlliesClockwise extends MoveAction {
 
-	public MoveAroundAlliesRight(Com com, Unit unit) {
+	public MoveAroundAlliesClockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
@@ -48,8 +48,8 @@ public class MoveAroundAlliesRight extends MoveAction {
 			//Calculate point between allies.
 			for(int i = 0; i < l.size(); i++){
 				if(l.get(i).getPlayer().isAlly(unit.getPlayer())){
-					pX = l.get(i).getX();
-					pY = l.get(i).getY();
+					pX += l.get(i).getX();
+					pY += l.get(i).getY();
 					cont++;
 				}
 			}

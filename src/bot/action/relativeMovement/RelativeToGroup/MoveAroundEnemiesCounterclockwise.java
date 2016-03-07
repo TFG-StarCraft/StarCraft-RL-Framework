@@ -1,4 +1,4 @@
-package bot.action.relativeMovement;
+package bot.action.relativeMovement.RelativeToGroup;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundRight extends MoveAction {
+public class MoveAroundEnemiesCounterclockwise extends MoveAction {
 
-	public MoveAroundRight(Com com, Unit unit) {
+	public MoveAroundEnemiesCounterclockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
@@ -43,14 +43,29 @@ public class MoveAroundRight extends MoveAction {
 	protected void setUpMove() {
 		List<Unit> l = getGroundUnitsInRange();
 		if (!l.isEmpty()) {
-			Unit u = l.get(0);
-
+			double pX = 0, pY = 0;
+			int cont = 0;
+			//Calculate point between allies.
+			for(int i = 0; i < l.size(); i++){
+				if(!l.get(i).getPlayer().isAlly(unit.getPlayer())){
+					pX += l.get(i).getX();
+					pY += l.get(i).getY();
+					cont++;
+				}
+			}
+			pX /= cont;
+			pY /= cont;
+			
+			//Calculate vector to point.
+			double vX = pX - unit.getX();
+			double vY = pY - unit.getY();
+			
 			double s = Math.sin(Math.PI/16);
 			double c = Math.cos(Math.PI/16);
-
 			
-			this.endX += (int) Math.floor((unit.getX() - u.getX()) * c - (unit.getY() - u.getY()) * s) + u.getX();
-			this.endY += (int) Math.floor((unit.getX() - u.getX()) * s + (unit.getY() - u.getY()) * c) + u.getY();
+			
+			this.endX += (int) Math.floor((unit.getX() - pX) * c + (unit.getY() - pY) * s) + pX;
+			this.endY += (int) Math.floor(- (unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
 
 		}
 		else{
