@@ -1,4 +1,4 @@
-package bot.enviroment;
+package bot.checkEnviroment;
 
 import java.util.List;
 
@@ -158,6 +158,25 @@ public class checkAround {
 	public static boolean canBeatGround(Unit unit, Unit anotherUnit){
 		WeaponType unitWeapon = unit.getType().groundWeapon();
 		WeaponType anotherUnitWeapon = unit.getType().groundWeapon();
+		
+		double hurtedUnit = unit.getHitPoints()/anotherUnitWeapon.damageAmount();
+		double hurtedAnotherUnit = anotherUnit.getHitPoints()/unitWeapon.damageAmount();
+		
+		double timeDeadUnit = unit.getHitPoints()*anotherUnitWeapon.damageCooldown()/hurtedUnit;
+		double timeDeadAnotherUnit = anotherUnit.getHitPoints()*unitWeapon.damageCooldown()/hurtedAnotherUnit;
+		
+		return timeDeadUnit > timeDeadAnotherUnit;
+	}
+
+	/**
+	 * Return if the unit can beat another unit, both with ground weapons.
+	 * @param unit Unit to evaluate.
+	 * @param anotherUnit Unit to evaluate.
+	 * @return True if the unit can beat another unit.
+	 */
+	public static boolean canBeatAir(Unit unit, Unit anotherUnit){
+		WeaponType unitWeapon = unit.getType().airWeapon();
+		WeaponType anotherUnitWeapon = unit.getType().airWeapon();
 		
 		double hurtedUnit = unit.getHitPoints()/anotherUnitWeapon.damageAmount();
 		double hurtedAnotherUnit = anotherUnit.getHitPoints()/unitWeapon.damageAmount();
