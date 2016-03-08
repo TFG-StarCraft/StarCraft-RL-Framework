@@ -20,8 +20,6 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 
 	private int size;
 	private int last;
-	private AbstractEnviroment env;
-
 	public class Set {
 		// private State s;
 		// private Action a;
@@ -38,7 +36,6 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 	}
 
 	public QEMap(AbstractEnviroment env) {
-		this.env = env;
 		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
 		this.last = env.getNumValuesPerDims().get(env.getNumValuesPerDims().size() - 1);
 
@@ -123,6 +120,8 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 
 	private static final DecimalFormat df = new DecimalFormat("0.#####E0");
 
+	//TODO
+	@SuppressWarnings("unused")
 	private class QCell extends JPanel {
 
 		/**
