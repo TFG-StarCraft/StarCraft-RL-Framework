@@ -67,7 +67,7 @@ public class OneStepQ extends AbstractAlgorithm {
 				double maxq = Double.NEGATIVE_INFINITY;
 				// Probar movimientos
 				for (int k = 0; k < Action.values().length; k++) {
-					Action a = Action.values()[k];
+					Action a = new Action(k);
 					// Hasta encontrar uno valido, y ademas sea el mejor
 					// (greedy)
 					if (Q.get(SS, a) >= maxq && SS.esAccionValida(a)) {
@@ -103,18 +103,18 @@ public class OneStepQ extends AbstractAlgorithm {
 
 			// Probar movimientos
 			for (int i = 0; i < Action.values().length; i++) {
-				Action A = Action.values()[i];
+				Action A = new Action(i);
 				// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
 				if (Q.get(S, A) >= q && S.esAccionValida(A)) {
 					q = Q.get(S, A);
-					mov = Action.values()[i];
+					mov = new Action(i);
 				}
 			}
 		} else {
 			numRandomMoves++;
 			// Tomar un movimiento aleatorio valido
 			while (mov == null) {
-				Action A = Action.values()[r.nextInt(Action.values().length)];
+				Action A = new Action(r.nextInt(Action.values().length));
 				if (S.esAccionValida(A)) {
 					mov = A;
 				}

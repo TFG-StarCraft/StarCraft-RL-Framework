@@ -16,6 +16,7 @@ import javax.swing.filechooser.FileFilter;
 
 import com.Com;
 
+import qLearning.agent.Action;
 import utils.BwapiConfig;
 import utils.Config;
 import utils.DebugEnum;
@@ -26,48 +27,15 @@ public class GUI extends JFrame {
 
 	private ExecPanel mainPanel;
 
-	private class MyMenuBar extends JMenuBar {
+	class MyMenuBar extends JMenuBar {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -1328830028539474345L;
+		
+		class FileMenu extends JMenu {
 
-		private class DebugMenu extends JMenu {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 7454100084035621587L;
-
-			private DebugMenu() {
-				super("Debug");
-				
-				for (int i = 0; i < DebugEnum.values().length; i++) {
-					DebugEnum e = DebugEnum.values()[i];
-					JCheckBoxMenuItem cb = new JCheckBoxMenuItem(e.toString());
-					cb.setSelected((mainPanel.getDebugMask() & e.getMask()) != 0);
-					cb.addActionListener(new ActionListener() {
-						
-						@Override
-						public void actionPerformed(ActionEvent event) {
-							if (cb.isSelected()) {
-								mainPanel.setDebugMask(mainPanel.getDebugMask() | e.getMask());
-							} else {
-								mainPanel.setDebugMask(mainPanel.getDebugMask() & ~e.getMask());
-							}
-						}
-					});
-
-					this.add(cb);
-				}
-			}
-		}
-
-		private class FileMenu extends JMenu {
-
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 5375254598780074049L;
 			
 			private FileMenu() {
@@ -144,23 +112,86 @@ public class GUI extends JFrame {
 			}
 		}
 		
-		private DebugMenu debugMenu;
-		private FileMenu fileMenu;
+		class DebugMenu extends JMenu {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 7454100084035621587L;
+
+			private DebugMenu() {
+				super("Debug");
+				
+				for (int i = 0; i < DebugEnum.values().length; i++) {
+					DebugEnum e = DebugEnum.values()[i];
+					JCheckBoxMenuItem cb = new JCheckBoxMenuItem(e.toString());
+					cb.setSelected((mainPanel.getDebugMask() & e.getMask()) != 0);
+					cb.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent event) {
+							if (cb.isSelected()) {
+								mainPanel.setDebugMask(mainPanel.getDebugMask() | e.getMask());
+							} else {
+								mainPanel.setDebugMask(mainPanel.getDebugMask() & ~e.getMask());
+							}
+						}
+					});
+
+					this.add(cb);
+				}
+			}
+		}
+
+		class ActionsSelectedMenu extends JMenu {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 7454100084035621587L;
+
+			private ActionsSelectedMenu() {
+				super("ActionsSelected");
+				
+				for (int i = 0; i < Action.ActionEnum.values().length; i++) {
+					Action.ActionEnum e = Action.ActionEnum.values()[i];
+					JCheckBoxMenuItem cb = new JCheckBoxMenuItem(e.toString());
+					cb.setSelected(Action.isSelected(e));
+					cb.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent event) {
+							if (cb.isSelected()) {
+								Action.addToMask(e);
+							} else {
+								Action.removeFromMask(e);
+							}
+						}
+					});
+
+					this.add(cb);
+				}
+			}
+		}
+		
+		DebugMenu debugMenu;
+		FileMenu fileMenu;
+		ActionsSelectedMenu actionMenu;
 
 		private MyMenuBar() {
 			this.debugMenu = new DebugMenu();
 			this.fileMenu = new FileMenu();
+			this.actionMenu = new ActionsSelectedMenu();
 			this.add(fileMenu);
 			this.add(debugMenu);
+			this.add(actionMenu);
 		}
 	}
 
-	private MyMenuBar menuBar;
+	MyMenuBar menuBar;
 
 	public GUI() {
 		super("Starcraft GUI ML Launcher");
 		this.setSize(575,675);
-		this.mainPanel = new ExecPanel(new Com());
+		this.mainPanel = new ExecPanel(this, new Com());
 		this.menuBar = new MyMenuBar();
 		this.setContentPane(mainPanel);
 	}
@@ -187,7 +218,7 @@ public class GUI extends JFrame {
 		}
 
 		if (!a.contains(utils.StarcraftLauncher.CHAOSLAUNCHER_LNK) || !a.contains(utils.StarcraftLauncher.CLOSE_LNK)) {
-			System.err.println("ERROR: se necesita (en el directorio de ejecución) los siguientes accesos directos:\n"
+			System.err.println("ERROR: se necesita (en el directorio de ejecuciï¿½n) los siguientes accesos directos:\n"
 					+ "\t" + utils.StarcraftLauncher.CHAOSLAUNCHER_LNK + " que apunte a Chaoslauncher.exe, CON PRIVILEGIOS DE ADMINISTRADOR\n"
 					+ "\t" + utils.StarcraftLauncher.CLOSE_LNK + " que apunte al forceClose.bat de este directorio,\n"
 					+ "\t\tCON PRIVILEGIOS DE ADMINISTRADOR");

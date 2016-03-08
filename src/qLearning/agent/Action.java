@@ -1,48 +1,139 @@
 package qLearning.agent;
 
+import java.util.Arrays;
+
 import com.Com;
 
-import bot.action.AttackUnitOnSight;
-import bot.action.GenericAction;
-import bot.action.relativeMovement.RelativeToGroup.MoveFromAllies;
-import bot.action.relativeMovement.RelativeToGroup.MoveFromEnemies;
-import bot.action.relativeMovement.RelativeToGroup.MoveToAllies;
-import bot.action.relativeMovement.RelativeToGroup.MoveToEnemies;
+import bot.action.*;
+import bot.action.movement.*;
+import bot.action.relativeMovement.*;
+import bot.action.relativeMovement.RelativeToGroup.*;
 
-public enum Action {
-	/*MOVEUP, MOVEDOWN, MOVELEFT, MOVERIGHT,
-	MOVEAPPROACH, MOVEAWAY, COUNTERCLOCKWISE, MOVEAROUNDCLOCKWISE,
-	MOVEAROUNDALLIESCOUNTERCLOCKWISE, MOVEAROUNDALLIESCLOCKWISE, MOVEAROUNDENEMIESCOUNTERCLOCKWISE, MOVEAROUNDENEMIESCLOCKWISE, 
-	*/
-	MOVEFROMALLIES, MOVETOALLIES, MOVEFROMENEMIES, MOVETOENEMIES,
-	ATTACK;
-	
-	public GenericAction toAction(Com com) {
-		switch (this) {
-		/*case MOVEUP: return new MoveUp(com, com.ComData.unit);
-		case MOVEDOWN: return new MoveDown(com, com.ComData.unit);
-		case MOVELEFT: return new MoveLeft(com, com.ComData.unit);
-		case MOVERIGHT: return new MoveRight(com, com.ComData.unit);
-		
-		case MOVEAPPROACH: return new MoveApproach(com, com.ComData.unit);
-		case MOVEAWAY: return new MoveAway(com, com.ComData.unit);
-		case COUNTERCLOCKWISE: return new MoveAroundLCounterclockwise(com, com.ComData.unit);
-		case MOVEAROUNDCLOCKWISE: return new MoveAroundClockwise(com, com.ComData.unit);
-		
-		case MOVEAROUNDENEMIESCOUNTERCLOCKWISE: return new MoveAroundEnemiesCounterclockwise(com, com.ComData.unit);
-		case MOVEAROUNDENEMIESCLOCKWISE: return new MoveAroundEnemiesClockwise(com, com.ComData.unit);
-		case MOVEAROUNDALLIESCOUNTERCLOCKWISE: return new MoveAroundAlliesCounterclockwise(com, com.ComData.unit);
-		case MOVEAROUNDALLIESCLOCKWISE: return new MoveAroundAlliesClockwise(com, com.ComData.unit);
-		*/
-		case MOVEFROMENEMIES: return new MoveFromEnemies(com, com.ComData.unit);
-		case MOVETOENEMIES: return new MoveToEnemies(com, com.ComData.unit);
-		case MOVEFROMALLIES: return new MoveFromAllies(com, com.ComData.unit);
-		case MOVETOALLIES: return new MoveToAllies(com, com.ComData.unit);
-		
-		
-		case ATTACK: return new AttackUnitOnSight(com, com.ComData.unit);
-		default:
-			throw new IllegalArgumentException("Accion no valida");
+public class Action {
+
+	public enum ActionEnum {
+		M_UP, M_DOWN, M_LEFT, M_RIGHT,
+
+		M_APPROACH, M_AWAY, M_ARR_COUNTERCLOCKWISE, M_ARR_CLOCKWISE,
+
+		M_ARR_ALLIES_COUNTCLOCKW, M_ARR_ALLIES_CLOCKW, M_ARR_ENE_COUNTCLOCKW, M_ARR_ENE_CLOCKW,
+
+		M_FROM_ALLIES, M_TO_ALLIES, M_FROM_ENE, M_TO_ENE,
+
+		ATTACK;
+
+		public long getMask() {
+			return 1 << this.ordinal();
 		}
+
+		public GenericAction toAction(Com com) {
+			switch (this) {
+			case M_UP:
+				return new MoveUp(com, com.ComData.unit);
+			case M_DOWN:
+				return new MoveDown(com, com.ComData.unit);
+			case M_LEFT:
+				return new MoveLeft(com, com.ComData.unit);
+			case M_RIGHT:
+				return new MoveRight(com, com.ComData.unit);
+
+			case M_APPROACH:
+				return new MoveApproach(com, com.ComData.unit);
+			case M_AWAY:
+				return new MoveAway(com, com.ComData.unit);
+			case M_ARR_COUNTERCLOCKWISE:
+				return new MoveAroundCounterclockwise(com, com.ComData.unit);
+			case M_ARR_CLOCKWISE:
+				return new MoveAroundClockwise(com, com.ComData.unit);
+
+			case M_ARR_ENE_COUNTCLOCKW:
+				return new MoveAroundEnemiesCounterclockwise(com, com.ComData.unit);
+			case M_ARR_ENE_CLOCKW:
+				return new MoveAroundEnemiesClockwise(com, com.ComData.unit);
+			case M_ARR_ALLIES_COUNTCLOCKW:
+				return new MoveAroundAlliesCounterclockwise(com, com.ComData.unit);
+			case M_ARR_ALLIES_CLOCKW:
+				return new MoveAroundAlliesClockwise(com, com.ComData.unit);
+
+			case M_FROM_ENE:
+				return new MoveFromEnemies(com, com.ComData.unit);
+			case M_TO_ENE:
+				return new MoveToEnemies(com, com.ComData.unit);
+			case M_FROM_ALLIES:
+				return new MoveFromAllies(com, com.ComData.unit);
+			case M_TO_ALLIES:
+				return new MoveToAllies(com, com.ComData.unit);
+
+			case ATTACK:
+				return new AttackUnitOnSight(com, com.ComData.unit);
+			default:
+				throw new IllegalArgumentException("Accion no valida");
+			}
+		}
+	}
+
+	private int ordinal;
+	private ActionEnum e;
+
+	public Action(int i) {
+		this.e = values[i];
+		this.ordinal = ordinals[e.ordinal()];
+	}
+
+	public GenericAction toAction(Com com) {
+		return this.e.toAction(com);
+	}
+
+	public int ordinal() {
+		return this.ordinal;
+	}
+
+	@Override
+	public String toString() {
+		return e.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Action && (((Action) obj).e == this.e);
+	}
+
+	private static long mask = ~0;
+	private static ActionEnum[] values;
+	private static int[] ordinals;
+
+	public static ActionEnum[] values() {
+		return values;
+	}
+
+	public static boolean isSelected(ActionEnum e) {
+		return (mask & e.getMask()) != 0;
+	}
+
+	public static void addToMask(ActionEnum e) {
+		mask = mask | e.getMask();
+	}
+
+	public static void removeFromMask(ActionEnum e) {
+		mask = mask & ~e.getMask();
+	}
+
+	public static void init() {
+		ActionEnum[] valuesAux = new ActionEnum[ActionEnum.values().length];
+		int ordinalsAux[] = new int[ActionEnum.values().length];
+		int numValues = 0;
+
+		for (int i = 0; i < ActionEnum.values().length; i++) {
+			if (isSelected(ActionEnum.values()[i])) {
+				valuesAux[numValues] = ActionEnum.values()[i];
+				ordinalsAux[ActionEnum.values()[i].ordinal()] = numValues;
+
+				numValues++;
+			}
+		}
+
+		values = Arrays.copyOf(valuesAux, numValues);
+		ordinals = ordinalsAux;
+		// ordinals = Arrays.copyOf(ordinalsAux, numValues);
 	}
 }

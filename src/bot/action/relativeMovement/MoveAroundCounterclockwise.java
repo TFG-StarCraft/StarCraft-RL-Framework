@@ -8,9 +8,9 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundLCounterclockwise extends MoveAction {
+public class MoveAroundCounterclockwise extends MoveAction {
 
-	public MoveAroundLCounterclockwise(Com com, Unit unit) {
+	public MoveAroundCounterclockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
