@@ -120,9 +120,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		private static final long serialVersionUID = 5295002384363956476L;
 		/** Labels of parameter. */
-		private JLabel l_alpha, l_gamma, l_epsilon;
+		private JLabel l_alpha, l_gamma, l_epsilon, l_lambda;
 		/** Text field of parameter. */
-		private JTextField t_alpha, t_gamma, t_epsilon;
+		private JTextField t_alpha, t_gamma, t_epsilon, t_lambda;
 
 		private class PanelButtons extends JPanel {
 
@@ -143,7 +143,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						double alpha, gamma, epsilon;
+						double alpha, gamma, epsilon, lambda;
 
 						try {
 							alpha = Double.parseDouble(t_alpha.getText());
@@ -155,7 +155,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 							epsilon = Double.parseDouble(t_epsilon.getText());
 							if (epsilon < 0 || epsilon >= 1)
 								throw new NumberFormatException();
-							com.configureParams(alpha, gamma, epsilon);
+							lambda = Double.parseDouble(t_lambda.getText());
+							if (lambda < 0 || lambda >= 1)
+								throw new NumberFormatException();
+							com.configureParams(alpha, gamma, epsilon, lambda);
 							com.configureBot(b, frameSpeed);
 
 							tglbtnGui.setEnabled(true);
@@ -167,6 +170,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 							t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
 							t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
 							t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
+							t_lambda.setText(Double.toString(qLearning.Const.LAMBDA));
 						}
 					}
 				});
@@ -263,6 +267,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
 			this.t_epsilon.setColumns(5);
 
+			this.l_lambda = new JLabel("Lambda: ", SwingConstants.RIGHT);
+			this.t_lambda = new JTextField();
+			this.t_lambda.setText(Double.toString(qLearning.Const.LAMBDA));
+			this.t_lambda.setColumns(5);
+			
 			lblSpeed = new JLabel("Speed:", SwingConstants.RIGHT);
 			
 			textFieldSpeed = new JTextField();
@@ -292,15 +301,15 @@ public class ExecPanel extends JPanel implements ComObserver {
 			});
 
 			lblTextFps = new JLabel("FPS: ", SwingConstants.RIGHT);
-			t_FPS = new JTextField("", JLabel.LEFT);
+			t_FPS = new JTextField("0", JLabel.LEFT);
 			this.t_FPS.setColumns(5);
 			this.t_FPS.setEditable(false);
 			this.t_FPS.setBorder(null);
 			
 			this.lblTxtDeaths = new JLabel("Muertes: ", SwingConstants.RIGHT);
-			this.lblDeaths = new JLabel("", SwingConstants.LEFT);
+			this.lblDeaths = new JLabel("0", SwingConstants.LEFT);
 			this.lblTxtKills = new JLabel("Asesinatos: ", SwingConstants.RIGHT);
-			this.lblKills = new JLabel("", SwingConstants.LEFT);
+			this.lblKills = new JLabel("0", SwingConstants.LEFT);
 
 			this.textConsole = new JTextArea();
 			this.textConsole.setEditable(false);
@@ -348,10 +357,17 @@ public class ExecPanel extends JPanel implements ComObserver {
 			c.gridx = 5;
 			c.gridy = 0;
 			panelControl.add(t_epsilon, c);
-
+			
+			c.gridx = 6;
+			c.gridy = 0;
+			panelControl.add(l_lambda, c);
+			c.gridx = 7;
+			c.gridy = 0;
+			panelControl.add(t_lambda, c);
+			
 			// Add the information of speed and fps.
 			c.gridheight = 1;
-			c.gridwidth = 1;
+			c.gridwidth = 5;
 			c.gridx = 0;
 			c.gridy = 1;
 			panelControl.add(lblTextFps, c);
@@ -368,13 +384,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 			panelControl.add(textFieldSpeed, c);
 
 			// Add the panel with the buttons.
-			c.gridwidth = 6;
+			c.gridwidth = 8;
 			c.gridx = 0;
 			c.gridy = 2;
 			panelControl.add(this.panelButtons, c);
 
 			// Add the counters of kills and deaths
-			c.gridwidth = 3;
+			c.gridwidth = 5;
 			c.gridx = 0;
 			c.gridy = 3;
 			panelControl.add(this.lblTxtDeaths, c);

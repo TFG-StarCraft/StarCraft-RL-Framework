@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -191,6 +192,7 @@ public class GUI extends JFrame {
 	public GUI() {
 		super("Starcraft GUI ML Launcher");
 		this.setSize(575,675);
+		this.setMinimumSize(new Dimension(575,575));
 		this.mainPanel = new ExecPanel(this, new Com());
 		this.menuBar = new MyMenuBar();
 		this.setContentPane(mainPanel);

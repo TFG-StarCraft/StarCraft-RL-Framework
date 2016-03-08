@@ -13,7 +13,6 @@ import bot.Bot;
 import bot.BotDestruirUnidad;
 import bot.event.AbstractEvent;
 import qLearning.agent.algorithm.LambdaQ;
-import qLearning.agent.algorithm.OneStepQ;
 import qLearning.enviroment.SCEnviroment;
 import utils.DebugEnum;
 
@@ -36,12 +35,13 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		this.observers = new ArrayList<>();
 	}
 
-	private double alpha, gamma, epsilon;
+	private double alpha, gamma, epsilon, lambda;
 
-	public void configureParams(double alpha, double gamma, double epsilon) {
+	public void configureParams(double alpha, double gamma, double epsilon, double lambda) {
 		this.alpha = alpha;
 		this.gamma = gamma;
 		this.epsilon = epsilon;
+		this.lambda = lambda;
 	}
 
 	private boolean startGui;
@@ -68,7 +68,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 		onSendMessage("Starting q-Learning");
 
 		// TODO cambiar algoritmo
-		Thread t2 = new Thread(new LambdaQ(this, new SCEnviroment(this), alpha, gamma, epsilon, 0.5));
+		Thread t2 = new Thread(new LambdaQ(this, new SCEnviroment(this), alpha, gamma, epsilon, lambda));
 		t2.start();
 
 		try {
