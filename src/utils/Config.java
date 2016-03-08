@@ -14,6 +14,7 @@ public class Config {
 	public static final String SC_DEV_MAPS_PATH_PROP = "DevMapsFolder";
 	public static final String SC_CURRENT_MAP = "CurrentMap";
 	public static final String BWAPI_CONFIG = "bwapi.ini_path";
+	public static final String ACTIONS_DEFAULT = "SelectedActions";
 	
 	public static Properties prop;
 	
@@ -55,6 +56,7 @@ public class Config {
 		prop.setProperty(SC_DEV_MAPS_PATH_PROP, "");
 		prop.setProperty(SC_CURRENT_MAP, "");
 		prop.setProperty(BWAPI_CONFIG, "");
+		prop.setProperty(ACTIONS_DEFAULT, Long.toString(~0));
 		
 		try {
 			prop.store(new FileOutputStream(CONFIG_FILE_NAME), "");

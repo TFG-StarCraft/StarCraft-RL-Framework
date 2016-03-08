@@ -225,6 +225,7 @@ public class GUI extends JFrame {
 		} else {
 
 			Config.init();
+			Action.loadMask();
 
 			System.out.println(Config.get(Config.SC_PATH_PROP));
 			System.out.println(Config.get(Config.SC_DEV_MAPS_PATH_PROP));

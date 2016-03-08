@@ -8,9 +8,12 @@ import bot.action.*;
 import bot.action.movement.*;
 import bot.action.relativeMovement.*;
 import bot.action.relativeMovement.RelativeToGroup.*;
+import utils.Config;
 
 public class Action {
-
+	
+	private static long mask;
+	
 	public enum ActionEnum {
 		M_UP, M_DOWN, M_LEFT, M_RIGHT,
 
@@ -98,7 +101,6 @@ public class Action {
 		return obj instanceof Action && (((Action) obj).e == this.e);
 	}
 
-	private static long mask = ~0;
 	private static ActionEnum[] values;
 	private static int[] ordinals;
 
@@ -112,12 +114,22 @@ public class Action {
 
 	public static void addToMask(ActionEnum e) {
 		mask = mask | e.getMask();
+		Config.set(Config.ACTIONS_DEFAULT, Long.toString(mask));
 	}
 
 	public static void removeFromMask(ActionEnum e) {
 		mask = mask & ~e.getMask();
+		Config.set(Config.ACTIONS_DEFAULT, Long.toString(mask));
 	}
 
+	public static void loadMask() {
+		try {
+			mask = Long.parseLong(Config.get(Config.ACTIONS_DEFAULT));
+		} catch (NumberFormatException e) {
+			mask = ~0;
+		}
+	}
+	
 	public static void init() {
 		ActionEnum[] valuesAux = new ActionEnum[ActionEnum.values().length];
 		int ordinalsAux[] = new int[ActionEnum.values().length];
@@ -134,6 +146,9 @@ public class Action {
 
 		values = Arrays.copyOf(valuesAux, numValues);
 		ordinals = ordinalsAux;
+		
+		Config.set(Config.ACTIONS_DEFAULT, Long.toString(mask));
+		
 		// ordinals = Arrays.copyOf(ordinalsAux, numValues);
 	}
 }
