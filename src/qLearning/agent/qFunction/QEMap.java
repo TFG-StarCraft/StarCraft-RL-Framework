@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.function.BiFunction;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -14,26 +15,12 @@ import qLearning.agent.Action;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
-public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunction {
+public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements AbstractQEFunction {
 
 	private static final long serialVersionUID = 2792701869347588301L;
 
 	private int size;
 	private int last;
-	public class Set {
-		// private State s;
-		// private Action a;
-		public double q;
-		public double e;
-
-		// private Set(State s, Action a, double q, double e) {
-		private Set(double q, double e) {
-			this.q = q;
-			// this.s = s;
-			// this.a = a;
-			this.e = e;
-		}
-	}
 
 	public QEMap(AbstractEnviroment env) {
 		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
@@ -50,12 +37,6 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
-		
-		if (A == null)
-			System.err.println("A null");
-		if (S == null)
-			System.err.println("S null");
-		
 		return Long.hashCode(S.hashCode() + last * A.ordinal());
 	}
 
@@ -176,6 +157,11 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 		 */
 		return new JPanel();
 
+	}
+
+	@Override
+	public void replaceValues(BiFunction<? super Integer, ? super Set, ? extends Set> function) {
+		replaceAll(function);
 	}
 
 }

@@ -9,6 +9,8 @@ import com.Com;
 
 import qLearning.Const;
 import qLearning.agent.Action;
+import qLearning.agent.qFunction.AbstractQEFunction;
+import qLearning.agent.qFunction.QEArray;
 import qLearning.agent.qFunction.QEMap;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
@@ -17,7 +19,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 	private double lambda;
 
-	private QEMap QE;
+	private AbstractQEFunction QE;
 
 	public LambdaQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon, double lambda) {
 		this(com, e);
@@ -84,7 +86,7 @@ public class LambdaQ extends AbstractAlgorithm {
 					// E = (1 - alpha) * Q.getE(S, A) + 1;
 					QE.setE(S, A, E);
 
-					QE.replaceAll((k, v) -> {
+					QE.replaceValues((k, v) -> {
 						v.q = v.q + alpha * delta * v.e;
 						if (AA.equals(AStar)) {
 							v.e = gamma * lambda * v.e;
