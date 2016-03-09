@@ -121,7 +121,6 @@ public class QEMap extends HashMap<Integer, QEMap.Set> implements AbstractQEFunc
 	private static final DecimalFormat df = new DecimalFormat("0.#####E0");
 
 	//TODO
-	@SuppressWarnings("unused")
 	private class QCell extends JPanel {
 
 		/**

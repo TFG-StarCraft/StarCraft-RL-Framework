@@ -10,7 +10,7 @@ import bwapi.WeaponType;
  * Set of functions which help to determine the features of the units in the enviroment.
  * 
  * @author Alberto Casas Ortiz
- * @author Raul Martin Guadaño
+ * @author Raul Martin GuadaÃ±o
  * @author Miguel Ascanio Gomez
  */
 public class checkAround {
