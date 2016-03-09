@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -21,6 +22,7 @@ import qLearning.agent.Action;
 import utils.BwapiConfig;
 import utils.Config;
 import utils.DebugEnum;
+import utils.MapsSync;
 
 public class GUI extends JFrame {
 
@@ -208,7 +210,7 @@ public class GUI extends JFrame {
 		this.setVisible(true);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		File folder = new File(new File("").getAbsolutePath());
 		ArrayList<String> a = new ArrayList<>();
 		File[] listOfFiles = folder.listFiles();
@@ -227,6 +229,7 @@ public class GUI extends JFrame {
 		} else {
 
 			Config.init();
+			MapsSync.sync();
 			Action.loadMask();
 
 			System.out.println(Config.get(Config.SC_PATH_PROP));
