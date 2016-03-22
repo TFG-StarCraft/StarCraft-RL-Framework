@@ -19,7 +19,7 @@ public class SCEnviroment implements AbstractEnviroment {
 	public State getInitState() {
 		com.Sync.waitForBotEndsInit();
 
-		return new State(new DataRelative(com), this, com, true);
+		return State.newInitialState(this, com);
 	}
 
 	@Override
@@ -31,10 +31,7 @@ public class SCEnviroment implements AbstractEnviroment {
 
 	@Override
 	public ArrayList<Integer> getNumValuesPerDims() {
-		ArrayList<Integer> r = new ArrayList<>(new DataRelative(com).getNumValuesPerDims());
-		System.gc();
-		
-		return r;
+		return DataRelative.getNumValuesPerDims();
 	}
 
 }

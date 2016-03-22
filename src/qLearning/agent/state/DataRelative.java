@@ -13,13 +13,18 @@ public class DataRelative extends StateData {
 
 	public class MyLife extends Dimension<Integer> {
 
-		public MyLife(Integer value) {
-			super(value, MAX_LIFE_DISCRETE, "MyLife");
+		public MyLife(Integer rawValue) {
+			super(rawValue, MAX_LIFE_DISCRETE, "MyLife");
+		}
+
+		public MyLife() {
+			this(com.ComData.unit.getHitPoints());
+			System.out.println("HP: " + com.ComData.unit.getHitPoints()+ ", " + discretize());
 		}
 
 		@Override
 		public int discretize() {
-			return (int) Math.floor(getValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.maxHitPoints());
+			return (int) Math.floor(getRawValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.maxHitPoints());
 		}
 
 		@Override
@@ -30,13 +35,17 @@ public class DataRelative extends StateData {
 	}
 
 	public class Distance extends Dimension<Double> {
-		public Distance(Double value) {
-			super(value, MAX_DISTANCE_DISCRETE, "Distance");
+		public Distance(Double rawValue) {
+			super(rawValue, MAX_DISTANCE_DISCRETE, "Distance");
+		}
+
+		public Distance() {
+			this(com.ComData.getDistance());
 		}
 
 		@Override
 		public int discretize() {
-			return (int) Math.floor(getValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange());
+			return (int) Math.floor(getRawValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange());
 		}
 
 		@Override
@@ -46,16 +55,21 @@ public class DataRelative extends StateData {
 		}
 	}
 
-	public DataRelative(Com com) {
-		this(MAX_LIFE_DISCRETE, MAX_DISTANCE_DISCRETE, com);
+	public static ArrayList<Integer> getNumValuesPerDims() {
+		ArrayList<Integer> a = new ArrayList<>();
+		
+		a.add(MAX_LIFE_DISCRETE);
+		a.add(MAX_DISTANCE_DISCRETE);
+		
+		return a;
 	}
-
-	public DataRelative(int life, double distance, Com com) {
+	
+	public DataRelative(Com com) {
+		this.com = com;
+		
 		this.dimensions = new ArrayList<>(2);
 
-		this.dimensions.add(new MyLife(life));
-		this.dimensions.add(new Distance(distance));
-
-		this.com = com;
+		this.dimensions.add(new MyLife());
+		this.dimensions.add(new Distance());
 	}
 }

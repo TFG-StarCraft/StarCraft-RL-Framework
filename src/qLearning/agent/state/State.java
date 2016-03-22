@@ -19,7 +19,11 @@ public class State {
 
 	private Boolean finalState;
 
-	public State(StateData data, AbstractEnviroment e, Com com, boolean initialState) {
+	public static State newInitialState(AbstractEnviroment e, Com com) {
+		return new State(new DataRelative(com), e, com, true);
+	}
+	
+	private State(StateData data, AbstractEnviroment e, Com com, boolean initialState) {
 		this.com = com;
 		this.data = data;
 		this.reward = Double.NaN;
@@ -97,5 +101,14 @@ public class State {
 	@Override
 	public boolean equals(Object obj) {
 		return obj.getClass().equals(State.class) && data.getValues().equals(((State) obj).data.getValues());
+	}
+
+	@Override
+	public String toString() {
+		String s = "";
+		for (Dimension<?> e : data.getValues()) {
+			 s += (e.getName() + ": " + e.discretize() + "\n");
+		}
+		return s;
 	}
 }

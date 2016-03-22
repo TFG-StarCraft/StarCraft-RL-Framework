@@ -12,7 +12,7 @@ public abstract class Dimension<T> {
 		this.name = name;
 	}
 
-	public T getValue() {
+	public T getRawValue() {
 		return value;
 	}
 	

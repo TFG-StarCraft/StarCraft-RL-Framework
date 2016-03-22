@@ -11,16 +11,23 @@ import qLearning.agent.state.State;
 public interface AbstractQEFunction {
 	
 	class Set {
-		// private State s;
-		// private Action a;
+		public State s;
+		public Action a;
 		public double q;
 		public double e;
 
 		// private Set(State s, Action a, double q, double e) {
+		Set(double q, double e, State s, Action a) {
+			this.q = q;
+			this.s = s;
+			this.a = a;
+			this.e = e;
+		}
+		
 		Set(double q, double e) {
 			this.q = q;
-			// this.s = s;
-			// this.a = a;
+			this.s = null;
+			this.a = null;
 			this.e = e;
 		}
 	}

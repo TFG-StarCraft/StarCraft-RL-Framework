@@ -10,7 +10,6 @@ import com.Com;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQEFunction;
-import qLearning.agent.qFunction.QEArray;
 import qLearning.agent.qFunction.QEMap;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
@@ -33,9 +32,7 @@ public class LambdaQ extends AbstractAlgorithm {
 		this.com = com;
 
 		this.enviroment = e;
-
-		this.QE = new QEMap(e);
-
+		
 		this.alpha = qLearning.Const.ALPHA;
 		this.gamma = qLearning.Const.GAMMA;
 		this.epsilon = qLearning.Const.EPSLLON_EGREEDY;
@@ -55,8 +52,12 @@ public class LambdaQ extends AbstractAlgorithm {
 			com.onSendMessage("q-Learning started");
 			for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
 				com.Sync.waitForBotGameIsStarted();
-
+				
 				State S = enviroment.getInitState();
+
+				if (this.QE == null)
+					this.QE = new QEMap(enviroment);
+				
 				Action A = nextAction(S);
 				int steps = 0;
 				this.numRandomMoves = 0;
@@ -71,7 +72,12 @@ public class LambdaQ extends AbstractAlgorithm {
 
 					double E;
 
+					System.out.println("S:");
+					System.out.println(S.toString());
 					State SS = S.executeAction(A);
+
+					System.out.println("SS:");
+					System.out.println(SS.toString());
 
 					Double R = SS.getReward();
 					com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
@@ -96,7 +102,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 						return v;
 					});
-
+					
 					S = SS;
 					A = AA;
 					steps++;
