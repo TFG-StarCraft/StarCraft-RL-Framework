@@ -16,7 +16,11 @@ public abstract class StateData {
 	public StateData getNewStateData() {
 		DataRelative r = new DataRelative(com);
 
-		r.dimensions.replaceAll(e -> e.getNewDimension());
+		r.dimensions.clear();
+
+		for (Dimension<?> dimension : dimensions) {
+			r.dimensions.add(dimension.getNewDimension());
+		}
 		
 		return r;
 	}

@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import qLearning.Const;
 import qLearning.agent.Action;
-import qLearning.agent.state.Dimension;
 import qLearning.agent.state.State;
 import qLearning.enviroment.AbstractEnviroment;
 
@@ -28,7 +27,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
 		this.last = env.getNumValuesPerDims().get(env.getNumValuesPerDims().size() - 1);
 		this.env = env;
-		
+
 		System.out.println("Size of q = " + size * Action.values().length);
 
 		// TODO
@@ -104,7 +103,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	private static final DecimalFormat df = new DecimalFormat("0.#####E0");
 
-	//TODO
+	// TODO
 	private class QCell extends JPanel {
 
 		/**
@@ -132,8 +131,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 	@Override
 	public JPanel showQ() {
 
-		//if (env.getNumDims() != 2) {
-		if (true) {
+		if (env.getNumDims() != 2) {
 			for (Entry<Integer, Set> e : entrySet()) {
 				if (e.getValue().s != null) {
 					System.out.println("Action: " + e.getValue().a.toString());
@@ -142,10 +140,10 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 					System.out.println("E: " + e.getValue().e);
 				}
 			}
-		} 
+		}
 		if (env.getNumDims() == 2) {
 			int dx = env.getNumValuesPerDims().get(0), dy = env.getNumValuesPerDims().get(1);
-			JPanel panel = new JPanel(new GridLayout(dx, dy));
+			JPanel panel = new JPanel(new GridLayout(dx + 1, dy + 1));
 
 			for (int i = 0; i <= dx; i++) {
 				for (int j = 0; j <= dy; j++) {
@@ -158,16 +156,16 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 					int x = e.getValue().s.getData().getValues().get(0).discretize();
 					int y = e.getValue().s.getData().getValues().get(1).discretize();
 					int z = e.getValue().a.ordinal();
-	
+
 					QCell cell = (QCell) panel.getComponent(x * dy + y);
-	
+
 					cell.set(z, e.getValue().q);
 				}
 			}
 
 			return panel;
 		}
-		
+
 		return new JPanel();
 	}
 

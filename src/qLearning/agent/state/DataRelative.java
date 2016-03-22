@@ -9,8 +9,14 @@ import bwapi.UnitType;
 public class DataRelative extends StateData {
 
 	private static final int MAX_LIFE_DISCRETE = 5;
-	private static final int MAX_DISTANCE_DISCRETE = 5;
+	private static final int MAX_DISTANCE_DISCRETE = 10;
 
+	// Classes extending Dimension
+	// To create a new dimension:
+	// 1 - create a new class that extends Dimension, as above
+	// 2 - add it to the getNumValuesPerDims static method, as the default dimensions
+	// 3 - add it to the DataRelative constructor
+	
 	public class MyLife extends Dimension<Integer> {
 
 		public MyLife(Integer rawValue) {
@@ -19,7 +25,6 @@ public class DataRelative extends StateData {
 
 		public MyLife() {
 			this(com.ComData.unit.getHitPoints());
-			System.out.println("HP: " + com.ComData.unit.getHitPoints()+ ", " + discretize());
 		}
 
 		@Override
@@ -29,8 +34,13 @@ public class DataRelative extends StateData {
 
 		@Override
 		public MyLife getNewDimension() {
-			int newLife = (int) Math.floor(com.ComData.unit.getHitPoints() * getMaxDiscreteValue() / UnitType.Terran_Marine.maxHitPoints());
+			int newLife = com.ComData.unit.getHitPoints();
 			return new MyLife(newLife);
+		}
+
+		@Override
+		public Integer getCurrentValueFromBot() {
+			return com.ComData.unit.getHitPoints();
 		}
 	}
 
@@ -50,8 +60,13 @@ public class DataRelative extends StateData {
 
 		@Override
 		public Distance getNewDimension() {
-			double newDistance = Math.floor(com.ComData.getDistance() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange());
+			double newDistance = getCurrentValueFromBot();
 			return new Distance(newDistance);
+		}
+
+		@Override
+		public Double getCurrentValueFromBot() {
+			return com.ComData.getDistance();
 		}
 	}
 
@@ -67,7 +82,7 @@ public class DataRelative extends StateData {
 	public DataRelative(Com com) {
 		this.com = com;
 		
-		this.dimensions = new ArrayList<>(2);
+		this.dimensions = new ArrayList<>();
 
 		this.dimensions.add(new MyLife());
 		this.dimensions.add(new Distance());

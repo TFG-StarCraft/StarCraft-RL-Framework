@@ -48,10 +48,10 @@ public class State {
 		com.Sync.waitForActionEnds();
 
 		State SS = new State(this.data.getNewStateData(), this.enviroment, this.com, false);
-		// TODO
+
 		SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
-
+		
 		return SS;
 	}
 

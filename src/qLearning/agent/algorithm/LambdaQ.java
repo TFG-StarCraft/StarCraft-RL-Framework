@@ -72,12 +72,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 					double E;
 
-					System.out.println("S:");
-					System.out.println(S.toString());
 					State SS = S.executeAction(A);
-
-					System.out.println("SS:");
-					System.out.println(SS.toString());
 
 					Double R = SS.getReward();
 					com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
