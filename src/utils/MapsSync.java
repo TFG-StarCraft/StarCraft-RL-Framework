@@ -22,7 +22,7 @@ public class MapsSync {
 
 				@Override
 				public boolean accept(File f) {
-					return f.isFile() && f.getName().endsWith(".scm");
+					return f.isFile() && (f.getName().endsWith(".scm") || f.getName().endsWith(".scx"));
 				}
 			});
 
@@ -31,7 +31,7 @@ public class MapsSync {
 
 				@Override
 				public boolean accept(File f) {
-					return f.isFile() && f.getName().endsWith(".scm");
+					return f.isFile() && (f.getName().endsWith(".scm") || f.getName().endsWith(".scx"));
 				}
 			});
 

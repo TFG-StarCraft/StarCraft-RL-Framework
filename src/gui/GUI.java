@@ -92,7 +92,7 @@ public class GUI extends JFrame {
 							
 							@Override
 							public boolean accept(File f) {
-								return f.isDirectory() || f.getName().endsWith(".scm");
+								return f.isDirectory() || f.getName().endsWith(".scm") || f.getName().endsWith(".scx");
 							}
 						});
 					    // disable the "All files" option.
