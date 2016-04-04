@@ -19,22 +19,8 @@ public class OneStepQ extends AbstractAlgorithm {
 	private AbstractQFunction Q;
 
 	public OneStepQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
-		this(com, e);
-		this.alpha = alpha;
-		this.gamma = gamma;
-		this.epsilon = epsilon;
-	}
-
-	public OneStepQ(Com com, AbstractEnviroment e) {
-		this.com = com;
-
-		this.enviroment = e;
-
+		super(com, e, alpha, gamma, epsilon);
 		this.Q = new QMap(e);
-
-		this.alpha = qLearning.Const.ALPHA;
-		this.gamma = qLearning.Const.GAMMA;
-		this.epsilon = qLearning.Const.EPSLLON_EGREEDY;
 	}
 
 	public void run() {

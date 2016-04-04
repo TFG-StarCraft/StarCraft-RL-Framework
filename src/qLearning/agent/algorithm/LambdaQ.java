@@ -17,26 +17,13 @@ import qLearning.enviroment.AbstractEnviroment;
 public class LambdaQ extends AbstractAlgorithm {
 
 	private double lambda;
+	private double init_lambda;
 
 	private AbstractQEFunction QE;
 
 	public LambdaQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon, double lambda) {
-		this(com, e);
-		this.alpha = alpha;
-		this.gamma = gamma;
-		this.epsilon = epsilon;
-		this.lambda = lambda;
-	}
-
-	public LambdaQ(Com com, AbstractEnviroment e) {
-		this.com = com;
-
-		this.enviroment = e;
-		
-		this.alpha = qLearning.Const.ALPHA;
-		this.gamma = qLearning.Const.GAMMA;
-		this.epsilon = qLearning.Const.EPSLLON_EGREEDY;
-		this.lambda = qLearning.Const.LAMBDA;
+		super(com, e, alpha, gamma, epsilon);
+		this.lambda = this.init_lambda = lambda;
 	}
 
 	public void run() {
@@ -55,6 +42,7 @@ public class LambdaQ extends AbstractAlgorithm {
 				
 				State S = enviroment.getInitState();
 
+				// One time init QE_MAP, done here because it needs the enviroment initialized
 				if (this.QE == null)
 					this.QE = new QEMap(enviroment);
 				
@@ -83,6 +71,7 @@ public class LambdaQ extends AbstractAlgorithm {
 					delta = R + gamma * QE.getQ(SS, AStar) - QE.getQ(S, A);
 
 					E = QE.getE(S, A) + 1;
+					/* E update alternatives: */
 					// E = 1;
 					// E = (1 - alpha) * Q.getE(S, A) + 1;
 					QE.setE(S, A, E);
@@ -103,9 +92,10 @@ public class LambdaQ extends AbstractAlgorithm {
 					steps++;
 				}
 				
-				// TODO
-				this.alpha = Const.ALPHA - Const.ALPHA * (Math.exp(- (50 / (i+1))));
-				this.epsilon = Const.EPSLLON_EGREEDY + (1 - Const.EPSLLON_EGREEDY) * (Math.exp(- (50 / (i+1))));
+				// Decrement alpha
+				this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (50 / (i+1))));
+				// Decrement epsilon
+				this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (500 / (i+1))));
 					
 				// Iteration end
 				com.onEndIteration(steps, numRandomMoves, i);
