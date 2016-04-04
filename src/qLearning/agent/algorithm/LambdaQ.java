@@ -102,6 +102,11 @@ public class LambdaQ extends AbstractAlgorithm {
 					A = AA;
 					steps++;
 				}
+				
+				// TODO
+				this.alpha = Const.ALPHA - Const.ALPHA * (Math.exp(- (50 / (i+1))));
+				this.epsilon = Const.EPSLLON_EGREEDY + (1 - Const.EPSLLON_EGREEDY) * (Math.exp(- (50 / (i+1))));
+					
 				// Iteration end
 				com.onEndIteration(steps, numRandomMoves, i);
 				pw.println(i + "\t" + steps + "\t" + numRandomMoves);
