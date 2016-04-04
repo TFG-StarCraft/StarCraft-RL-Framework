@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.BoxLayout;
@@ -165,6 +166,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 							run.setEnabled(false);
 							Action.init();
 							gui.menuBar.actionMenu.setEnabled(false);
+							t_alpha.setEditable(false);
+							t_gamma.setEditable(false);
+							t_epsilon.setEditable(false);
+							t_lambda.setEditable(false);
 							new Thread(com).start();
 						} catch (NumberFormatException e1) {
 							t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
@@ -419,9 +424,19 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.add(this.scrollConsole, c);
 		}
 
-		public void onEndIteration(int i, int movimientos, int nume) {
-			// TODO Auto-generated method stub
+		private final DecimalFormat df = new DecimalFormat("0.#######");
+		
+		public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
+			String alphas = df.format(alpha);
+			String epsilons = df.format(epsilon);
+			
 			this.textConsole.append("movimientos: " + movimientos + " nume: " + nume + " episodio " + i + "\n");
+			this.textConsole.append("alpha: " + alphas + " epsilon: " + epsilons + "\n");
+			
+			this.t_alpha.setText(alphas);
+			this.t_epsilon.setText(epsilons);
+			
+			this.repaint();
 		}
 
 		public void onEvent(AbstractEvent abstractEvent) {
@@ -663,8 +678,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 *            = Number of random movements.
 	 */
 	@Override
-	public void onEndIteration(int i, int movimientos, int nume) {
-		this.tabConsole.onEndIteration(i, movimientos, nume);
+	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
+		this.tabConsole.onEndIteration(i, movimientos, nume, alpha, epsilon);
 		// Paint the plot.
 		this.tabGraphActions.update(i, movimientos);
 	}

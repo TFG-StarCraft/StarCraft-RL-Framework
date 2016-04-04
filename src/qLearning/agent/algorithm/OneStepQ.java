@@ -66,7 +66,7 @@ public class OneStepQ extends AbstractAlgorithm {
 				movimientos++;
 			}
 			// Iteration end
-			com.onEndIteration(movimientos, numRandomMoves, i);
+			com.onEndIteration(movimientos, numRandomMoves, i, alpha, epsilon);
 			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
 			

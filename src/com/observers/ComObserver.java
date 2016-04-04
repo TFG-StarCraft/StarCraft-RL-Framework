@@ -7,7 +7,7 @@ import utils.DebugEnum;
 
 public interface ComObserver {
 
-	public void onEndIteration(int i, int movimientos, int nume);
+	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon);
 	public void onEndTrain();
 	
 	public void onActionTaken();
