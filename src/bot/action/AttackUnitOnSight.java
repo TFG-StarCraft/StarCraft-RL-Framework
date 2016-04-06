@@ -1,6 +1,7 @@
 package bot.action;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.Com;
 
@@ -22,14 +23,21 @@ public class AttackUnitOnSight extends GenericAction {
 		int i = 0;
 		if (!l.isEmpty()) {
 			if (!unit.getOrder().equals(Order.AttackUnit)) {
-				while (!found && i < l.size()) {
-					if (!l.get(i).getPlayer().isAlly(unit.getPlayer())) {
-						found = true;
-						this.unit.attack(l.get(i));
-						super.order = this.unit.getOrder();
-					}
-					i++;
+
+				Optional<Unit> o = l.stream().filter(u -> !u.getPlayer().isAlly(unit.getPlayer()))
+						.min((a, b) -> a.getHitPoints() < b.getHitPoints() ? -1 : 1);
+				if (o.isPresent()) {
+					this.unit.attack(o.get());
+					super.order = this.unit.getOrder();	
 				}
+//				while (!found && i < l.size()) {
+//					if (!l.get(i).getPlayer().isAlly(unit.getPlayer())) {
+//						found = true;
+//						this.unit.attack(l.get(i));
+//						super.order = this.unit.getOrder();
+//					}
+//					i++;
+//				}
 
 			}
 		}

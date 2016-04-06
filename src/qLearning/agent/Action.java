@@ -7,7 +7,7 @@ import com.Com;
 import bot.action.*;
 import bot.action.movement.*;
 import bot.action.relativeMovement.*;
-import bot.action.relativeMovement.RelativeToGroup.*;
+import bot.action.relativeMovement.relativeToGroup.*;
 import utils.Config;
 
 public class Action {

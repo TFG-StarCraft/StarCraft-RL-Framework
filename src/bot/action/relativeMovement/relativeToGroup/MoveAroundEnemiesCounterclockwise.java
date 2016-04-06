@@ -1,4 +1,4 @@
-package bot.action.relativeMovement.RelativeToGroup;
+package bot.action.relativeMovement.relativeToGroup;
 
 import java.util.List;
 

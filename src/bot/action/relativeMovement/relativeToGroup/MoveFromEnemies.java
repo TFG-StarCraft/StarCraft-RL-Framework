@@ -1,4 +1,4 @@
-package bot.action.relativeMovement.RelativeToGroup;
+package bot.action.relativeMovement.relativeToGroup;
 
 import java.util.List;
 
@@ -96,6 +96,9 @@ public class MoveFromEnemies extends MoveAction {
 		}
 	}
 
-	
+	@Override
+	public boolean isPossible() {
+		return modulo < com.ComData.unit.getType().width() * 2;
+	}	
 	
 }
