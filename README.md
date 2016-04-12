@@ -2,9 +2,9 @@
 
 ## Herramienats externas
 
-[BWAPI - Verión 4.1.0 BETA] (https://github.com/bwapi/bwapi) compatible con BWAPI Mirror
+[BWAPI - Verión 4.1.2] (https://github.com/bwapi/bwapi) compatible con BWAPI Mirror
 
-[BWAPI Mirror Versión 2.4] (https://github.com/vjurenka/BWMirror)
+[BWAPI Mirror Versión 2.5] (https://github.com/vjurenka/BWMirror)
 
 [JMathPlot] (https://github.com/yannrichet/jmathplot)
 
