@@ -1,4 +1,4 @@
-package bot.action.relativeMovement;
+package bot.action.movement.relative;
 
 import com.Com;
 
@@ -12,5 +12,10 @@ public abstract class RelativeMove extends MoveAction{
 	public RelativeMove(Com com, Unit unit) {
 		super(com, unit);
 	}
-
+	
+	@Override
+	public boolean isPossible() {
+		return modulo < com.ComData.unit.getType().width() * 2;
+	}
+	
 }

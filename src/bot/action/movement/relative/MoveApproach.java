@@ -1,10 +1,9 @@
-package bot.action.relativeMovement.relativeToGroup;
+package bot.action.movement.relative;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -14,9 +13,8 @@ import bwapi.UnitType;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveToAllies extends MoveAction {
-	
-	
+public class MoveApproach extends RelativeMove {
+		
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
@@ -27,12 +25,10 @@ public class MoveToAllies extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveToAllies(Com com, Unit unit) {
+	public MoveApproach(Com com, Unit unit) {
 		super(com, unit);
 	}
 
-	
-	
 	/******************/
 	/* PRIVATE METHOD */
 	/******************/
@@ -48,8 +44,6 @@ public class MoveToAllies extends MoveAction {
 		return this.unit.getUnitsInRadius(t.sightRange());
 	}
 
-	
-	
 	/*******************/
 	/* OVERRIDE METHOD */
 	/*******************/
@@ -61,32 +55,18 @@ public class MoveToAllies extends MoveAction {
 	protected void setUpMove() {
 		List<Unit> l = getGroundUnitsInRange();
 		if (!l.isEmpty()) {
-			double pX = 0, pY = 0;
-			int cont = 0;
-			//Calculate point between allies.
-			for(int i = 0; i < l.size(); i++){
-				if(l.get(i).getPlayer().isAlly(unit.getPlayer())){
-					pX += l.get(i).getX();
-					pY += l.get(i).getY();
-					cont++;
-				}
-			}
-			pX /= cont;
-			pY /= cont;
-			
-			//Calculate vector to point.
-			double vX = pX - unit.getX();
-			double vY = pY - unit.getY();
-			
+			Unit u = l.get(0);
+			//Calculate vector from unit to target.
+			double vX = u.getX() - unit.getX();
+			double vY = u.getY() - unit.getY();
+
 			modulo = Math.sqrt(vX*vX + vY*vY);
-			
 			vX /= modulo;
-			
 			vY /= modulo;
 
 			//Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
+			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
 			
 		}
 		//Otherwise, do nothing.
@@ -96,9 +76,6 @@ public class MoveToAllies extends MoveAction {
 		}
 	}
 
-	@Override
-	public boolean isPossible() {
-		return modulo < com.ComData.unit.getType().width() * 2;
-	}
+	
 	
 }

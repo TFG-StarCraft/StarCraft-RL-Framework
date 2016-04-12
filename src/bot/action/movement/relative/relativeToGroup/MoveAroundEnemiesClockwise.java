@@ -1,4 +1,4 @@
-package bot.action.relativeMovement.relativeToGroup;
+package bot.action.movement.relative.relativeToGroup;
 
 import java.util.List;
 
@@ -8,30 +8,11 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-/**
- * Movement. Approaching to a target unit.
- * @author Alberto Casas Ortiz
- * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez
- */
-public class MoveToEnemies extends MoveAction {
-	
-	
-	/***************/
-	/* CONSTRUCTOR */
-	/***************/
-	
-	/**
-	 * Constructor of the class MoveApproach.
-	 * @param com Comunication.
-	 * @param unit Unit to move.
-	 * @param agentEpoch 
-	 */
-	public MoveToEnemies(Com com, Unit unit) {
+public class MoveAroundEnemiesClockwise extends MoveAction {
+
+	public MoveAroundEnemiesClockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
-
-	
 	
 	/******************/
 	/* PRIVATE METHOD */
@@ -42,6 +23,7 @@ public class MoveToEnemies extends MoveAction {
 	 * @return A list with the units in the range.
 	 */
 	private List<Unit> getGroundUnitsInRange() {
+		
 		Unit u = this.unit;
 		UnitType t = u.getType();
 		
@@ -55,7 +37,7 @@ public class MoveToEnemies extends MoveAction {
 	/*******************/
 	
 	/**
-	 * Do the approach movement.
+	 * Do the moveArountRight movement.
 	 */
 	@Override
 	protected void setUpMove() {
@@ -74,31 +56,22 @@ public class MoveToEnemies extends MoveAction {
 			pX /= cont;
 			pY /= cont;
 			
-			//Calculate vector to point.
-			double vX = pX - unit.getX();
-			double vY = pY - unit.getY();
+			unit.getX();
+			unit.getY();
 			
-			double modulo = Math.sqrt(vX*vX + vY*vY);
+			double s = Math.sin(Math.PI/16);
+			double c = Math.cos(Math.PI/16);
 			
-			vX /= modulo;
 			
-			vY /= modulo;
+			this.endX += (int) Math.floor((unit.getX() - pX) * c - (unit.getY() - pY) * s) + pX;
+			this.endY += (int) Math.floor((unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
 
-			//Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
-			
 		}
-		//Otherwise, do nothing.
 		else{
 			this.endX = unit.getX();
 			this.endY = unit.getY();
 		}
 	}
 
-	@Override
-	public boolean isPossible() {
-		return modulo < com.ComData.unit.getType().width() * 2;
-	}
 	
 }

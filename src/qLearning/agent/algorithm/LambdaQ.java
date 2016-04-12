@@ -93,7 +93,7 @@ public class LambdaQ extends AbstractAlgorithm {
 				}
 				
 				// Decrement alpha
-				this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (200 / (double) (i+1))));
+				this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (350 / (double) (i+1))));
 				// Increment epsilon
 				this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
 					

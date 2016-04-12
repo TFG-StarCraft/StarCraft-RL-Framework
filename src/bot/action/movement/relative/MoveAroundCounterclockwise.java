@@ -1,4 +1,4 @@
-package bot.action.relativeMovement;
+package bot.action.movement.relative;
 
 import java.util.List;
 

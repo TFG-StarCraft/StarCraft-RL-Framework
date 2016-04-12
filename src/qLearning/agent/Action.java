@@ -6,8 +6,8 @@ import com.Com;
 
 import bot.action.*;
 import bot.action.movement.*;
-import bot.action.relativeMovement.*;
-import bot.action.relativeMovement.relativeToGroup.*;
+import bot.action.movement.relative.*;
+import bot.action.movement.relative.relativeToGroup.*;
 import utils.Config;
 
 public class Action {
@@ -23,7 +23,7 @@ public class Action {
 
 		M_FROM_ALLIES, M_TO_ALLIES, M_FROM_ENE, M_TO_ENE,
 
-		ATTACK;
+		ATTACK_LESS_HP;
 
 		public long getMask() {
 			return 1 << this.ordinal();
@@ -67,8 +67,8 @@ public class Action {
 			case M_TO_ALLIES:
 				return new MoveToAllies(com, com.ComData.unit);
 
-			case ATTACK:
-				return new AttackUnitOnSight(com, com.ComData.unit);
+			case ATTACK_LESS_HP:
+				return new AttackUnitOnSightLesHP(com, com.ComData.unit);
 			default:
 				throw new IllegalArgumentException("Accion no valida");
 			}

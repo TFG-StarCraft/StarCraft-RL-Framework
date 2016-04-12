@@ -1,10 +1,10 @@
-package bot.action.relativeMovement;
+package bot.action.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
+import bot.action.movement.relative.RelativeMove;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -14,8 +14,7 @@ import bwapi.UnitType;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveApproach extends MoveAction {
-	
+public class MoveToAllies extends RelativeMove {
 	
 	/***************/
 	/* CONSTRUCTOR */
@@ -27,12 +26,10 @@ public class MoveApproach extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveApproach(Com com, Unit unit) {
+	public MoveToAllies(Com com, Unit unit) {
 		super(com, unit);
 	}
 
-	
-	
 	/******************/
 	/* PRIVATE METHOD */
 	/******************/
@@ -61,17 +58,31 @@ public class MoveApproach extends MoveAction {
 	protected void setUpMove() {
 		List<Unit> l = getGroundUnitsInRange();
 		if (!l.isEmpty()) {
-			Unit u = l.get(0);
-			//Calculate vector from unit to target.
-			double vX = u.getX() - unit.getX();
-			double vY = u.getY() - unit.getY();
-			double modulo = Math.sqrt(vX*vX + vY*vY);
+			double pX = 0, pY = 0;
+			int cont = 0;
+			//Calculate point between allies.
+			for(int i = 0; i < l.size(); i++){
+				if(l.get(i).getPlayer().isAlly(unit.getPlayer())){
+					pX += l.get(i).getX();
+					pY += l.get(i).getY();
+					cont++;
+				}
+			}
+			pX /= cont;
+			pY /= cont;
+			
+			//Calculate vector to point.
+			double vX = pX - unit.getX();
+			double vY = pY - unit.getY();
+			
+			modulo = Math.sqrt(vX*vX + vY*vY);
+			
 			vX /= modulo;
 			vY /= modulo;
 
 			//Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
+			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
 			
 		}
 		//Otherwise, do nothing.
@@ -79,8 +90,5 @@ public class MoveApproach extends MoveAction {
 			this.endX = unit.getX();
 			this.endY = unit.getY();
 		}
-	}
-
-	
-	
+	}	
 }

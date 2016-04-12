@@ -1,4 +1,4 @@
-package bot.action.relativeMovement.relativeToGroup;
+package bot.action.movement.relative.relativeToGroup;
 
 import java.util.List;
 
@@ -29,8 +29,6 @@ public class MoveAroundEnemiesCounterclockwise extends MoveAction {
 		
 		return this.unit.getUnitsInRadius(t.sightRange());
 	}
-
-	
 	
 	/*******************/
 	/* OVERRIDE METHOD */

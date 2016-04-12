@@ -25,6 +25,7 @@ public class BotDestruirUnidad extends Bot {
 		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, args[0]));
 	}
 
+	// TODO cont bot
 	int cont = 0;
 	
 	@Override
@@ -36,12 +37,12 @@ public class BotDestruirUnidad extends Bot {
 				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
 				cont = 0;
 			} else {
-//				if (cont == 0)
-//					cont++;
-//				else {
+				if (cont == 0)
+					cont++;
+				else {
 					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
 					cont = 0;
-//				}
+				}
 			}
 	
 			super.onUnitDestroy(unit);

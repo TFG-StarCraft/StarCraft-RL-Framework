@@ -1,4 +1,4 @@
-package bot.action.relativeMovement.relativeToGroup;
+package bot.action.movement.relative.relativeToGroup;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import bot.action.movement.MoveAction;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundAlliesClockwise extends MoveAction {
+public class MoveAroundAlliesCounterclockwise extends MoveAction {
 
-	public MoveAroundAlliesClockwise(Com com, Unit unit) {
+	public MoveAroundAlliesCounterclockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 	
@@ -63,8 +63,8 @@ public class MoveAroundAlliesClockwise extends MoveAction {
 			double c = Math.cos(Math.PI/16);
 			
 			
-			this.endX += (int) Math.floor((unit.getX() - pX) * c - (unit.getY() - pY) * s) + pX;
-			this.endY += (int) Math.floor((unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
+			this.endX += (int) Math.floor((unit.getX() - pX) * c + (unit.getY() - pY) * s) + pX;
+			this.endY += (int) Math.floor(- (unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
 
 		}
 		else{

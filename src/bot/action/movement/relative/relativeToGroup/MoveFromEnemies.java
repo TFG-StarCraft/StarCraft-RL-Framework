@@ -1,18 +1,36 @@
-package bot.action.relativeMovement.relativeToGroup;
+package bot.action.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
+import bot.action.movement.relative.RelativeMove;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MoveAroundEnemiesClockwise extends MoveAction {
-
-	public MoveAroundEnemiesClockwise(Com com, Unit unit) {
+/**
+ * Movement. Approaching to a target unit.
+ * @author Alberto Casas Ortiz
+ * @author Raúl Martín Guadaño
+ * @author Miguel Ascanio Gómez
+ */
+public class MoveFromEnemies extends RelativeMove {
+	
+	/***************/
+	/* CONSTRUCTOR */
+	/***************/
+	
+	/**
+	 * Constructor of the class MoveApproach.
+	 * @param com Comunication.
+	 * @param unit Unit to move.
+	 * @param agentEpoch 
+	 */
+	public MoveFromEnemies(Com com, Unit unit) {
 		super(com, unit);
 	}
+
+	
 	
 	/******************/
 	/* PRIVATE METHOD */
@@ -23,7 +41,6 @@ public class MoveAroundEnemiesClockwise extends MoveAction {
 	 * @return A list with the units in the range.
 	 */
 	private List<Unit> getGroundUnitsInRange() {
-		
 		Unit u = this.unit;
 		UnitType t = u.getType();
 		
@@ -37,7 +54,7 @@ public class MoveAroundEnemiesClockwise extends MoveAction {
 	/*******************/
 	
 	/**
-	 * Do the moveArountRight movement.
+	 * Do the approach movement.
 	 */
 	@Override
 	protected void setUpMove() {
@@ -56,22 +73,29 @@ public class MoveAroundEnemiesClockwise extends MoveAction {
 			pX /= cont;
 			pY /= cont;
 			
-			unit.getX();
-			unit.getY();
+			//Calculate vector to point.
+			double vX = pX - unit.getX();
+			double vY = pY - unit.getY();
 			
-			double s = Math.sin(Math.PI/16);
-			double c = Math.cos(Math.PI/16);
+			modulo = Math.sqrt(vX*vX + vY*vY);
 			
-			
-			this.endX += (int) Math.floor((unit.getX() - pX) * c - (unit.getY() - pY) * s) + pX;
-			this.endY += (int) Math.floor((unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
+			vX /= modulo;			
+			vY /= modulo;
 
+			//Advance step from target to target.
+			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
+			
 		}
+		//Otherwise, do nothing.
 		else{
 			this.endX = unit.getX();
 			this.endY = unit.getY();
 		}
 	}
-
 	
+	@Override
+	public boolean isPossible() {
+		return true;
+	}
 }
