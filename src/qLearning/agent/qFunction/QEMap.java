@@ -20,12 +20,10 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 	private static final long serialVersionUID = 2792701869347588301L;
 
 	private int size;
-	private int last;
 	private AbstractEnviroment env;
 
 	public QEMap(AbstractEnviroment env) {
 		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
-		this.last = env.getNumValuesPerDims().get(env.getNumValuesPerDims().size() - 1);
 		this.env = env;
 
 		System.out.println("Size of q = " + size * Action.values().length);
@@ -39,30 +37,30 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
-		return Long.hashCode(S.hashCode() + last * A.ordinal());
+		return Long.hashCode(S.hashCode() + size * A.ordinal());
 	}
 
 	@Override
 	public double getQ(State S, Action A) {
 		Set set = this.get(getHash(S, A));
-
+/*
 		if (set == null) {
 			set = new Set(Const.Q_GENERAL, 0, S, A);
 			this.put(getHash(S, A), set);
 		}
-
+*/
 		return set.q;
 	}
 
 	@Override
 	public double getE(State S, Action A) {
 		Set set = this.get(getHash(S, A));
-
+/*
 		if (set == null) {
 			set = new Set(Const.Q_GENERAL, 0, S, A);
 			this.put(getHash(S, A), set);
 		}
-
+*/
 		return set.e;
 	}
 
@@ -114,14 +112,25 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 		private QCell() {
 			super(new GridLayout(Action.values().length, 1));
 			for (int i = 0; i < Action.values().length; i++) {
-				this.add(new JLabel("" + qLearning.Const.Q_GENERAL));
+				JLabel l = new JLabel("   ");
+				this.add(l);
+				l.setForeground(Color.gray);
 			}
 
 			this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		}
 
-		private void set(int n, double d) {
-			((JLabel) getComponent(n)).setText(df.format(d));
+		private void set(int n, Set s) {
+			((JLabel) getComponent(n)).setText(df.format(s.q));
+			
+			if (s.q > s.oldq) {
+				((JLabel) getComponent(n)).setForeground(Color.green);
+			} else if (s.q < s.oldq) {
+				((JLabel) getComponent(n)).setForeground(Color.red);
+			} else {
+				((JLabel) getComponent(n)).setForeground(Color.black);
+			}
+			
 			repaint();
 		}
 
@@ -159,7 +168,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 					QCell cell = (QCell) panel.getComponent(x * dy + y);
 
-					cell.set(z, e.getValue().q);
+					cell.set(z, e.getValue());
 				}
 			}
 

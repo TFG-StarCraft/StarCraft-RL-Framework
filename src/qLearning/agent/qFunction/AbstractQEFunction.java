@@ -14,21 +14,20 @@ public interface AbstractQEFunction {
 		public State s;
 		public Action a;
 		public double q;
+		public double oldq;
 		public double e;
 
 		// private Set(State s, Action a, double q, double e) {
 		Set(double q, double e, State s, Action a) {
 			this.q = q;
+			this.oldq = q;
 			this.s = s;
 			this.a = a;
 			this.e = e;
 		}
 		
 		Set(double q, double e) {
-			this.q = q;
-			this.s = null;
-			this.a = null;
-			this.e = e;
+			this(q,e,null,null);
 		}
 	}
 

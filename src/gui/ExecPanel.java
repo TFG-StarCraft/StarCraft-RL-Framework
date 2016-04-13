@@ -744,6 +744,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		qPanel.removeAll();
 		qPanel.add(panel);
 		qPanel.repaint();
+		repaint();
 	}
 
 	///////////////////
