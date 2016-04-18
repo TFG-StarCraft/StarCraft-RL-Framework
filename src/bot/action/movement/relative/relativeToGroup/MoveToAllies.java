@@ -5,8 +5,8 @@ import java.util.List;
 import com.Com;
 
 import bot.action.movement.relative.RelativeMove;
+import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
-import bwapi.UnitType;
 
 /**
  * Movement. Approaching to a target unit.
@@ -29,23 +29,6 @@ public class MoveToAllies extends RelativeMove {
 	public MoveToAllies(Com com, Unit unit) {
 		super(com, unit);
 	}
-
-	/******************/
-	/* PRIVATE METHOD */
-	/******************/
-	
-	/**
-	 * Get the units in the range of the moving unit.
-	 * @return A list with the units in the range.
-	 */
-	private List<Unit> getGroundUnitsInRange() {
-		Unit u = this.unit;
-		UnitType t = u.getType();
-		
-		return this.unit.getUnitsInRadius(t.sightRange());
-	}
-
-	
 	
 	/*******************/
 	/* OVERRIDE METHOD */
@@ -56,17 +39,15 @@ public class MoveToAllies extends RelativeMove {
 	 */
 	@Override
 	protected void setUpMove() {
-		List<Unit> l = getGroundUnitsInRange();
+		List<Unit> l = CheckAround.getAlliesAround(unit);
 		if (!l.isEmpty()) {
 			double pX = 0, pY = 0;
 			int cont = 0;
 			//Calculate point between allies.
 			for(int i = 0; i < l.size(); i++){
-				if(l.get(i).getPlayer().isAlly(unit.getPlayer())){
-					pX += l.get(i).getX();
-					pY += l.get(i).getY();
-					cont++;
-				}
+				pX += l.get(i).getX();
+				pY += l.get(i).getY();
+				cont++;
 			}
 			pX /= cont;
 			pY /= cont;

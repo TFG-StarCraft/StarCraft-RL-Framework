@@ -100,7 +100,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 				}
 			}
 		} else {
-			// TODO es necesario? Deber�a cumplirse
+			// TODO es necesario? Debería cumplirse
 			throw new RuntimeException();
 		}
 	}

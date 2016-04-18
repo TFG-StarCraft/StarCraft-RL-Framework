@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.Com;
-import com.observers.AgentObserver;
 
 import bot.action.GenericAction;
+import bot.commonFunctions.CheckAround;
 import bot.event.AbstractEvent;
 import bot.event.factories.AbstractEventsFactory;
 import bot.event.factories.AEFDestruirUnidad;
@@ -26,22 +26,17 @@ public class BotDestruirUnidad extends Bot {
 		return new AEFDestruirUnidad(com);
 	}
 	
-	double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
+	private double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
 	
 	@Override
 	public void onNewAction(GenericAction genericAction, Object... args) {
 		iniMyHP = com.ComData.unit.getHitPoints();
 
 		Unit unit = com.ComData.unit;
-		UnitType t = unit.getType();
-		WeaponType w = t.groundWeapon();
 		
-		List<Unit>l = unit.getUnitsInRadius(w.maxRange());
-						
-		Optional<Integer> o = l.stream()
-				.filter(u -> !u.getPlayer().isAlly(unit.getPlayer()))
-					.map(u -> u.getHitPoints())
-						.reduce(Integer::sum);
+		List<Unit>l = CheckAround.getEnemiesInGroundRange(unit);
+		Optional<Integer> o = l.stream().
+				map(u -> u.getHitPoints()).reduce(Integer::sum);
 		if (o.isPresent()) {
 			iniEnemyHP = o.get();
 		} else {
