@@ -67,6 +67,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private TabConsole tabConsole;
 	private TabGraph tabGraphActions;
 	private TabGraph tabGraphKills;
+	private TabGraph tabGraphReward;
 	private TabDanger tabDanger;
 
 	private JScrollPane qTabScroll;
@@ -103,6 +104,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		this.tabGraphKills = new TabGraph("Episodes", "Kills");
 		this.topTabbedPanel.add("Kills", tabGraphKills);
+		
+		this.tabGraphReward = new TabGraph("Episodes", "Reward");
+		this.topTabbedPanel.add("Reward", tabGraphReward);
 		
 		this.tabDanger = new TabDanger();
 		this.topTabbedPanel.add("Units", tabDanger);
@@ -241,7 +245,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		/** Text field for speed. */
 		private JTextField textFieldSpeed;
 
-		private JLabel lblTxtKills, lblTxtDeaths, lblKills, lblDeaths;
+		private JLabel lblTxtKills, lblTxtDeaths, lblTxtRel, lblKills, lblDeaths, lblRel;
 		private int kills = 0, deaths = 0;
 
 		/** Scroll panel for the text console. */
@@ -315,6 +319,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.lblDeaths = new JLabel("0", SwingConstants.LEFT);
 			this.lblTxtKills = new JLabel("Asesinatos: ", SwingConstants.RIGHT);
 			this.lblKills = new JLabel("0", SwingConstants.LEFT);
+			this.lblTxtRel = new JLabel("Rel: ", SwingConstants.RIGHT);
+			this.lblRel = new JLabel("0", SwingConstants.LEFT);
 
 			this.textConsole = new JTextArea();
 			this.textConsole.setEditable(false);
@@ -395,7 +401,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			panelControl.add(this.panelButtons, c);
 
 			// Add the counters of kills and deaths
-			c.gridwidth = 5;
+			c.gridwidth = 3;
 			c.gridx = 0;
 			c.gridy = 3;
 			panelControl.add(this.lblTxtDeaths, c);
@@ -408,6 +414,12 @@ public class ExecPanel extends JPanel implements ComObserver {
 			c.gridx = 3;
 			c.gridy = 3;
 			panelControl.add(this.lblKills, c);
+			c.gridx = 4;
+			c.gridy = 3;
+			panelControl.add(this.lblTxtRel, c);
+			c.gridx = 5;
+			c.gridy = 3;
+			panelControl.add(this.lblRel, c);
 
 			// Add controlPanel an scrollPanel to main panel.
 
@@ -424,7 +436,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.add(this.scrollConsole, c);
 		}
 
-		private final DecimalFormat df = new DecimalFormat("0.#######");
+		private final DecimalFormat df = new DecimalFormat("0.######");
 		
 		public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
 			String alphas = df.format(alpha);
@@ -438,6 +450,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 			
 			this.repaint();
 		}
+		
+
+		private final DecimalFormat df2 = new DecimalFormat("###0.##");
 
 		public void onEvent(AbstractEvent abstractEvent) {
 			switch (abstractEvent.getCode()) {
@@ -454,6 +469,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			default:
 				break;
 			}
+			this.lblRel.setText(df2.format(this.kills / (double) this.deaths));
 		}
 
 		public void onSendMessage(String s) {
@@ -678,10 +694,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 *            = Number of random movements.
 	 */
 	@Override
-	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
+	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon, Double R) {
 		this.tabConsole.onEndIteration(i, movimientos, nume, alpha, epsilon);
 		// Paint the plot.
 		this.tabGraphActions.update(i, movimientos);
+		this.tabGraphReward.update(R);
 	}
 
 	@Override

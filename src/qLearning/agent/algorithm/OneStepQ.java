@@ -41,14 +41,14 @@ public class OneStepQ extends AbstractAlgorithm {
 			this.numRandomMoves = 0;
 
 			//com.Sync.signalAgentIsStarting();
-			
+			Double R = 0.0;
 			while (!S.isFinalEnd()) {
 				Action A = nextAction(S);
 
 				// Blocks until action A ends
 				State SS = S.executeAction(A);
 
-				Double R = SS.getReward();
+				R = SS.getReward();
 				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 				double maxq = Double.NEGATIVE_INFINITY;
 				// Probar movimientos
@@ -66,7 +66,7 @@ public class OneStepQ extends AbstractAlgorithm {
 				movimientos++;
 			}
 			// Iteration end
-			com.onEndIteration(movimientos, numRandomMoves, i, alpha, epsilon);
+			com.onEndIteration(movimientos, numRandomMoves, i, alpha, epsilon, R);
 			pw.println(i + "\t" + movimientos + "\t" + numRandomMoves);
 			pw.flush();
 			

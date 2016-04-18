@@ -14,7 +14,7 @@ public class ConsoleExit implements ComObserver {
 	}
 
 	@Override
-	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
+	public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon, Double R) {
 		System.out.println("movimientos: " + movimientos + " nume: " + nume + " episodio " + i);
 		System.out.println("alpha: " + alpha + " epsilon: " + epsilon);
 	}

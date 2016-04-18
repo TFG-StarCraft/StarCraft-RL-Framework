@@ -90,9 +90,9 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 
 	@Override
-	public void onEndIteration(int movimientos, int nume, int i, double alpha, double epsilon) {
+	public void onEndIteration(int movimientos, int nume, int i, double alpha, double epsilon, Double R) {
 		for (ComObserver comObserver : observers) {
-			comObserver.onEndIteration(i, movimientos, nume, alpha, epsilon);
+			comObserver.onEndIteration(i, movimientos, nume, alpha, epsilon, R);
 		}
 	}
 

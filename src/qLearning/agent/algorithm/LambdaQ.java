@@ -53,6 +53,8 @@ public class LambdaQ extends AbstractAlgorithm {
 
 				// com.Sync.signalAgentIsStarting();
 
+				Double R = 0.0;
+				
 				while (!S.isFinalEnd()) {
 					// Blocks until action A ends
 					Action AA, AStar;
@@ -62,7 +64,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 					State SS = S.executeAction(A);
 
-					Double R = SS.getReward();
+					R = SS.getReward();
 					com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
 
 					AA = nextAction(SS);
@@ -98,7 +100,7 @@ public class LambdaQ extends AbstractAlgorithm {
 				this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
 					
 				// Iteration end
-				com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon);
+				com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon, R);
 				pw.println(i + "\t" + steps + "\t" + numRandomMoves);
 				pw.flush();
 

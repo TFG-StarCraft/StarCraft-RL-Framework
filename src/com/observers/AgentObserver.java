@@ -6,7 +6,7 @@ import utils.DebugEnum;
 
 public interface AgentObserver {
 
-	public void onEndIteration(int movimientos, int nume, int i, double alpha, double epsilon);
+	public void onEndIteration(int movimientos, int nume, int i, double alpha, double epsilon, Double R);
 	public void onEndTrain();
 	
 	public void onActionTaken();
