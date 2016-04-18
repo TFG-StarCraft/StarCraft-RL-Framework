@@ -58,9 +58,9 @@ public class State {
 	private double calculateReward() {
 		if (finalState) {
 			if (com.ComData.isFinalStateGoal)
-				return Const.RECOMPENSA_FINAL;
+				return Const.REWARD_SUCCESS;
 			else {
-				return Const.RECOMPENSA_ERROR;
+				return Const.REWARD_FAIL;
 			}
 		} else {
 			return com.bot.getReward();

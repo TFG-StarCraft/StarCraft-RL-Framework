@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.Com;
 
+import bot.commonFunctions.Distances;
 import bwapi.UnitType;
 
 public class DataRelative extends StateData {
@@ -14,9 +15,10 @@ public class DataRelative extends StateData {
 	// Classes extending Dimension
 	// To create a new dimension:
 	// 1 - create a new class that extends Dimension, as above
-	// 2 - add it to the getNumValuesPerDims static method, as the default dimensions
+	// 2 - add it to the getNumValuesPerDims static method, as the default
+	// dimensions
 	// 3 - add it to the DataRelative constructor
-	
+
 	public class MyLife extends Dimension<Integer> {
 
 		public MyLife(Integer rawValue) {
@@ -44,13 +46,13 @@ public class DataRelative extends StateData {
 		}
 	}
 
-	public class Distance extends Dimension<Double> {
-		public Distance(Double rawValue) {
+	public class DistanceToNearestEnemy extends Dimension<Double> {
+		public DistanceToNearestEnemy(Double rawValue) {
 			super(rawValue, MAX_DISTANCE_DISCRETE, "Distance");
 		}
 
-		public Distance() {
-			this(com.ComData.getDistance());
+		public DistanceToNearestEnemy() {
+			this(Distances.getDistanceToNearestEnemy(com.ComData.unit));
 		}
 
 		@Override
@@ -59,32 +61,32 @@ public class DataRelative extends StateData {
 		}
 
 		@Override
-		public Distance getNewDimension() {
+		public DistanceToNearestEnemy getNewDimension() {
 			double newDistance = getCurrentValueFromBot();
-			return new Distance(newDistance);
+			return new DistanceToNearestEnemy(newDistance);
 		}
 
 		@Override
 		public Double getCurrentValueFromBot() {
-			return com.ComData.getDistance();
+			return Distances.getDistanceToNearestEnemy(com.ComData.unit);
 		}
 	}
 
 	public static ArrayList<Integer> getNumValuesPerDims() {
 		ArrayList<Integer> a = new ArrayList<>();
-		
+
 		a.add(MAX_LIFE_DISCRETE);
 		a.add(MAX_DISTANCE_DISCRETE);
-		
+
 		return a;
 	}
-	
+
 	public DataRelative(Com com) {
 		this.com = com;
-		
+
 		this.dimensions = new ArrayList<>();
 
 		this.dimensions.add(new MyLife());
-		this.dimensions.add(new Distance());
+		this.dimensions.add(new DistanceToNearestEnemy());
 	}
 }
