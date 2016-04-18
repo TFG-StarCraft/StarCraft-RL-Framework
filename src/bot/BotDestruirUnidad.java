@@ -1,12 +1,18 @@
 package bot;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.Com;
+import com.observers.AgentObserver;
 
 import bot.action.GenericAction;
 import bot.event.AbstractEvent;
 import bot.event.factories.AbstractEventsFactory;
 import bot.event.factories.AEFDestruirUnidad;
 import bwapi.Unit;
+import bwapi.UnitType;
+import bwapi.WeaponType;
 import utils.DebugEnum;
 
 public class BotDestruirUnidad extends Bot {
@@ -19,12 +25,78 @@ public class BotDestruirUnidad extends Bot {
 	public AbstractEventsFactory getNewFactory() {
 		return new AEFDestruirUnidad(com);
 	}
+	
+	double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
+	
+	@Override
+	public void onNewAction(GenericAction genericAction, Object... args) {
+		iniMyHP = com.ComData.unit.getHitPoints();
+
+		Unit unit = com.ComData.unit;
+		UnitType t = unit.getType();
+		WeaponType w = t.groundWeapon();
+		
+		List<Unit>l = unit.getUnitsInRadius(w.maxRange());
+						
+		Optional<Integer> o = l.stream()
+				.filter(u -> !u.getPlayer().isAlly(unit.getPlayer()))
+					.map(u -> u.getHitPoints())
+						.reduce(Integer::sum);
+		if (o.isPresent()) {
+			iniEnemyHP = o.get();
+		} else {
+			iniEnemyHP = -1;
+		}		
+	}
 
 	@Override
 	public void onEndAction(GenericAction genericAction, Object... args) {
 		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, args[0]));
+	
+		endMyHP = com.ComData.unit.getHitPoints();
+
+		Unit unit = com.ComData.unit;
+		UnitType t = unit.getType();
+		WeaponType w = t.groundWeapon();
+
+		List<Unit>l = unit.getUnitsInRadius(w.maxRange());
+		Optional<Integer> o = l.stream()
+				.filter(u -> !u.getPlayer().isAlly(unit.getPlayer()))
+					.map(u -> u.getHitPoints())
+						.reduce(Integer::sum);
+		
+		if (o.isPresent()) {
+			endEnemyHP = o.get();
+			
+			if (iniEnemyHP == -1) {
+				l = unit.getUnitsInRadius(w.maxRange());
+				Optional<Integer> o2 = l.stream()
+						.filter(u -> !u.getPlayer().isAlly(unit.getPlayer()))
+							.map(u -> u.getInitialHitPoints())
+								.reduce(Integer::sum);
+				if (o2.isPresent()) {
+					iniEnemyHP = o2.get();
+				} else {
+					iniEnemyHP = -1;
+				}	
+			}
+			
+		} else {
+			endEnemyHP = -1;
+		}
 	}
 
+	@Override
+	public double getReward() {
+		
+		if (iniEnemyHP == -1 && endEnemyHP == -1) {
+			return 0;
+		} 
+		
+		double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
+		return r * qLearning.Const.RECOMPENSA_GENERAL;
+	}
+	
 	// TODO cont bot
 	int cont = 0;
 	

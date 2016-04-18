@@ -6,7 +6,7 @@ public interface Const {
 	public static final double EPSLLON_EGREEDY = 0.9;
 	public static final double LAMBDA = 0.5;
 
-	public static final double RECOMPENSA_GENERAL = 0;
+	public static final double RECOMPENSA_GENERAL = 100;
 	public static final double RECOMPENSA_FINAL = 100;
 	public static final double RECOMPENSA_ERROR = 0;
 	

@@ -146,6 +146,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 						for (GenericAction action : actionsToRegister) {
 							action.registerUnitObserver();
+							onNewAction(action, (Object[])null);
 						}
 
 						for (Unit rawUnit : self.getUnits()) {
@@ -253,8 +254,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		this.events.add(event);
 	}
 
+	public abstract void onNewAction(GenericAction genericAction, Object... args);
 	public abstract void onEndAction(GenericAction genericAction, Object... args);
-
+	public abstract double getReward();
+	
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////

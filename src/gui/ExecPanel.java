@@ -240,6 +240,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 		private JLabel lblTextFps;
 		private JTextField t_FPS;
 		
+		private JLabel lblTextEPS;
+		private JTextField t_EPS;
+		
 		/** Label for speed. */
 		private JLabel lblSpeed;
 		/** Text field for speed. */
@@ -315,6 +318,12 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.t_FPS.setEditable(false);
 			this.t_FPS.setBorder(null);
 			
+			lblTextEPS = new JLabel("EPS: ", SwingConstants.RIGHT);
+			t_EPS = new JTextField("0", JLabel.LEFT);
+			this.t_EPS.setColumns(5);
+			this.t_EPS.setEditable(false);
+			this.t_EPS.setBorder(null);
+			
 			this.lblTxtDeaths = new JLabel("Muertes: ", SwingConstants.RIGHT);
 			this.lblDeaths = new JLabel("0", SwingConstants.LEFT);
 			this.lblTxtKills = new JLabel("Asesinatos: ", SwingConstants.RIGHT);
@@ -378,7 +387,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			
 			// Add the information of speed and fps.
 			c.gridheight = 1;
-			c.gridwidth = 5;
+			c.gridwidth = 3;
 			c.gridx = 0;
 			c.gridy = 1;
 			panelControl.add(lblTextFps, c);
@@ -389,8 +398,16 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 			c.gridx = 2;
 			c.gridy = 1;
-			panelControl.add(lblSpeed, c);
+			panelControl.add(lblTextEPS, c);
+			
 			c.gridx = 3;
+			c.gridy = 1;
+			panelControl.add(t_EPS, c);
+			
+			c.gridx = 4;
+			c.gridy = 1;
+			panelControl.add(lblSpeed, c);
+			c.gridx = 5;
 			c.gridy = 1;
 			panelControl.add(textFieldSpeed, c);
 
@@ -438,6 +455,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 		private final DecimalFormat df = new DecimalFormat("0.######");
 		
+		private long T_INI = System.currentTimeMillis();
+		
 		public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
 			String alphas = df.format(alpha);
 			String epsilons = df.format(epsilon);
@@ -447,6 +466,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 			
 			this.t_alpha.setText(alphas);
 			this.t_epsilon.setText(epsilons);
+			
+			if (i % 10 == 0)
+				T_INI = System.currentTimeMillis();
+			
+			double eps = (i % 10) / (double)((System.currentTimeMillis() - T_INI) / (double) 1e3);
+			if (i != 10)
+				this.t_EPS.setText("" + eps);
 			
 			this.repaint();
 		}

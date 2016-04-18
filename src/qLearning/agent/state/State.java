@@ -62,10 +62,8 @@ public class State {
 			else {
 				return Const.RECOMPENSA_ERROR;
 			}
-		} else if (com.ComData.lastActionOk) {
-			return Const.RECOMPENSA_GENERAL;
 		} else {
-			return Const.RECOMPENSA_ERROR;
+			return com.bot.getReward();
 		}
 	}
 
