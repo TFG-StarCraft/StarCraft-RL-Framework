@@ -6,7 +6,7 @@ import com.Com;
 
 import qLearning.Const;
 import qLearning.agent.Action;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class State {
 
@@ -14,16 +14,16 @@ public class State {
 
 	private Double reward;
 
-	private AbstractEnviroment enviroment;
+	private AbstractEnvironment enviroment;
 	private Com com;
 
 	private Boolean finalState;
 
-	public static State newInitialState(AbstractEnviroment e, Com com) {
+	public static State newInitialState(AbstractEnvironment e, Com com) {
 		return new State(new DataRelative(com), e, com, true);
 	}
 	
-	private State(StateData data, AbstractEnviroment e, Com com, boolean initialState) {
+	private State(StateData data, AbstractEnvironment e, Com com, boolean initialState) {
 		this.com = com;
 		this.data = data;
 		this.reward = Double.NaN;

@@ -1,7 +1,7 @@
 package bot.commonFunctions;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -41,7 +41,13 @@ public class CheckAround {
 	 * @return true if the unit is alone.
 	 */
 	public static boolean isAlone(Unit unit) {
-		return getUnitsInSightRange(unit).stream().allMatch(u -> u.getType() != UnitType.Buildings);
+		List<Unit> l = getUnitsInSightRange(unit);
+
+		for (int i = 0; i < l.size(); i++) {
+			if (l.get(i).getType() != UnitType.Buildings)
+				return false;
+		}
+		return true;
 	}
 
 	/**
@@ -105,7 +111,18 @@ public class CheckAround {
 	 *         allies.
 	 */
 	public static List<Unit> getAlliesAround(Unit unit) {
-		return getUnitsInSightRange(unit).stream().filter(u -> isAlly(unit, u)).collect(Collectors.toList());
+		List<Unit> units = getUnitsInSightRange(unit);
+		List<Unit> r = new ArrayList<>(units.size());
+
+		Unit u;
+		int s = units.size();
+		for (int i = 0; i < s; i++) {
+			u = units.get(i);
+			if (isAlly(unit, u))
+				r.add(u);
+		}
+
+		return r;
 	}
 
 	/**
@@ -117,7 +134,18 @@ public class CheckAround {
 	 *         allies. Allied buildings will not be included.
 	 */
 	public static List<Unit> getAlliedUnitsAround(Unit unit) {
-		return getUnitsInSightRange(unit).stream().filter(u -> isAlliedUnit(unit, u)).collect(Collectors.toList());
+		List<Unit> units = getUnitsInSightRange(unit);
+		List<Unit> r = new ArrayList<>(units.size());
+
+		Unit u;
+		int s = units.size();
+		for (int i = 0; i < s; i++) {
+			u = units.get(i);
+			if (isAlliedUnit(unit, u))
+				r.add(u);
+		}
+
+		return r;
 	}
 
 	/**
@@ -129,7 +157,18 @@ public class CheckAround {
 	 *         enemies.
 	 */
 	public static List<Unit> getEnemiesAround(Unit unit) {
-		return getUnitsInSightRange(unit).stream().filter(u -> isEnemy(unit, u)).collect(Collectors.toList());
+		List<Unit> units = getUnitsInSightRange(unit);
+		List<Unit> r = new ArrayList<>(units.size());
+
+		Unit u;
+		int s = units.size();
+		for (int i = 0; i < s; i++) {
+			u = units.get(i);
+			if (isEnemy(unit, u))
+				r.add(u);
+		}
+
+		return r;
 	}
 
 	/**
@@ -141,7 +180,18 @@ public class CheckAround {
 	 *         enemies. Enemy buildings will not be included.
 	 */
 	public static List<Unit> getEnemyUnitsAround(Unit unit) {
-		return getUnitsInSightRange(unit).stream().filter(u -> isEnemyUnit(unit, u)).collect(Collectors.toList());
+		List<Unit> units = getUnitsInSightRange(unit);
+		List<Unit> r = new ArrayList<>(units.size());
+
+		Unit u;
+		int s = units.size();
+		for (int i = 0; i < s; i++) {
+			u = units.get(i);
+			if (isEnemyUnit(unit, u))
+				r.add(u);
+		}
+
+		return r;
 	}
 
 	/**
@@ -153,6 +203,7 @@ public class CheckAround {
 	 *         sight, returns false.
 	 */
 	public static boolean areAlliesAround(Unit unit) {
+		// TODO Improve
 		return !getAlliesAround(unit).isEmpty();
 	}
 
@@ -165,6 +216,7 @@ public class CheckAround {
 	 *         there are no units in sight, returns false.
 	 */
 	public static boolean areAlliedUnitsAround(Unit unit) {
+		// TODO Improve
 		return !getAlliedUnitsAround(unit).isEmpty();
 	}
 
@@ -177,6 +229,7 @@ public class CheckAround {
 	 *         sight, returns false.
 	 */
 	public static boolean areEnemiesAround(Unit unit) {
+		// TODO Improve
 		return !getEnemiesAround(unit).isEmpty();
 	}
 
@@ -189,6 +242,7 @@ public class CheckAround {
 	 *         there are no units in sight, returns false.
 	 */
 	public static boolean areEnemyUnitsAround(Unit unit) {
+		// TODO Improve
 		return !getEnemyUnitsAround(unit).isEmpty();
 	}
 
@@ -205,52 +259,32 @@ public class CheckAround {
 		UnitType t = unit.getType();
 		WeaponType w = t.groundWeapon();
 
-		return unit.getUnitsInRadius(w.maxRange()).stream().filter(u -> isEnemy(unit, unit))
-				.collect(Collectors.toList());
+		List<Unit> units = unit.getUnitsInRadius(w.maxRange());
+		List<Unit> r = new ArrayList<>(units.size());
+
+		Unit u;
+		int s = units.size();
+		for (int i = 0; i < s; i++) {
+			u = units.get(i);
+			if (isEnemy(unit, u))
+				r.add(u);
+		}
+
+		return r;
 	}
 
 	/**
-	 * Return if the unit can beat another unit, both with ground weapons.
+	 * Returns true if there are enemies in ground weapon range. Buildings
+	 * included.
 	 * 
 	 * @param unit
 	 *            Unit to evaluate.
-	 * @param anotherUnit
-	 *            Unit to evaluate.
-	 * @return True if the unit can beat another unit.
+	 * @return true if there are enemies in ground weapon range. If there are no
+	 *         units in sight, returns false.
 	 */
-	public static boolean canBeatGround(Unit unit, Unit anotherUnit) {
-		WeaponType unitWeapon = unit.getType().groundWeapon();
-		WeaponType anotherUnitWeapon = unit.getType().groundWeapon();
-
-		double hurtedUnit = unit.getHitPoints() / anotherUnitWeapon.damageAmount();
-		double hurtedAnotherUnit = anotherUnit.getHitPoints() / unitWeapon.damageAmount();
-
-		double timeDeadUnit = unit.getHitPoints() * anotherUnitWeapon.damageCooldown() / hurtedUnit;
-		double timeDeadAnotherUnit = anotherUnit.getHitPoints() * unitWeapon.damageCooldown() / hurtedAnotherUnit;
-
-		return timeDeadUnit > timeDeadAnotherUnit;
-	}
-
-	/**
-	 * Return if the unit can beat another unit, both with ground weapons.
-	 * 
-	 * @param unit
-	 *            Unit to evaluate.
-	 * @param anotherUnit
-	 *            Unit to evaluate.
-	 * @return True if the unit can beat another unit.
-	 */
-	public static boolean canBeatAir(Unit unit, Unit anotherUnit) {
-		WeaponType unitWeapon = unit.getType().airWeapon();
-		WeaponType anotherUnitWeapon = unit.getType().airWeapon();
-
-		double hurtedUnit = unit.getHitPoints() / anotherUnitWeapon.damageAmount();
-		double hurtedAnotherUnit = anotherUnit.getHitPoints() / unitWeapon.damageAmount();
-
-		double timeDeadUnit = unit.getHitPoints() * anotherUnitWeapon.damageCooldown() / hurtedUnit;
-		double timeDeadAnotherUnit = anotherUnit.getHitPoints() * unitWeapon.damageCooldown() / hurtedAnotherUnit;
-
-		return timeDeadUnit > timeDeadAnotherUnit;
+	public static boolean areEnemiesInGroundRange(Unit unit) {
+		// TODO Improve
+		return !getEnemiesInGroundRange(unit).isEmpty();
 	}
 
 	/**

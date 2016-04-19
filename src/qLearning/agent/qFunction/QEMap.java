@@ -13,23 +13,23 @@ import javax.swing.JPanel;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements AbstractQEFunction {
 
 	private static final long serialVersionUID = 2792701869347588301L;
 
-	private int size;
-	private AbstractEnviroment env;
+	private int dimsSize;
+	private AbstractEnvironment env;
 
-	public QEMap(AbstractEnviroment env) {
-		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
+	public QEMap(AbstractEnvironment env) {
+		this.dimsSize = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
 		this.env = env;
 
-		System.out.println("Size of q = " + size * Action.values().length);
+		System.out.println("Size of q = " + dimsSize * Action.values().length);
 
 		// TODO
-		for (int i = 0; i < size * Action.values().length; i++) {
+		for (int i = 0; i < dimsSize * Action.values().length; i++) {
 			this.put(i, new Set(Const.Q_GENERAL, 0));
 		}
 
@@ -37,7 +37,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
-		return Long.hashCode(S.hashCode() + size * A.ordinal());
+		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 
 	@Override

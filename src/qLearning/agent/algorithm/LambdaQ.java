@@ -12,7 +12,7 @@ import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQEFunction;
 import qLearning.agent.qFunction.QEMap;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class LambdaQ extends AbstractAlgorithm {
 
@@ -21,7 +21,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 	private AbstractQEFunction QE;
 
-	public LambdaQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon, double lambda) {
+	public LambdaQ(Com com, AbstractEnvironment e, double alpha, double gamma, double epsilon, double lambda) {
 		super(com, e, alpha, gamma, epsilon);
 		this.lambda = this.init_lambda = lambda;
 	}
@@ -40,11 +40,11 @@ public class LambdaQ extends AbstractAlgorithm {
 			for (int i = 0; i < Const.NUM_EPISODIOS; i++) {
 				com.Sync.waitForBotGameIsStarted();
 				
-				State S = enviroment.getInitState();
+				State S = environment.getInitState();
 
 				// One time init QE_MAP, done here because it needs the enviroment initialized
 				if (this.QE == null)
-					this.QE = new QEMap(enviroment);
+					this.QE = new QEMap(environment);
 				
 				Action A = nextAction(S);
 				int steps = 0;

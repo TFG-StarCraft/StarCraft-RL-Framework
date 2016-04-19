@@ -1,7 +1,6 @@
 package bot.action;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.Com;
 
@@ -22,11 +21,10 @@ public class AttackUnitOnSightLesHP extends GenericAction {
 		if (!l.isEmpty()) {
 			if (!unit.getOrder().equals(Order.AttackUnit)) {
 				// get the enemyUnit with less hp
-				Optional<Unit> o = l.stream().min((a, b) -> a.getHitPoints() < b.getHitPoints() ? -1 : 1);
-				if (o.isPresent()) {
-					this.unit.attack(o.get());
-					super.order = this.unit.getOrder();
-				}
+				Unit u = java.util.Collections.min(l, (a, b) -> a.getHitPoints() <= b.getHitPoints() ? -1 : 1);
+
+				this.unit.attack(u);
+				super.order = this.unit.getOrder();
 			}
 		}
 	}
@@ -34,6 +32,6 @@ public class AttackUnitOnSightLesHP extends GenericAction {
 	@Override
 	public boolean isPossible() {
 		// TODO solo válido contra unidades terrestres
-		return CheckAround.areEnemiesAround(unit);
+		return CheckAround.areEnemiesInGroundRange(unit);
 	}
 }

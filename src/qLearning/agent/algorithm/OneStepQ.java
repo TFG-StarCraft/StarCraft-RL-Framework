@@ -12,13 +12,13 @@ import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQFunction;
 import qLearning.agent.qFunction.QMap;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class OneStepQ extends AbstractAlgorithm {
 	
 	private AbstractQFunction Q;
 
-	public OneStepQ(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
+	public OneStepQ(Com com, AbstractEnvironment e, double alpha, double gamma, double epsilon) {
 		super(com, e, alpha, gamma, epsilon);
 		this.Q = new QMap(e);
 	}
@@ -36,7 +36,7 @@ public class OneStepQ extends AbstractAlgorithm {
 
 			com.Sync.waitForBotGameIsStarted();		
 			
-			State S = enviroment.getInitState();
+			State S = environment.getInitState();
 			int movimientos = 0;
 			this.numRandomMoves = 0;
 

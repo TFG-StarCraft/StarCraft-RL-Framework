@@ -1,5 +1,7 @@
 package bot.commonFunctions;
 
+import java.util.List;
+
 import bwapi.Unit;
 
 /**
@@ -19,11 +21,22 @@ public class Distances {
 	 *         in sight.
 	 */
 	public static Double getDistanceToNearestEnemy(Unit unit) {
-		return CheckAround.getEnemiesAround(unit).stream().map(u -> {
-			double vX = u.getX() - unit.getX();
-			double vY = u.getY() - unit.getY();
-			return Math.sqrt(vX * vX + vY * vY);
-		}).min(Double::compareTo).orElse(0.0);
+		List<Unit> l = CheckAround.getEnemiesAround(unit);
+		
+		int s = l.size();
+		Unit u;
+		double vX, vY, dist;
+		double min = Double.POSITIVE_INFINITY;
+		for (int i = 0; i < s; i++) {
+			u = l.get(i);
+			vX = u.getX() - unit.getX();
+			vY = u.getY() - unit.getY();
+			if ((dist = Math.abs(Math.sqrt(vX * vX + vY * vY))) < min) {
+				min = dist;
+			}
+		}
+		
+		return Double.isInfinite(min) ? 0.0 : (min);
 	}
 
 }

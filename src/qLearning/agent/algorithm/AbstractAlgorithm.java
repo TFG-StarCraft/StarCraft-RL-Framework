@@ -4,13 +4,13 @@ import com.Com;
 
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public abstract class AbstractAlgorithm implements Runnable {
 	public abstract void run();
 	public abstract Action nextAction(State S);
 	    
-	protected AbstractEnviroment enviroment;
+	protected AbstractEnvironment environment;
 	protected Com com;
 	protected int numRandomMoves;
     
@@ -22,9 +22,9 @@ public abstract class AbstractAlgorithm implements Runnable {
 	protected double init_alpha;
 	protected double init_gamma;
 	
-	public AbstractAlgorithm(Com com, AbstractEnviroment e, double alpha, double gamma, double epsilon) {
+	public AbstractAlgorithm(Com com, AbstractEnvironment e, double alpha, double gamma, double epsilon) {
 		this.com = com;
-		this.enviroment = e;
+		this.environment = e;
 		
 		this.alpha = this.init_alpha = alpha;
 		this.gamma = this.init_gamma = gamma;

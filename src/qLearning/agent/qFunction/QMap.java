@@ -13,15 +13,14 @@ import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.state.Dimension;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class QMap extends HashMap<Integer, QMap.Set> implements AbstractQFunction {
 
 	private static final long serialVersionUID = 6999001742786415696L;
 
-	private int size;
-	private int last;
-	private AbstractEnviroment env;
+	private int dimsSize;
+	private AbstractEnvironment env;
 
 	public class Set {
 		public State s;
@@ -35,17 +34,15 @@ public class QMap extends HashMap<Integer, QMap.Set> implements AbstractQFunctio
 		}
 	}
 
-	public QMap(AbstractEnviroment env) {
+	public QMap(AbstractEnvironment env) {
 		this.env = env;
-		this.size = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
-		this.last = env.getNumValuesPerDims().get(env.getNumValuesPerDims().size() - 1);
-
-		System.out.println("Size of q = " + size * Action.values().length);
+		this.dimsSize = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
+		System.out.println("Size of q = " + dimsSize * Action.values().length);
 	}
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
-		return Long.hashCode(S.hashCode() + last * A.ordinal());
+		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 
 	@Override

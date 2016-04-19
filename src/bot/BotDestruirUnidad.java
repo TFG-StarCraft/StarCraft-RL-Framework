@@ -1,12 +1,12 @@
 package bot;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.Com;
 
 import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
+import bot.commonFunctions.HP;
 import bot.event.AbstractEvent;
 import bot.event.factories.AbstractEventsFactory;
 import bot.event.factories.AEFDestruirUnidad;
@@ -31,14 +31,7 @@ public class BotDestruirUnidad extends Bot {
 		iniMyHP = com.ComData.unit.getHitPoints();
 
 		Unit unit = com.ComData.unit;
-		// Sumar toda la vida de las unidades en rango
-		List<Unit> l = CheckAround.getEnemiesAround(unit);
-		Optional<Integer> o = l.stream().map(u -> u.getHitPoints()).reduce(Integer::sum);
-		if (o.isPresent()) {
-			iniEnemyHP = o.get();
-		} else {
-			iniEnemyHP = -1;
-		}
+		iniEnemyHP = HP.getHPOfEnemiesAround(unit);
 	}
 
 	@Override
@@ -49,22 +42,17 @@ public class BotDestruirUnidad extends Bot {
 
 		Unit unit = com.ComData.unit;
 
-		List<Unit> l = CheckAround.getEnemiesAround(unit);
-		Optional<Integer> o = l.stream().map(u -> u.getHitPoints()).reduce(Integer::sum);
+		endEnemyHP = HP.getHPOfEnemiesAround(unit);
+		if (endEnemyHP != -1 && iniEnemyHP == -1) {
+			// Killed enemies that initially unit didn't see
+			List<Unit> l = CheckAround.getEnemiesAround(unit);
+			if (l.isEmpty())
+				iniEnemyHP = -1;
 
-		if (o.isPresent()) {
-			endEnemyHP = o.get();
-			if (iniEnemyHP == -1) {
-				l = CheckAround.getEnemiesAround(unit);
-				Optional<Integer> o2 = l.stream().map(u -> u.getInitialHitPoints()).reduce(Integer::sum);
-				if (o2.isPresent()) {
-					iniEnemyHP = o2.get();
-				} else {
-					iniEnemyHP = -1;
-				}
+			iniEnemyHP = 0.0;
+			for (int i = 0; i < l.size(); i++) {
+				iniEnemyHP += l.get(i).getHitPoints();
 			}
-		} else {
-			endEnemyHP = -1;
 		}
 	}
 

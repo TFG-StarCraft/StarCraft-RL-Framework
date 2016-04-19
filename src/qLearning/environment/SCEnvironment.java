@@ -1,4 +1,4 @@
-package qLearning.enviroment;
+package qLearning.environment;
 
 import java.util.ArrayList;
 
@@ -7,11 +7,11 @@ import com.Com;
 import qLearning.agent.state.DataRelative;
 import qLearning.agent.state.State;
 
-public class SCEnviroment implements AbstractEnviroment {
+public class SCEnvironment implements AbstractEnvironment {
 
 	private Com com;
 
-	public SCEnviroment(Com com) {
+	public SCEnvironment(Com com) {
 		this.com = com;
 	}
 

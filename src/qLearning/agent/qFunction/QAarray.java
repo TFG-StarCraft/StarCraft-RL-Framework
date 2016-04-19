@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class QAarray implements AbstractQFunction {
 
 	private double[][] arrayQ;
 	private int size;
 
-	public QAarray(AbstractEnviroment e) {
+	public QAarray(AbstractEnvironment e) {
 		// TODO
 		throw new RuntimeException("NOTIMPLEMENTED");
 		/*

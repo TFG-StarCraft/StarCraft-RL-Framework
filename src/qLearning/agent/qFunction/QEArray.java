@@ -9,19 +9,17 @@ import javax.swing.JPanel;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.state.State;
-import qLearning.enviroment.AbstractEnviroment;
+import qLearning.environment.AbstractEnvironment;
 
 public class QEArray implements AbstractQEFunction {
 
 	private int dimsSize;
 	private int totalSize;
-	private int last;
 
 	private ArrayList<Set> array;
 
-	public QEArray(AbstractEnviroment env) {
+	public QEArray(AbstractEnvironment env) {
 		this.dimsSize = env.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);
-		this.last = env.getNumValuesPerDims().get(env.getNumValuesPerDims().size() - 1);
 
 		this.totalSize = dimsSize * Action.values().length;
 		this.array = new ArrayList<>(totalSize);
@@ -35,7 +33,7 @@ public class QEArray implements AbstractQEFunction {
 
 	private int getHash(State S, Action A) {
 		// TODO correct?
-		return Long.hashCode(S.hashCode() + last * A.ordinal());
+		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 
 	@Override
