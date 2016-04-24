@@ -1,17 +1,17 @@
-package bot.action.movement.relative.relativeToGroup;
+package bot.action.singleUnit.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
-import bot.action.movement.relative.ClokwiseMove;
+import bot.action.singleUnit.movement.MoveAction;
+import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
-public class MoveAroundEnemiesClockwise extends MoveAction implements ClokwiseMove {
+public class MoveAroundEnemiesCounterclockwise extends MoveAction implements ClokwiseMove {
 
-	public MoveAroundEnemiesClockwise(Com com, Unit unit) {
+	public MoveAroundEnemiesCounterclockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 
@@ -40,8 +40,8 @@ public class MoveAroundEnemiesClockwise extends MoveAction implements ClokwiseMo
 			unit.getX();
 			unit.getY();
 
-			this.endX += (int) Math.floor((unit.getX() - pX) * c - (unit.getY() - pY) * s) + pX;
-			this.endY += (int) Math.floor((unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
+			this.endX += (int) Math.floor((unit.getX() - pX) * c + (unit.getY() - pY) * s) + pX;
+			this.endY += (int) Math.floor(-(unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
 
 		} else {
 			this.endX = unit.getX();

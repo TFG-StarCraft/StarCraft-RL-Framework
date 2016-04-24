@@ -1,8 +1,8 @@
-package bot.action.movement.relative;
+package bot.action.singleUnit.movement.relative;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
+import bot.action.singleUnit.movement.MoveAction;
 import bwapi.Unit;
 
 public abstract class RelativeMove extends MoveAction {

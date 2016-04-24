@@ -1,30 +1,31 @@
-package bot.action.movement;
+package bot.action.singleUnit.movement;
 
 import com.Com;
 
 import bwapi.Unit;
 
 /**
- * Movement. Move right.
+ * Movement. Move up.
  * @author Alberto Casas Ortiz
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveRight extends MoveAction {	
+public class MoveUp extends MoveAction {
+	
 	
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
 	
 	/**
-	 * Constructor of the class MoveRight.
+	 * Constructor of the class MoveUp.
 	 * @param com Comunication.
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveRight(Com com, Unit unit) {
+	public MoveUp(Com com, Unit unit) {
 		super(com, unit);
-	}	
+	}
 	
 	/*******************/
 	/* OVERRIDE METHOD */
@@ -35,11 +36,11 @@ public class MoveRight extends MoveAction {
 	 */
 	@Override
 	protected void setUpMove() {
-		this.endX = unit.getX() + bot.Const.STEP;
-		this.endY = unit.getY();
+		this.endX = unit.getX();
+		this.endY = unit.getY() - bot.Const.STEP;
 
-		this.testX = unit.getX() + bot.Const.STEP + bot.Const.TEST;
-		this.testY = unit.getY();
+		this.testX = unit.getX();
+		this.testY = unit.getY() - bot.Const.STEP - bot.Const.TEST;
 	}
 
 }

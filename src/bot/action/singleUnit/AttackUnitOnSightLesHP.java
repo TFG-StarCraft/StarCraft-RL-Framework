@@ -1,9 +1,10 @@
-package bot.action;
+package bot.action.singleUnit;
 
 import java.util.List;
 
 import com.Com;
 
+import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
 import bwapi.Order;
 import bwapi.Unit;

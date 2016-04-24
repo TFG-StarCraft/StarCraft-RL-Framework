@@ -1,34 +1,36 @@
-package bot.action.movement.relative;
+package bot.action.singleUnit.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
+import bot.action.singleUnit.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
 /**
- * Movement. Moving away from a target unit.
+ * Movement. Approaching to a target unit.
  * 
- * @author Alberto Casas Ortiz.
+ * @author Alberto Casas Ortiz
  * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez.
+ * @author Miguel Ascanio Gómez
  */
-public class MoveAway extends RelativeMove {
+public class MoveToEnemies extends RelativeMove {
 
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
 
 	/**
-	 * Constructor of the class MoveAway.
+	 * Constructor of the class MoveApproach.
 	 * 
 	 * @param com
 	 *            Comunication.
 	 * @param unit
 	 *            Unit to move.
+	 * @param agentEpoch
 	 */
-	public MoveAway(Com com, Unit unit) {
+	public MoveToEnemies(Com com, Unit unit) {
 		super(com, unit);
 	}
 
@@ -41,14 +43,25 @@ public class MoveAway extends RelativeMove {
 	 */
 	@Override
 	protected void setUpMove() {
-		List<Unit> l = CheckAround.getUnitsInSightRange(unit);
+		List<Unit> l = CheckAround.getEnemiesAround(unit);
 		if (!l.isEmpty()) {
-			Unit u = l.get(0);
-			// Calculate vector from unit to target.
-			double vX = u.getX() - unit.getX();
-			double vY = u.getY() - unit.getY();
+			double pX = 0, pY = 0;
+			int cont = 0;
+			// Calculate point between enemies.
+			for (int i = 0; i < l.size(); i++) {
+				pX += l.get(i).getX();
+				pY += l.get(i).getY();
+				cont++;
+			}
+			pX /= cont;
+			pY /= cont;
+
+			// Calculate vector to point.
+			double vX = pX - unit.getX();
+			double vY = pY - unit.getY();
 
 			modulo = Math.sqrt(vX * vX + vY * vY);
+
 			vX /= modulo;
 			vY /= modulo;
 
@@ -63,8 +76,4 @@ public class MoveAway extends RelativeMove {
 		}
 	}
 
-	@Override
-	public boolean isPossible() {
-		return true;
-	}
 }

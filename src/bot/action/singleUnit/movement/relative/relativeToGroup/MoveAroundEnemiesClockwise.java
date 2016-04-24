@@ -1,17 +1,17 @@
-package bot.action.movement.relative.relativeToGroup;
+package bot.action.singleUnit.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
-import bot.action.movement.relative.ClokwiseMove;
+import bot.action.singleUnit.movement.MoveAction;
+import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
-public class MoveAroundAlliesCounterclockwise extends MoveAction implements ClokwiseMove {
+public class MoveAroundEnemiesClockwise extends MoveAction implements ClokwiseMove {
 
-	public MoveAroundAlliesCounterclockwise(Com com, Unit unit) {
+	public MoveAroundEnemiesClockwise(Com com, Unit unit) {
 		super(com, unit);
 	}
 
@@ -24,11 +24,11 @@ public class MoveAroundAlliesCounterclockwise extends MoveAction implements Clok
 	 */
 	@Override
 	protected void setUpMove() {
-		List<Unit> l = CheckAround.getAlliesAround(unit);
+		List<Unit> l = CheckAround.getEnemiesAround(unit);
 		if (!l.isEmpty()) {
 			double pX = 0, pY = 0;
 			int cont = 0;
-			// Calculate point between allies.
+			// Calculate point between enemies.
 			for (int i = 0; i < l.size(); i++) {
 				pX += l.get(i).getX();
 				pY += l.get(i).getY();
@@ -40,8 +40,8 @@ public class MoveAroundAlliesCounterclockwise extends MoveAction implements Clok
 			unit.getX();
 			unit.getY();
 
-			this.endX += (int) Math.floor((unit.getX() - pX) * c + (unit.getY() - pY) * s) + pX;
-			this.endY += (int) Math.floor(-(unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
+			this.endX += (int) Math.floor((unit.getX() - pX) * c - (unit.getY() - pY) * s) + pX;
+			this.endY += (int) Math.floor((unit.getX() - pX) * s + (unit.getY() - pY) * c) + pY;
 
 		} else {
 			this.endX = unit.getX();

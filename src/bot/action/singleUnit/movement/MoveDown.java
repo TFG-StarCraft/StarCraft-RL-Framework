@@ -1,4 +1,4 @@
-package bot.action.movement;
+package bot.action.singleUnit.movement;
 
 import com.Com;
 

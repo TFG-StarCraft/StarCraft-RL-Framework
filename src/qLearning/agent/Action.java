@@ -5,9 +5,10 @@ import java.util.Arrays;
 import com.Com;
 
 import bot.action.*;
-import bot.action.movement.*;
-import bot.action.movement.relative.*;
-import bot.action.movement.relative.relativeToGroup.*;
+import bot.action.singleUnit.AttackUnitOnSightLesHP;
+import bot.action.singleUnit.movement.*;
+import bot.action.singleUnit.movement.relative.*;
+import bot.action.singleUnit.movement.relative.relativeToGroup.*;
 import utils.Config;
 
 /**

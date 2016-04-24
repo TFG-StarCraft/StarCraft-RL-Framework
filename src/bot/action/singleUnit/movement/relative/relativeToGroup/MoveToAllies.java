@@ -1,10 +1,10 @@
-package bot.action.movement.relative.relativeToGroup;
+package bot.action.singleUnit.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.relative.RelativeMove;
+import bot.action.singleUnit.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 

@@ -1,10 +1,9 @@
-package bot.action.movement.relative.relativeToGroup;
+package bot.action.singleUnit.movement.relative;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
@@ -15,7 +14,7 @@ import bwapi.Unit;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public class MoveToEnemies extends RelativeMove {
+public class MoveApproach extends RelativeMove {
 
 	/***************/
 	/* CONSTRUCTOR */
@@ -30,7 +29,7 @@ public class MoveToEnemies extends RelativeMove {
 	 *            Unit to move.
 	 * @param agentEpoch
 	 */
-	public MoveToEnemies(Com com, Unit unit) {
+	public MoveApproach(Com com, Unit unit) {
 		super(com, unit);
 	}
 
@@ -43,31 +42,21 @@ public class MoveToEnemies extends RelativeMove {
 	 */
 	@Override
 	protected void setUpMove() {
-		List<Unit> l = CheckAround.getEnemiesAround(unit);
+		List<Unit> l = CheckAround.getUnitsInSightRange(unit);
 		if (!l.isEmpty()) {
-			double pX = 0, pY = 0;
-			int cont = 0;
-			// Calculate point between enemies.
-			for (int i = 0; i < l.size(); i++) {
-				pX += l.get(i).getX();
-				pY += l.get(i).getY();
-				cont++;
-			}
-			pX /= cont;
-			pY /= cont;
-
-			// Calculate vector to point.
-			double vX = pX - unit.getX();
-			double vY = pY - unit.getY();
+			Unit u = l.get(0);
+			// Calculate vector from unit to target.
+			double vX = u.getX() - unit.getX();
+			double vY = u.getY() - unit.getY();
 
 			modulo = Math.sqrt(vX * vX + vY * vY);
-
 			vX /= modulo;
 			vY /= modulo;
 
 			// Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
+			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
+
 		}
 		// Otherwise, do nothing.
 		else {

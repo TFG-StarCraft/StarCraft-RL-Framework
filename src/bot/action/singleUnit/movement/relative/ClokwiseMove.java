@@ -1,4 +1,4 @@
-package bot.action.movement.relative;
+package bot.action.singleUnit.movement.relative;
 
 public interface ClokwiseMove {
 	static final double s = Math.sin(Math.PI / 16);

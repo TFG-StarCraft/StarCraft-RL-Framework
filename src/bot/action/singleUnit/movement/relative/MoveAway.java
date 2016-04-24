@@ -1,4 +1,4 @@
-package bot.action.movement.relative;
+package bot.action.singleUnit.movement.relative;
 
 import java.util.List;
 
@@ -8,28 +8,27 @@ import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
 /**
- * Movement. Approaching to a target unit.
+ * Movement. Moving away from a target unit.
  * 
- * @author Alberto Casas Ortiz
+ * @author Alberto Casas Ortiz.
  * @author Raúl Martín Guadaño
- * @author Miguel Ascanio Gómez
+ * @author Miguel Ascanio Gómez.
  */
-public class MoveApproach extends RelativeMove {
+public class MoveAway extends RelativeMove {
 
 	/***************/
 	/* CONSTRUCTOR */
 	/***************/
 
 	/**
-	 * Constructor of the class MoveApproach.
+	 * Constructor of the class MoveAway.
 	 * 
 	 * @param com
 	 *            Comunication.
 	 * @param unit
 	 *            Unit to move.
-	 * @param agentEpoch
 	 */
-	public MoveApproach(Com com, Unit unit) {
+	public MoveAway(Com com, Unit unit) {
 		super(com, unit);
 	}
 
@@ -54,9 +53,8 @@ public class MoveApproach extends RelativeMove {
 			vY /= modulo;
 
 			// Advance step from target to target.
-			this.endX = unit.getX() + (int) Math.ceil(-vX * bot.Const.STEP);
-			this.endY = unit.getY() + (int) Math.ceil(-vY * bot.Const.STEP);
-
+			this.endX = unit.getX() + (int) Math.ceil(vX * bot.Const.STEP);
+			this.endY = unit.getY() + (int) Math.ceil(vY * bot.Const.STEP);
 		}
 		// Otherwise, do nothing.
 		else {
@@ -65,4 +63,8 @@ public class MoveApproach extends RelativeMove {
 		}
 	}
 
+	@Override
+	public boolean isPossible() {
+		return true;
+	}
 }

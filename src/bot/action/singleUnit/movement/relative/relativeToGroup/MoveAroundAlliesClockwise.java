@@ -1,11 +1,11 @@
-package bot.action.movement.relative.relativeToGroup;
+package bot.action.singleUnit.movement.relative.relativeToGroup;
 
 import java.util.List;
 
 import com.Com;
 
-import bot.action.movement.MoveAction;
-import bot.action.movement.relative.ClokwiseMove;
+import bot.action.singleUnit.movement.MoveAction;
+import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 
