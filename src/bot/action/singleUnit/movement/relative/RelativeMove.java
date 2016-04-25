@@ -15,7 +15,7 @@ public abstract class RelativeMove extends MoveAction {
 
 	@Override
 	public boolean isPossible() {
-		return modulo < com.ComData.unit.getType().width() * 2;
+		return modulo < unit.getType().width() * 2;
 	}
 
 }

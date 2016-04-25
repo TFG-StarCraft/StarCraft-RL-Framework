@@ -2,8 +2,8 @@ package qLearning.agent.algorithm;
 
 import com.Com;
 
+import newAgent.state.State;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public abstract class AbstractAlgorithm implements Runnable {

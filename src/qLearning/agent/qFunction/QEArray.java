@@ -6,9 +6,9 @@ import java.util.function.BiFunction;
 
 import javax.swing.JPanel;
 
+import newAgent.state.State;
 import qLearning.Const;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public class QEArray implements AbstractQEFunction {

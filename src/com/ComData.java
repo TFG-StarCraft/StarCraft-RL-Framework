@@ -5,9 +5,6 @@ import bwapi.Unit;
 
 public class ComData {
 
-	public Unit unit;
-	public int iniX;
-	public int iniY;
 	public boolean lastActionOk;
 
 	public ActionDispatchQueue actionQueue;
@@ -16,9 +13,6 @@ public class ComData {
 
 	public ComData(Com com) {
 		this.actionQueue = new ActionDispatchQueue(com);
-
-		this.iniX = -1;
-		this.iniY = -1;
 	}
 
 	private boolean onFinal;

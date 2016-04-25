@@ -164,9 +164,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 									if (lastSize == a.size())
 										i++;
-									// else en onUnit se llam� a unRegister y se
-									// elimin�
-									// ese observador
+									// else en onUnit se llamo a borrar el observador
 								}
 							}
 						}
@@ -185,14 +183,12 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	// Called on the first execution of onFrame
 	private void firstExecOnFrame() {
-		for (Unit unit : self.getUnits()) {
-			if (unit.getType().equals(UnitType.Terran_Marine)) {
-				com.ComData.unit = unit;
-
-				com.ComData.iniX = unit.getX();
-				com.ComData.iniY = unit.getY();
-			}
-		}
+		// TODO OLD
+//		for (Unit unit : self.getUnits()) {
+//			if (unit.getType().equals(UnitType.Terran_Marine)) {
+//				com.ComData.unit = unit;
+//			}
+//		}
 		com.ComData.resetFinal();
 		this.firstOnFrame = false;
 	}
@@ -256,7 +252,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 	public abstract void onNewAction(GenericAction genericAction, Object... args);
 	public abstract void onEndAction(GenericAction genericAction, Object... args);
-	public abstract double getReward();
+//	public abstract double getReward();
 	
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////

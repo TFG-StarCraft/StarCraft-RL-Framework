@@ -10,9 +10,10 @@ import java.util.function.BiFunction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import newAgent.state.State;
 import qLearning.Const;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements AbstractQEFunction {
@@ -28,7 +29,6 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 		System.out.println("Size of q = " + dimsSize * Action.values().length);
 
-		// TODO
 		for (int i = 0; i < dimsSize * Action.values().length; i++) {
 			this.put(i, new Set(Const.Q_GENERAL, 0));
 		}
@@ -36,7 +36,6 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 	}
 
 	private int getHash(State S, Action A) {
-		// TODO correct?
 		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 
@@ -101,7 +100,6 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	private static final DecimalFormat df = new DecimalFormat("0.#####E0");
 
-	// TODO
 	private class QCell extends JPanel {
 
 		/**
@@ -136,7 +134,6 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	}
 
-	// TODO
 	@Override
 	public JPanel showQ() {
 

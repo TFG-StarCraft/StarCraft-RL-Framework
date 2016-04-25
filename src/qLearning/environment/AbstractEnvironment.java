@@ -2,7 +2,7 @@ package qLearning.environment;
 
 import java.util.ArrayList;
 
-import qLearning.agent.state.State;
+import newAgent.state.State;
 
 public interface AbstractEnvironment {
 	State getInitState();

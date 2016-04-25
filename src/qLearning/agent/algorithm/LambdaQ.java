@@ -7,11 +7,11 @@ import java.util.Random;
 
 import com.Com;
 
+import newAgent.state.State;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQEFunction;
 import qLearning.agent.qFunction.QEMap;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public class LambdaQ extends AbstractAlgorithm {
@@ -55,7 +55,7 @@ public class LambdaQ extends AbstractAlgorithm {
 
 				Double R = 0.0;
 				
-				while (!S.isFinalEnd()) {
+				while (!S.isFinalState()) {
 					// Blocks until action A ends
 					Action AA, AStar;
 					double delta;

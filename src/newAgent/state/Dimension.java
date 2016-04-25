@@ -1,4 +1,4 @@
-package qLearning.agent.state;
+package newAgent.state;
 
 public abstract class Dimension<T> {
 

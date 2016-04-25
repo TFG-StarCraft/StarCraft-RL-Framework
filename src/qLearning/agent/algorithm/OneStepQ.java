@@ -7,11 +7,11 @@ import java.util.Random;
 
 import com.Com;
 
+import newAgent.state.State;
 import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQFunction;
 import qLearning.agent.qFunction.QMap;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public class OneStepQ extends AbstractAlgorithm {
@@ -42,7 +42,7 @@ public class OneStepQ extends AbstractAlgorithm {
 
 			//com.Sync.signalAgentIsStarting();
 			Double R = 0.0;
-			while (!S.isFinalEnd()) {
+			while (!S.isFinalState()) {
 				Action A = nextAction(S);
 
 				// Blocks until action A ends

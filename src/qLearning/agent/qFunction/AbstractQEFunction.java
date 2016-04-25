@@ -5,8 +5,8 @@ import java.util.function.BiFunction;
 
 import javax.swing.JPanel;
 
+import newAgent.state.State;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 
 public interface AbstractQEFunction {
 	

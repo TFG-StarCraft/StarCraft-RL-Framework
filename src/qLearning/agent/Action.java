@@ -9,6 +9,9 @@ import bot.action.singleUnit.AttackUnitOnSightLesHP;
 import bot.action.singleUnit.movement.*;
 import bot.action.singleUnit.movement.relative.*;
 import bot.action.singleUnit.movement.relative.relativeToGroup.*;
+import bwapi.Unit;
+import newAgent.GenericAgent;
+import newAgent.unit.UnitAgent;
 import utils.Config;
 
 /**
@@ -36,46 +39,48 @@ public class Action {
 
 		ATTACK_LESS_HP;
 
-		public GenericAction toAction(Com com) {
+		public GenericAction toAction(Com com, GenericAgent agent) {
+			// TODO execptions, instanceof........
+			Unit unit = ((UnitAgent) agent).getUnit();
 			switch (this) {
 			case M_UP:
-				return new MoveUp(com, com.ComData.unit);
+				return new MoveUp(com, unit);
 			case M_DOWN:
-				return new MoveDown(com, com.ComData.unit);
+				return new MoveDown(com, unit);
 			case M_LEFT:
-				return new MoveLeft(com, com.ComData.unit);
+				return new MoveLeft(com, unit);
 			case M_RIGHT:
-				return new MoveRight(com, com.ComData.unit);
+				return new MoveRight(com, unit);
 
 			case M_APPROACH:
-				return new MoveApproach(com, com.ComData.unit);
+				return new MoveApproach(com, unit);
 			case M_AWAY:
-				return new MoveAway(com, com.ComData.unit);
+				return new MoveAway(com, unit);
 			case M_ARR_COUNTERCLOCKWISE:
-				return new MoveAroundCounterclockwise(com, com.ComData.unit);
+				return new MoveAroundCounterclockwise(com, unit);
 			case M_ARR_CLOCKWISE:
-				return new MoveAroundClockwise(com, com.ComData.unit);
+				return new MoveAroundClockwise(com, unit);
 
 			case M_ARR_ENE_COUNTCLOCKW:
-				return new MoveAroundEnemiesCounterclockwise(com, com.ComData.unit);
+				return new MoveAroundEnemiesCounterclockwise(com, unit);
 			case M_ARR_ENE_CLOCKW:
-				return new MoveAroundEnemiesClockwise(com, com.ComData.unit);
+				return new MoveAroundEnemiesClockwise(com, unit);
 			case M_ARR_ALLIES_COUNTCLOCKW:
-				return new MoveAroundAlliesCounterclockwise(com, com.ComData.unit);
+				return new MoveAroundAlliesCounterclockwise(com, unit);
 			case M_ARR_ALLIES_CLOCKW:
-				return new MoveAroundAlliesClockwise(com, com.ComData.unit);
+				return new MoveAroundAlliesClockwise(com, unit);
 
 			case M_FROM_ENE:
-				return new MoveFromEnemies(com, com.ComData.unit);
+				return new MoveFromEnemies(com, unit);
 			case M_TO_ENE:
-				return new MoveToEnemies(com, com.ComData.unit);
+				return new MoveToEnemies(com, unit);
 			case M_FROM_ALLIES:
-				return new MoveFromAllies(com, com.ComData.unit);
+				return new MoveFromAllies(com, unit);
 			case M_TO_ALLIES:
-				return new MoveToAllies(com, com.ComData.unit);
+				return new MoveToAllies(com, unit);
 
 			case ATTACK_LESS_HP:
-				return new AttackUnitOnSightLesHP(com, com.ComData.unit);
+				return new AttackUnitOnSightLesHP(com, unit);
 			default:
 				throw new IllegalArgumentException("Accion no valida");
 			}
@@ -88,14 +93,15 @@ public class Action {
 
 	private int ordinal;
 	private ActionEnum e;
+	private GenericAgent agent;
 
-	public Action(int i) {
+	public Action(int i, GenericAgent agent) {
 		this.e = values[i];
 		this.ordinal = ordinals[e.ordinal()];
 	}
 
 	public GenericAction toAction(Com com) {
-		return this.e.toAction(com);
+		return this.e.toAction(com, agent);
 	}
 
 	public int ordinal() {

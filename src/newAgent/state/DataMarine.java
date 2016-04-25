@@ -1,13 +1,14 @@
-package qLearning.agent.state;
+package newAgent.state;
 
 import java.util.ArrayList;
 
 import com.Com;
 
 import bot.commonFunctions.Distances;
+import bwapi.Unit;
 import bwapi.UnitType;
 
-public class DataRelative extends StateData {
+public class DataMarine extends StateData {
 
 	private static final int MAX_LIFE_DISCRETE = 5;
 	private static final int MAX_DISTANCE_DISCRETE = 10;
@@ -26,7 +27,7 @@ public class DataRelative extends StateData {
 		}
 
 		public MyLife() {
-			this(com.ComData.unit.getHitPoints());
+			this(unit.getHitPoints());
 		}
 
 		@Override
@@ -36,13 +37,13 @@ public class DataRelative extends StateData {
 
 		@Override
 		public MyLife getNewDimension() {
-			int newLife = com.ComData.unit.getHitPoints();
+			int newLife = unit.getHitPoints();
 			return new MyLife(newLife);
 		}
 
 		@Override
 		public Integer getCurrentValueFromBot() {
-			return com.ComData.unit.getHitPoints();
+			return unit.getHitPoints();
 		}
 	}
 
@@ -52,7 +53,7 @@ public class DataRelative extends StateData {
 		}
 
 		public DistanceToNearestEnemy() {
-			this(Distances.getDistanceToNearestEnemy(com.ComData.unit));
+			this(Distances.getDistanceToNearestEnemy(unit));
 		}
 
 		@Override
@@ -68,7 +69,7 @@ public class DataRelative extends StateData {
 
 		@Override
 		public Double getCurrentValueFromBot() {
-			return Distances.getDistanceToNearestEnemy(com.ComData.unit);
+			return Distances.getDistanceToNearestEnemy(unit);
 		}
 	}
 
@@ -81,12 +82,33 @@ public class DataRelative extends StateData {
 		return a;
 	}
 
-	public DataRelative(Com com) {
+	public static int getNumDims() {
+		return getNumValuesPerDims().size();
+	}
+
+	private Unit unit;
+	
+	public DataMarine(Com com, Unit unit) {
 		this.com = com;
+		this.unit = unit;
 
 		this.dimensions = new ArrayList<>();
 
 		this.dimensions.add(new MyLife());
 		this.dimensions.add(new DistanceToNearestEnemy());
 	}
+
+	@Override
+	public StateData getNewStateData() {
+		DataMarine r = new DataMarine(com, unit);
+
+		r.dimensions.clear();
+
+		for (Dimension<?> dimension : dimensions) {
+			r.dimensions.add(dimension.getNewDimension());
+		}
+		
+		return r;
+	}
+
 }

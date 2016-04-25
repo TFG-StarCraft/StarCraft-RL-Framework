@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 import javax.swing.JPanel;
 
+import newAgent.state.State;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 import qLearning.environment.AbstractEnvironment;
 
 public class QAarray implements AbstractQFunction {
@@ -17,7 +17,6 @@ public class QAarray implements AbstractQFunction {
 	private int size;
 
 	public QAarray(AbstractEnvironment e) {
-		// TODO
 		throw new RuntimeException("NOTIMPLEMENTED");
 		/*
 		this.size = e.getNumValuesPerDims().stream().reduce(1, (a, b) -> a * b);

@@ -1,12 +1,11 @@
-package qLearning.agent.state;
+package newAgent.state;
 
 import java.util.ArrayList;
 
 import com.Com;
 
-import qLearning.Const;
+import newAgent.GenericAgent;
 import qLearning.agent.Action;
-import qLearning.environment.AbstractEnvironment;
 
 public class State {
 
@@ -14,22 +13,27 @@ public class State {
 
 	private Double reward;
 
-	private AbstractEnvironment enviroment;
 	private Com com;
 
 	private Boolean finalState;
 
-	public static State newInitialState(AbstractEnvironment e, Com com) {
-		return new State(new DataRelative(com), e, com, true);
+	private GenericAgent agent;
+	
+	/**
+	 * Initial state constructor
+	 * @param data
+	 * @param com
+	 */
+	public State(GenericAgent agent, StateData data) {
+		this(agent, data, true);
 	}
 	
-	private State(StateData data, AbstractEnvironment e, Com com, boolean initialState) {
-		this.com = com;
+	private State(GenericAgent agent, StateData data, boolean initialState) {
+		this.agent = agent;
 		this.data = data;
+		this.com = agent.getCom();
 		this.reward = Double.NaN;
 		this.finalState = initialState ? false : null;
-
-		this.enviroment = e;
 	}
 
 	public StateData getData() {
@@ -37,18 +41,19 @@ public class State {
 	}
 
 	public boolean esAccionValida(Action a) {
-
+		// TODO unit
 		return a.toAction(com).isPossible();
 	}
 
 	public State executeAction(Action action) {
 
 		com.ComData.actionQueue.queueAction(action);
-
+		// TODO sync ¿action.wait?
 		com.Sync.waitForActionEnds();
 
-		State SS = new State(this.data.getNewStateData(), this.enviroment, this.com, false);
+		State SS = new State(agent, this.data.getNewStateData(), false);
 
+		// TODO sync
 		SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
 		
@@ -56,18 +61,10 @@ public class State {
 	}
 
 	private double calculateReward() {
-		if (finalState) {
-			if (com.ComData.isFinalStateGoal)
-				return Const.REWARD_SUCCESS;
-			else {
-				return Const.REWARD_FAIL;
-			}
-		} else {
-			return com.bot.getReward();
-		}
+		return agent.getReward(this);
 	}
 
-	public boolean isFinalEnd() {
+	public boolean isFinalState() {
 		return finalState;
 	}
 

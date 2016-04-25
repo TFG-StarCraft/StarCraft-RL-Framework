@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 import com.Com;
 
-import qLearning.agent.state.DataRelative;
-import qLearning.agent.state.State;
+import newAgent.state.DataMarine;
+import newAgent.state.State;
+import newAgent.state.StateData;
 
 public class SCEnvironment implements AbstractEnvironment {
 
@@ -19,19 +20,19 @@ public class SCEnvironment implements AbstractEnvironment {
 	public State getInitState() {
 		com.Sync.waitForBotEndsInit();
 
-		return State.newInitialState(this, com);
+		return new State(com);
 	}
 
 	@Override
 	public int getNumDims() {
-		int r = new DataRelative(com).getNumDims();
+		int r = DataMarine.getNumDims();
 		
 		return r;
 	}
 
 	@Override
 	public ArrayList<Integer> getNumValuesPerDims() {
-		return DataRelative.getNumValuesPerDims();
+		return DataMarine.getNumValuesPerDims();
 	}
 
 }

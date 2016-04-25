@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JPanel;
 
+import newAgent.state.State;
 import qLearning.agent.Action;
-import qLearning.agent.state.State;
 
 public interface AbstractQFunction {
 

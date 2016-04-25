@@ -111,7 +111,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.tabDanger = new TabDanger();
 		this.topTabbedPanel.add("Units", tabDanger);
 
-		// TODO
 		qPanel = new JPanel(new FlowLayout());
 		this.qTabScroll = new JScrollPane(qPanel);
 		this.topTabbedPanel.add("QTable", qTabScroll);
@@ -199,7 +198,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 					}
 				});
 
-				// TODO
 				this.btnShutsc = new JButton("ShutSc");
 				this.btnShutsc.addActionListener(new ActionListener() {
 
