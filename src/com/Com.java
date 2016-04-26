@@ -11,7 +11,7 @@ import com.observers.ComObserver;
 
 import bot.Bot;
 import bot.BotDestruirUnidad;
-import bot.event.AbstractEvent;
+import newAgent.event.AbstractEvent;
 import qLearning.agent.algorithm.LambdaQ;
 import qLearning.environment.SCEnvironment;
 import utils.DebugEnum;

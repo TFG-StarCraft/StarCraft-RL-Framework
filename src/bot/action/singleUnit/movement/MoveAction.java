@@ -6,6 +6,7 @@ import bot.action.GenericAction;
 import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 import utils.DebugEnum;
 
 /**
@@ -39,8 +40,8 @@ public abstract class MoveAction extends GenericAction {
 	 *            Unit to move.
 	 * @param agentEpoch
 	 */
-	public MoveAction(Com com, Unit unit) {
-		super(com, unit, bot.Const.FRAMES_MOVE, true);
+	public MoveAction(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit, bot.Const.FRAMES_MOVE, true);
 		iniX = unit.getX();
 		iniY = unit.getY();
 		this.setUpMove();

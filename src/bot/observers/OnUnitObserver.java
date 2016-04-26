@@ -2,7 +2,7 @@ package bot.observers;
 
 import bwapi.Unit;
 
-public interface GenericUnitObserver {
+public interface OnUnitObserver {
 	/**
 	 * This method is meant to be called on each frame of the game (via the
 	 * onFrame method in BWAPI.Bot) for each unit of the player.
@@ -14,16 +14,16 @@ public interface GenericUnitObserver {
 	/**
 	 * @return the unit that is being observed by this observer
 	 */
-	public Unit getUnit();
+	public Unit getUnitObserved();
 
 	/**
 	 * Registers this observer into the bot.Bot units listener
 	 */
-	public void registerUnitObserver();
+	public void registerOnUnitObserver();
 
 	/**
 	 * Unregisters this observer from the bot.Bot units listener
 	 */
-	public void unRegisterUnitObserver();
+	public void unRegisterOnUnitObserver();
 
 }

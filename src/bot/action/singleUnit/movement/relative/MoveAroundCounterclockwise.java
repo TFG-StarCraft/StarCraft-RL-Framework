@@ -7,12 +7,13 @@ import com.Com;
 import bot.action.singleUnit.movement.MoveAction;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 public class MoveAroundCounterclockwise extends MoveAction implements ClokwiseMove {
 
-	public MoveAroundCounterclockwise(Com com, Unit unit) {
-		super(com, unit);
-	}
+	public MoveAroundCounterclockwise(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit);
+	}	
 
 	/*******************/
 	/* OVERRIDE METHOD */

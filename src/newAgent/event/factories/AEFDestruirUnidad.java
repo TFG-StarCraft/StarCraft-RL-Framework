@@ -1,9 +1,9 @@
-package bot.event.factories;
+package newAgent.event.factories;
 
 import com.Com;
 
 import bot.action.GenericAction;
-import bot.event.AbstractEvent;
+import newAgent.event.AbstractEvent;
 
 public class AEFDestruirUnidad extends AbstractEventsFactory {
 
@@ -46,7 +46,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public void solveEvent() {
-					action.unRegisterUnitObserver();
+					action.unRegisterOnUnitObserver();
 
 					com.onEvent(this);
 					com.ComData.lastActionOk = correct;

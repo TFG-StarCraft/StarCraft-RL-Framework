@@ -35,9 +35,9 @@ import org.math.plot.Plot2DPanel;
 import com.Com;
 import com.observers.ComObserver;
 
-import bot.event.AbstractEvent;
-import bot.event.factories.AEFDestruirUnidad;
 import bwapi.Unit;
+import newAgent.event.AbstractEvent;
+import newAgent.event.factories.AEFDestruirUnidad;
 import qLearning.agent.Action;
 import utils.DebugEnum;
 

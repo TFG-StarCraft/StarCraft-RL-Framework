@@ -7,6 +7,7 @@ import com.Com;
 import bot.action.singleUnit.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 /**
  * Movement. Approaching to a target unit.
@@ -30,9 +31,9 @@ public class MoveFromAllies extends RelativeMove {
 	 *            Unit to move.
 	 * @param agentEpoch
 	 */
-	public MoveFromAllies(Com com, Unit unit) {
-		super(com, unit);
-	}
+	public MoveFromAllies(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit);
+	}	
 
 	/*******************/
 	/* OVERRIDE METHOD */

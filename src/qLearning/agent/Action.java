@@ -41,46 +41,46 @@ public class Action {
 
 		public GenericAction toAction(Com com, GenericAgent agent) {
 			// TODO execptions, instanceof........
-			Unit unit = ((UnitAgent) agent).getUnit();
+			Unit unit = ((UnitAgent) agent).getUnitObserved();
 			switch (this) {
 			case M_UP:
-				return new MoveUp(com, unit);
+				return new MoveUp(agent, com, unit);
 			case M_DOWN:
-				return new MoveDown(com, unit);
+				return new MoveDown(agent, com, unit);
 			case M_LEFT:
-				return new MoveLeft(com, unit);
+				return new MoveLeft(agent, com, unit);
 			case M_RIGHT:
-				return new MoveRight(com, unit);
+				return new MoveRight(agent, com, unit);
 
 			case M_APPROACH:
-				return new MoveApproach(com, unit);
+				return new MoveApproach(agent, com, unit);
 			case M_AWAY:
-				return new MoveAway(com, unit);
+				return new MoveAway(agent, com, unit);
 			case M_ARR_COUNTERCLOCKWISE:
-				return new MoveAroundCounterclockwise(com, unit);
+				return new MoveAroundCounterclockwise(agent, com, unit);
 			case M_ARR_CLOCKWISE:
-				return new MoveAroundClockwise(com, unit);
+				return new MoveAroundClockwise(agent, com, unit);
 
 			case M_ARR_ENE_COUNTCLOCKW:
-				return new MoveAroundEnemiesCounterclockwise(com, unit);
+				return new MoveAroundEnemiesCounterclockwise(agent, com, unit);
 			case M_ARR_ENE_CLOCKW:
-				return new MoveAroundEnemiesClockwise(com, unit);
+				return new MoveAroundEnemiesClockwise(agent, com, unit);
 			case M_ARR_ALLIES_COUNTCLOCKW:
-				return new MoveAroundAlliesCounterclockwise(com, unit);
+				return new MoveAroundAlliesCounterclockwise(agent, com, unit);
 			case M_ARR_ALLIES_CLOCKW:
-				return new MoveAroundAlliesClockwise(com, unit);
+				return new MoveAroundAlliesClockwise(agent, com, unit);
 
 			case M_FROM_ENE:
-				return new MoveFromEnemies(com, unit);
+				return new MoveFromEnemies(agent, com, unit);
 			case M_TO_ENE:
-				return new MoveToEnemies(com, unit);
+				return new MoveToEnemies(agent, com, unit);
 			case M_FROM_ALLIES:
-				return new MoveFromAllies(com, unit);
+				return new MoveFromAllies(agent, com, unit);
 			case M_TO_ALLIES:
-				return new MoveToAllies(com, unit);
+				return new MoveToAllies(agent, com, unit);
 
 			case ATTACK_LESS_HP:
-				return new AttackUnitOnSightLesHP(com, unit);
+				return new AttackUnitOnSightLesHP(agent, com, unit);
 			default:
 				throw new IllegalArgumentException("Accion no valida");
 			}

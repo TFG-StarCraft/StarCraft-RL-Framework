@@ -3,6 +3,7 @@ package bot.action.singleUnit.movement;
 import com.Com;
 
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 /**
  * Movement. Move up.
@@ -23,9 +24,9 @@ public class MoveUp extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveUp(Com com, Unit unit) {
-		super(com, unit);
-	}
+	public MoveUp(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit);
+	}	
 	
 	/*******************/
 	/* OVERRIDE METHOD */

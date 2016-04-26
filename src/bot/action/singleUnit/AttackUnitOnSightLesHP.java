@@ -8,11 +8,12 @@ import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
 import bwapi.Order;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 public class AttackUnitOnSightLesHP extends GenericAction {
 
-	public AttackUnitOnSightLesHP(Com com, Unit atacante) {
-		super(com, atacante, bot.Const.FRAMES_ATTACK, false);
+	public AttackUnitOnSightLesHP(GenericAgent agent, Com com, Unit atacante) {
+		super(agent, com, atacante, bot.Const.FRAMES_ATTACK, false);
 	}
 
 	@Override

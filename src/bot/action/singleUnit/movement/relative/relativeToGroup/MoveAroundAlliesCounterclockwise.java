@@ -8,12 +8,13 @@ import bot.action.singleUnit.movement.MoveAction;
 import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 public class MoveAroundAlliesCounterclockwise extends MoveAction implements ClokwiseMove {
 
-	public MoveAroundAlliesCounterclockwise(Com com, Unit unit) {
-		super(com, unit);
-	}
+	public MoveAroundAlliesCounterclockwise(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit);
+	}	
 
 	/*******************/
 	/* OVERRIDE METHOD */

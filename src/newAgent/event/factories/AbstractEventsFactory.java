@@ -1,6 +1,6 @@
-package bot.event.factories;
+package newAgent.event.factories;
 
-import bot.event.AbstractEvent;
+import newAgent.event.AbstractEvent;
 
 public abstract class AbstractEventsFactory {
 

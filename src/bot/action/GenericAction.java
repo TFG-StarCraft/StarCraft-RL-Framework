@@ -2,17 +2,19 @@ package bot.action;
 
 import com.Com;
 
-import bot.observers.GenericUnitObserver;
+import bot.observers.OnUnitObserver;
 import bwapi.Order;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 import utils.DebugEnum;
 
-public abstract class GenericAction implements GenericUnitObserver {
+public abstract class GenericAction implements OnUnitObserver {
 
 	protected Com com;
 
 	// Unit that is executing the action
 	protected final Unit unit;
+	protected final GenericAgent agent;
 
 	// Frame num were the action should have finished, reaching this frame
 	// before the action has ended (reaching endPos in this case), the action
@@ -53,7 +55,7 @@ public abstract class GenericAction implements GenericUnitObserver {
 	 */
 	public void onEndAction(boolean correct) {
 		com.onDebugMessage("Correct: " + correct + ", " + this.getClass().getName(), DebugEnum.ACTION_OK);
-		com.bot.onEndAction(this, correct);
+		agent.onEndAction(this, correct);
 	}
 
 	/**
@@ -71,13 +73,16 @@ public abstract class GenericAction implements GenericUnitObserver {
 	 *            therefore it wont be called in onUnit
 	 */
 
-	public GenericAction(Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
+	public GenericAction(GenericAgent agent, Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
+		this.agent = agent;
 		this.com = com;
 		this.unit = unit;
 
 		this.maxFramesOfExecuting = maxFramesOfExecuting;
 		this.actionStarted = false;
 		this.specialStart = specialStart;
+		
+		agent.onNewAction(this);
 	}
 
 	protected Order order;
@@ -120,17 +125,17 @@ public abstract class GenericAction implements GenericUnitObserver {
 	}
 
 	@Override
-	public Unit getUnit() {
+	public Unit getUnitObserved() {
 		return this.unit;
 	}
 
 	@Override
-	public void registerUnitObserver() {
+	public void registerOnUnitObserver() {
 		this.com.bot.registerOnUnitObserver(this);
 	}
 
 	@Override
-	public void unRegisterUnitObserver() {
+	public void unRegisterOnUnitObserver() {
 		this.com.bot.unRegisterOnUnitObserver(this);
 	}
 

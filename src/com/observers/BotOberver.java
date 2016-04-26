@@ -1,6 +1,6 @@
 package com.observers;
 
-import bot.event.AbstractEvent;
+import newAgent.event.AbstractEvent;
 import utils.DebugEnum;
 
 public interface BotOberver {

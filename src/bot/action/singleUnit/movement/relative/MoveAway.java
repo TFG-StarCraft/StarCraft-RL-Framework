@@ -6,6 +6,7 @@ import com.Com;
 
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
+import newAgent.GenericAgent;
 
 /**
  * Movement. Moving away from a target unit.
@@ -28,9 +29,9 @@ public class MoveAway extends RelativeMove {
 	 * @param unit
 	 *            Unit to move.
 	 */
-	public MoveAway(Com com, Unit unit) {
-		super(com, unit);
-	}
+	public MoveAway(GenericAgent agent, Com com, Unit unit) {
+		super(agent, com, unit);
+	}	
 
 	/*******************/
 	/* OVERRIDE METHOD */

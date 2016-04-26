@@ -7,10 +7,11 @@ import com.Com;
 import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
 import bot.commonFunctions.HP;
-import bot.event.AbstractEvent;
-import bot.event.factories.AbstractEventsFactory;
-import bot.event.factories.AEFDestruirUnidad;
+import bot.observers.UnitKilledObserver;
 import bwapi.Unit;
+import newAgent.event.AbstractEvent;
+import newAgent.event.factories.AEFDestruirUnidad;
+import newAgent.event.factories.AbstractEventsFactory;
 import utils.DebugEnum;
 
 public class BotDestruirUnidad extends Bot {
@@ -25,14 +26,6 @@ public class BotDestruirUnidad extends Bot {
 	}
 
 	private double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
-
-	@Override
-	public void onNewAction(GenericAction genericAction, Object... args) {
-		iniMyHP = com.ComData.unit.getHitPoints();
-
-		Unit unit = com.ComData.unit;
-		iniEnemyHP = HP.getHPOfEnemiesAround(unit);
-	}
 
 	@Override
 	public void onEndAction(GenericAction genericAction, Object... args) {
@@ -67,31 +60,6 @@ public class BotDestruirUnidad extends Bot {
 		return r * qLearning.Const.REWARD_MULT_FACTOR;
 	}
 
-	// TODO cont bot
-	int cont = 0;
-
-	@Override
-	public void onUnitDestroy(Unit unit) {
-		try {
-			com.onDebugMessage("DESTROY " + frames, DebugEnum.ON_UNIT_DESTROY);
-
-			if (unit.getID() == (com.ComData.unit.getID())) {
-				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
-				cont = 0;
-			} else {
-				if (cont == 0)
-					cont++;
-				else {
-					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
-					cont = 0;
-				}
-			}
-
-			super.onUnitDestroy(unit);
-		} catch (Throwable e) {
-			com.onError(e.getLocalizedMessage(), true);
-		}
-	}
 
 
 	@Override
