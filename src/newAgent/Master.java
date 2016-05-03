@@ -2,14 +2,26 @@ package newAgent;
 
 import java.util.ArrayList;
 
+import com.Com;
+
+import bwapi.Unit;
+import bwapi.UnitType;
+import newAgent.unit.MarineUnit;
+
 public class Master {
 
 	protected ArrayList<GenericAgent> agentsNotFinished;
 	protected ArrayList<GenericAgent> agentsFinished;
 
-	public Master() {
+	private ArrayList<Thread> threads;
+	
+	protected Com com;
+	
+	public Master(Com com) {
 		this.agentsNotFinished = new ArrayList<>();
 		this.agentsFinished = new ArrayList<>();
+		this.threads = new ArrayList<>();
+		this.com = com;
 	}
 	
 	public boolean solveEventsAndCheckEnd() {
@@ -49,12 +61,36 @@ public class Master {
 
 	public void onStart() {
 		clearActionQueue();
-		// TODO resetFinal
+		// TODO resetFinal ¿done?
+		agentsNotFinished.clear();
+		agentsFinished.clear();
+
+		// Wait for threads
+		for (Thread thread : threads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				com.onError(e.getLocalizedMessage(), true);
+			}
+		}
+		
+		threads.clear();
 	}
-	
+		
 	public void onFirstFrame() {
-		// TODO first frame master
-		// init agents?
+		// TODO d first frame master
+
+		for (Unit unit : com.bot.self.getUnits()) {
+			if (unit.getType() == UnitType.Terran_Marine) {
+				this.agentsNotFinished.add(new MarineUnit(unit, com, com.bot));
+			}
+		}
+		
+		for (GenericAgent genericAgent : agentsNotFinished) {
+			Thread	t = new Thread(genericAgent);
+			t.start();
+			threads.add(t);
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////

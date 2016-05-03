@@ -13,13 +13,12 @@ import bwapi.Unit;
 import newAgent.decisionMaker.GenericDecisionMaker;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AbstractEventsFactory;
-import newAgent.state.State;
 import qLearning.agent.Action;
 import qLearning.environment.AbstractEnvironment;
 import utils.DebugEnum;
 import utils.SafeNotify;
 
-public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver, AbstractEnvironment {
+public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver, AbstractEnvironment, Runnable {
 
 	protected Com com;
 	protected Bot bot;
@@ -46,6 +45,11 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		setUpFactory();
 	}
 
+	@Override
+	public void run() {
+		this.decisionMaker.run();
+	}
+	
 	protected abstract void setUpFactory();
 
 	public void clearActionQueue() {
@@ -57,8 +61,8 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	}
 
 	public void onEndIteration(int numRandomMoves, int i, double alpha, double epsilon, Double r) {
-		// TODO Auto-generated method stub
-
+		// TODO decisionMakerEndIteraction
+		com.onEndIteration(0, numRandomMoves, i, alpha, epsilon, r);
 	}
 
 	public void onNewAction(GenericAction action) {
@@ -76,7 +80,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 
 	public abstract void onEndAction(GenericAction genericAction, boolean correct);
 
-	public abstract double getReward(State state);
+	public abstract double getRewardUpdated();
 
 	////////////////////
 	// onUnitObserver //
@@ -187,9 +191,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		}
 	}
 
-	public void signalActionEnded(GenericAction genericAction) {
-		if (genericAction != currentAction)
-			com.onError("Different actions on signalActionEnded", true);
+	public void signalActionEnded() {
 		this.safeNotify.safeNotify(SYNC_ACTION_END);
 
 	}

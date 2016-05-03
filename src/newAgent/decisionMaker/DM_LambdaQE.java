@@ -57,7 +57,7 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 
 		int i = 0;
 		// TODO decisionMakerEnd
-		while (true) {
+		//while (true) {
 			// TODO d sync
 			// com.Sync.waitForBotGameIsStarted();
 			agent.waitForBotGameIsStarted();
@@ -124,7 +124,7 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 			
 			agent.onEndIteration(numRandomMoves, i, alpha, epsilon, R);
 			i++;
-		}
+		//}
 	}
 
 	public Action nextOptimalAction(State S) {

@@ -51,20 +51,16 @@ public class State {
 		// com.ComData.actionQueue.enqueueAction(action);
 		// TODO d sync ¿action.wait?
 		agent.waitForActionEnds();
-		//com.Sync.waitForActionEnds();
+		// com.Sync.waitForActionEnds();
 
 		State SS = new State(agent, this.data.getNewStateData(), false);
 
 		// TODO d sync end
 		// SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.finalState = agent.getOnFinalUpdated();
-		SS.reward = SS.calculateReward();
+		SS.reward = agent.getRewardUpdated();
 
 		return SS;
-	}
-
-	private double calculateReward() {
-		return agent.getReward(this);
 	}
 
 	public boolean isFinalState() {

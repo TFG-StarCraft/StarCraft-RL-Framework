@@ -92,7 +92,7 @@ public class BotDestruirUnidad extends Bot {
 			// set BEFORE returning the control to Agent
 
 			com.ComData.setOnFinal(isFinal);
-			event.solveEvent();
+			event.notifyEvent();
 
 			if (event.returnsControlToAgent()) {
 				break;

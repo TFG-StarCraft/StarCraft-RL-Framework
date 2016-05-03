@@ -41,16 +41,12 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 			}
 
 			return new AbstractEvent(code) {
-				private GenericAction action = (GenericAction) args[0];
+				//private GenericAction action = (GenericAction) args[0];
 				private Boolean correct = (Boolean) args[1];
 
 				@Override
-				public void solveEvent() {
-					action.unRegisterOnUnitObserver();
+				public void notifyEvent() {
 					com.onEvent(this);
-					// TODO d Sync
-					action.signalActionEnded();
-					//com.Sync.signalActionEnded();
 				}
 
 				@Override
@@ -81,10 +77,9 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 			return new AbstractEvent(code) {
 
 				@Override
-				public void solveEvent() {
+				public void notifyEvent() {
 					com.onSendMessage("Randy ha matado :)");
 					com.onEvent(this);
-					//com.Sync.signalActionEnded();
 				}
 
 				@Override
@@ -115,10 +110,9 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 			return new AbstractEvent(code) {
 
 				@Override
-				public void solveEvent() {
+				public void notifyEvent() {
 					com.onSendMessage("Randy ha muerto :(");
 					com.onEvent(this);
-					//com.Sync.signalActionEnded();
 				}
 
 				@Override

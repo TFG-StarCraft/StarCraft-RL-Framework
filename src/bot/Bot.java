@@ -23,8 +23,8 @@ public class Bot extends DefaultBWListener implements Runnable {
 	private Com com;
 
 	private Mirror mirror;
-	private Game game;
-	private Player self;
+	public Game game;
+	public Player self;
 
 	private boolean firstOnStart;
 	private boolean firstOnFrame;
@@ -46,8 +46,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public Bot(Com com) {
+	public Bot(Com com, Master master) {
 		this.com = com;
+		this.master = master;
 		this.mirror = new Mirror();
 		this.firstOnStart = true;
 		this.guiEnabled = true;
@@ -57,8 +58,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 		this.onUnitObservers = new HashMap<>();
 		this.onUnitKilledObservers = new ArrayList<>();
-	
-		this.master = new Master();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -80,12 +79,11 @@ public class Bot extends DefaultBWListener implements Runnable {
 			this.restartFlag = false;
 			this.endFlag = false;
 
+			//com.ComData.actionQueue.clear();
 			this.master.onStart();			
 
 			this.onUnitObservers.clear();
 			this.onUnitKilledObservers.clear();
-
-			//com.ComData.actionQueue.clear();
 
 			if (firstOnStart) { // Only enters the very first execution
 								// (restarts wont enter here)
@@ -99,9 +97,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 				this.firstOnStart = false;
 			}
 
-			// TODO d sync
 			this.master.signalGameIsReady();
-			//this.com.Sync.signalGameIsReady();
 		} catch (Throwable e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
@@ -121,17 +117,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 						// com.Sync.signalInitIsDone();
 						master.signalInitIsDone();
 					} else {
+						// Check end, all agents will check end condition, and
+						// if all agents end, master will cause bot to resatrt
 						endFlag = master.solveEventsAndCheckEnd();
-						//	for (GenericAgent genericAgent : agents) {
-						//		endConditionSatisfied |= genericAgent.solveEventsAndCheckEnd();
-						//	}
-						
-						//endConditionSatisfied = solveEventsAndCheckEnd();
-						// TODO d setOnFinal
-						//com.ComData.setOnFinal(endConditionSatisfied);
-
-						// This signals that the PREVIOUS onFrame was executed
-						// com.Sync.signalIsEndCanBeChecked();
 					}
 
 					this.frames++;
@@ -139,19 +127,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 					updateGameSpeed();
 
 					if (!endFlag) {
+						// Register pending actions for every agent
 						master.onFrame();
-												
-						/*
-						ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
 
-						
-						
-						for (GenericAction action : actionsToRegister) {
-							action.registerOnUnitObserver();
-							onNewAction(action, (Object[]) null);
-						}
-						*/
-						
 						// Call all unitsObserver for each unit
 						for (Unit rawUnit : self.getUnits()) {
 							ArrayList<OnUnitObserver> a = onUnitObservers.get(rawUnit.getID());
@@ -207,14 +185,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 	// Called on the first execution of onFrame
 	private void firstExecOnFrame() {
-		// TODO OLD
-		// for (Unit unit : self.getUnits()) {
-		// if (unit.getType().equals(UnitType.Terran_Marine)) {
-		// com.ComData.unit = unit;
-		// }
-		// }
 		this.master.onFirstFrame();
-		//com.ComData.resetFinal();
 		this.firstOnFrame = false;
 	}
 

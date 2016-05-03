@@ -19,7 +19,7 @@ public abstract class AbstractEvent {
 		return this.code;
 	}
 
-	public abstract void solveEvent();
+	public abstract void notifyEvent();
 
 	public abstract boolean isFinalEvent();
 	

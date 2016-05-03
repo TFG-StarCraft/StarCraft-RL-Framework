@@ -50,13 +50,6 @@ public class MarineUnit extends UnitAgent {
 		return DataMarine.getNumValuesPerDims();
 	}
 
-	private double nextReward;
-
-	@Override
-	public double getReward(State state) {
-		return nextReward;
-	}
-
 	// TODO cont
 	int cont = 0;
 
@@ -129,6 +122,13 @@ public class MarineUnit extends UnitAgent {
 		waitForEndCanBeChecked();
 		return lastEndCondition;
 	}
+	
+	private double nextReward;
+
+	@Override
+	public double getRewardUpdated() {
+		return nextReward;
+	}
 
 	@Override
 	public boolean solveEventsAndCheckEnd() {
@@ -143,29 +143,12 @@ public class MarineUnit extends UnitAgent {
 		// Descending order (attend first more prio. events)
 		java.util.Collections.sort(events, AbstractEvent.getPrioCompDescend());
 
-		// if (!events.isEmpty()) {
-		// AbstractEvent event = events.get(0);
-		//
-		// isFinal = isFinal | event.isFinalEvent();
-		// // on final is set *** BEFORE *** calling solveEvent, therefore is
-		// // set BEFORE returning the control to Agent
-		// com.ComData.setOnFinal(isFinal);
-		// event.solveEvent();
-		// }
 		for (AbstractEvent event : events) {
 			isFinal = isFinal | event.isFinalEvent();
-			// on final is set *** BEFORE *** calling solveEvent, therefore is
-			// set BEFORE returning the control to Agent
-
-			// TODO w sync
-			// com.ComData.setOnFinal(isFinal);
-			event.solveEvent();
-
 			if (event.returnsControlToAgent()) {
 				// Calculate reward for current ending action
 				if (event.isFinalEvent()) {
 					nextReward = event.isGoalState() ? Const.REWARD_SUCCESS : Const.REWARD_FAIL;
-					// TODO Notify Super agent?
 				} else {
 					// Calculate end hp's
 					endMyHP = unit.getHitPoints();
@@ -189,8 +172,12 @@ public class MarineUnit extends UnitAgent {
 					double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
 					nextReward = r * newAgent.Const.REWARD_MULT_FACTOR;
 				}
-				
+
+				event.notifyEvent();
+				// Signal AFTER onEnd and reward are set
+				this.signalActionEnded();
 				this.currentAction.unRegisterOnUnitObserver();
+				
 				break;
 			}
 		}
