@@ -148,4 +148,8 @@ public abstract class GenericAction implements OnUnitObserver {
 		return com.bot.frames >= this.frameEnd;
 	}
 
+	public void signalActionEnded() {
+		agent.signalActionEnded(this);
+	}
+
 }

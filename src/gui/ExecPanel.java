@@ -175,10 +175,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 							t_lambda.setEditable(false);
 							new Thread(com).start();
 						} catch (NumberFormatException e1) {
-							t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
-							t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
-							t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
-							t_lambda.setText(Double.toString(qLearning.Const.LAMBDA));
+							t_alpha.setText(Double.toString(newAgent.Const.ALPHA));
+							t_gamma.setText(Double.toString(newAgent.Const.GAMMA));
+							t_epsilon.setText(Double.toString(newAgent.Const.EPSLLON_EGREEDY));
+							t_lambda.setText(Double.toString(newAgent.Const.LAMBDA));
 						}
 					}
 				});
@@ -264,22 +264,22 @@ public class ExecPanel extends JPanel implements ComObserver {
 			
 			this.l_alpha = new JLabel("Alpha: ", SwingConstants.RIGHT);
 			this.t_alpha = new JTextField();
-			this.t_alpha.setText(Double.toString(qLearning.Const.ALPHA));
+			this.t_alpha.setText(Double.toString(newAgent.Const.ALPHA));
 			this.t_alpha.setColumns(5);
 			
 			this.l_gamma = new JLabel("Gamma: ", SwingConstants.RIGHT);
 			this.t_gamma = new JTextField();
-			this.t_gamma.setText(Double.toString(qLearning.Const.GAMMA));
+			this.t_gamma.setText(Double.toString(newAgent.Const.GAMMA));
 			this.t_gamma.setColumns(5);
 
 			this.l_epsilon = new JLabel("Epsilon: ", SwingConstants.RIGHT);
 			this.t_epsilon = new JTextField();
-			this.t_epsilon.setText(Double.toString(qLearning.Const.EPSLLON_EGREEDY));
+			this.t_epsilon.setText(Double.toString(newAgent.Const.EPSLLON_EGREEDY));
 			this.t_epsilon.setColumns(5);
 
 			this.l_lambda = new JLabel("Lambda: ", SwingConstants.RIGHT);
 			this.t_lambda = new JTextField();
-			this.t_lambda.setText(Double.toString(qLearning.Const.LAMBDA));
+			this.t_lambda.setText(Double.toString(newAgent.Const.LAMBDA));
 			this.t_lambda.setColumns(5);
 			
 			lblSpeed = new JLabel("Speed:", SwingConstants.RIGHT);

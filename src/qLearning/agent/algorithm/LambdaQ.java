@@ -7,8 +7,8 @@ import java.util.Random;
 
 import com.Com;
 
+import newAgent.Const;
 import newAgent.state.State;
-import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.agent.qFunction.AbstractQEFunction;
 import qLearning.agent.qFunction.QEMap;

@@ -18,8 +18,8 @@ import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {
 
-	public ComData ComData;
-	public Sync Sync;
+	//public ComData ComData;
+	//public Sync Sync;
 
 	private ArrayList<ComObserver> observers;
 
@@ -30,8 +30,8 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 
 	public Com() {
-		this.ComData = new ComData(this);
-		this.Sync = new Sync(this);
+		//this.ComData = new ComData(this);
+		//this.Sync = new Sync(this);
 		this.observers = new ArrayList<>();
 	}
 

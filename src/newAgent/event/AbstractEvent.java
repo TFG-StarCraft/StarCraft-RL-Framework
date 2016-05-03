@@ -9,9 +9,6 @@ import java.util.Comparator;
  */
 public abstract class AbstractEvent {
 
-	// TODO hacer que en esta clase se controle todo lo que produce el evento,
-	// que no sea un simpe numero
-
 	private final int code;
 
 	public AbstractEvent(int code) {

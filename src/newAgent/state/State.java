@@ -49,12 +49,13 @@ public class State {
 	public State executeAction(Action action) {
 		agent.enqueueAction(action);
 		// com.ComData.actionQueue.enqueueAction(action);
-		// TODO sync ¿action.wait?
-		com.Sync.waitForActionEnds();
+		// TODO d sync ¿action.wait?
+		agent.waitForActionEnds();
+		//com.Sync.waitForActionEnds();
 
 		State SS = new State(agent, this.data.getNewStateData(), false);
 
-		// TODO sync end
+		// TODO d sync end
 		// SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.finalState = agent.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();

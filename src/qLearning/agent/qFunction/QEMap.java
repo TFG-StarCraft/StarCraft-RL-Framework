@@ -11,8 +11,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import newAgent.Const;
 import newAgent.state.State;
-import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.environment.AbstractEnvironment;
 

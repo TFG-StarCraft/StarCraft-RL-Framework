@@ -58,8 +58,9 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 		int i = 0;
 		// TODO decisionMakerEnd
 		while (true) {
-			// TODO sync
+			// TODO d sync
 			// com.Sync.waitForBotGameIsStarted();
+			agent.waitForBotGameIsStarted();
 
 			State S = agent.getInitState();
 

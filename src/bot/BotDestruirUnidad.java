@@ -57,7 +57,7 @@ public class BotDestruirUnidad extends Bot {
 		}
 
 		double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
-		return r * qLearning.Const.REWARD_MULT_FACTOR;
+		return r * newAgent.Const.REWARD_MULT_FACTOR;
 	}
 
 

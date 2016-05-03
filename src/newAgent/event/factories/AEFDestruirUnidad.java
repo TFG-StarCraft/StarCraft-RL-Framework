@@ -48,7 +48,8 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				public void solveEvent() {
 					action.unRegisterOnUnitObserver();
 					com.onEvent(this);
-					// TODO Sync
+					// TODO d Sync
+					action.signalActionEnded();
 					//com.Sync.signalActionEnded();
 				}
 

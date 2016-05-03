@@ -10,12 +10,12 @@ import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
 import bot.commonFunctions.HP;
 import bwapi.Unit;
+import newAgent.Const;
 import newAgent.decisionMaker.DM_LambdaQE;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AEFDestruirUnidad;
 import newAgent.state.DataMarine;
 import newAgent.state.State;
-import qLearning.Const;
 
 public class MarineUnit extends UnitAgent {
 
@@ -32,8 +32,11 @@ public class MarineUnit extends UnitAgent {
 
 	@Override
 	public State getInitState() {
-		// TODO sync
+		// TODO d sync
 		// com.Sync.waitForBotEndsInit();
+		
+		this.waitForBotEndsInit();
+		
 		return new State(this, new DataMarine(com, unit));
 	}
 
@@ -116,12 +119,14 @@ public class MarineUnit extends UnitAgent {
 	@Override
 	public void notifyEnd(boolean tmp) {
 		lastEndCondition = tmp;
-		// TODO Notify
+		// TODO d Notify
+		signalEndCanBeChecked();
 	}
 
 	@Override
 	public Boolean getOnFinalUpdated() {
-		// TODO wait
+		// TODO d wait
+		waitForEndCanBeChecked();
 		return lastEndCondition;
 	}
 
@@ -152,7 +157,7 @@ public class MarineUnit extends UnitAgent {
 			// on final is set *** BEFORE *** calling solveEvent, therefore is
 			// set BEFORE returning the control to Agent
 
-			// TODO sync
+			// TODO w sync
 			// com.ComData.setOnFinal(isFinal);
 			event.solveEvent();
 
@@ -182,10 +187,9 @@ public class MarineUnit extends UnitAgent {
 					}
 
 					double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
-					nextReward = r * qLearning.Const.REWARD_MULT_FACTOR;
+					nextReward = r * newAgent.Const.REWARD_MULT_FACTOR;
 				}
-				// TODO sycn notify decision maker
-
+				
 				this.currentAction.unRegisterOnUnitObserver();
 				break;
 			}
@@ -193,5 +197,9 @@ public class MarineUnit extends UnitAgent {
 
 		return isFinal;
 	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// SYNC ///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 }

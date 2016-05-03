@@ -10,9 +10,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import newAgent.Const;
 import newAgent.state.Dimension;
 import newAgent.state.State;
-import qLearning.Const;
 import qLearning.agent.Action;
 import qLearning.environment.AbstractEnvironment;
 
@@ -81,7 +81,7 @@ public class QMap extends HashMap<Integer, QMap.Set> implements AbstractQFunctio
 		private QCell() {
 			super(new GridLayout(Action.values().length, 1));
 			for (int i = 0; i < Action.values().length; i++) {
-				this.add(new JLabel("" + qLearning.Const.Q_GENERAL));
+				this.add(new JLabel("" + newAgent.Const.Q_GENERAL));
 			}
 
 			this.setBorder(BorderFactory.createLineBorder(Color.BLACK));

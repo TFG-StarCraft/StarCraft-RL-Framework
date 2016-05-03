@@ -1,4 +1,4 @@
-package qLearning;
+package newAgent;
 
 public interface Const {
 	public final static double ALPHA = 0.3;

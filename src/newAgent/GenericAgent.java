@@ -17,12 +17,14 @@ import newAgent.state.State;
 import qLearning.agent.Action;
 import qLearning.environment.AbstractEnvironment;
 import utils.DebugEnum;
+import utils.SafeNotify;
 
 public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver, AbstractEnvironment {
 
 	protected Com com;
 	protected Bot bot;
 	protected Master master;
+	protected SafeNotify safeNotify;
 
 	protected GenericDecisionMaker decisionMaker;
 	protected Unit unit;
@@ -36,6 +38,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		this.unit = unit;
 		this.com = com;
 		this.bot = bot;
+		this.safeNotify = new SafeNotify(this);
 		this.currentAction = null;
 
 		this.events = new ArrayList<>();
@@ -44,33 +47,31 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	}
 
 	protected abstract void setUpFactory();
-	
+
 	public void clearActionQueue() {
 		this.actionsToDispatch.clear();
 	}
-	
+
 	public void enqueueAction(Action action) {
 		this.actionsToDispatch.enqueueAction(action);
 	}
-	
 
 	public void onEndIteration(int numRandomMoves, int i, double alpha, double epsilon, Double r) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	public void onNewAction(GenericAction action) {
 		this.currentAction = action;
 		this.onNewAction();
 	}
-	
+
 	public abstract void notifyEnd(boolean tmp);
 
 	public abstract boolean solveEventsAndCheckEnd();
-	
+
 	public abstract void onFrame();
-	
+
 	public abstract void onNewAction();
 
 	public abstract void onEndAction(GenericAction genericAction, boolean correct);
@@ -141,5 +142,63 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 
 	public abstract Boolean getOnFinalUpdated();
 
+	///////////////////////////////////////////////////////////////////////////
+	// SYNC ///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
+	public static final int SYNC_GAME_IS_STARTED = 0;
+	public static final int SYNC_BOT_ENDS_INIT = 1;
+	public static final int SYNC_END_CAN_BE_CHECKED = 2;
+	public static final int SYNC_ACTION_END = 3;
+
+	public void signalGameIsReady() {
+		this.safeNotify.safeNotify(SYNC_GAME_IS_STARTED);
+	}
+
+	public void waitForBotGameIsStarted() {
+		try {
+			this.safeNotify.safeWait(SYNC_GAME_IS_STARTED);
+		} catch (InterruptedException e) {
+			com.onError(e.getLocalizedMessage(), true);
+		}
+	}
+
+	public void signalInitIsDone() {
+		this.safeNotify.safeNotify(SYNC_BOT_ENDS_INIT);
+	}
+
+	public void waitForBotEndsInit() {
+		try {
+			this.safeNotify.safeWait(SYNC_BOT_ENDS_INIT);
+		} catch (InterruptedException e) {
+			com.onError(e.getLocalizedMessage(), true);
+		}
+	}
+
+	public void signalEndCanBeChecked() {
+		this.safeNotify.safeNotify(SYNC_END_CAN_BE_CHECKED);
+	}
+
+	public void waitForEndCanBeChecked() {
+		try {
+			this.safeNotify.safeWait(SYNC_END_CAN_BE_CHECKED);
+		} catch (InterruptedException e) {
+			com.onError(e.getLocalizedMessage(), true);
+		}
+	}
+
+	public void signalActionEnded(GenericAction genericAction) {
+		if (genericAction != currentAction)
+			com.onError("Different actions on signalActionEnded", true);
+		this.safeNotify.safeNotify(SYNC_ACTION_END);
+
+	}
+
+	public void waitForActionEnds() {
+		try {
+			this.safeNotify.safeWait(SYNC_ACTION_END);
+		} catch (InterruptedException e) {
+			com.onError(e.getLocalizedMessage(), true);
+		}
+	}
 }

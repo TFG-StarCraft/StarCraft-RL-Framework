@@ -48,12 +48,29 @@ public class Master {
 	}
 
 	public void onStart() {
+		clearActionQueue();
 		// TODO resetFinal
 	}
 	
 	public void onFirstFrame() {
 		// TODO first frame master
+		// init agents?
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// SYNC ///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
+	public void signalGameIsReady() {
+		for (GenericAgent genericAgent : agentsNotFinished) {
+			genericAgent.signalGameIsReady();
+		}
 	}
 
+	public void signalInitIsDone() {
+		for (GenericAgent genericAgent : agentsNotFinished) {
+			genericAgent.signalInitIsDone();
+		}
+	}
 
 }

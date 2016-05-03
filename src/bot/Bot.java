@@ -20,16 +20,16 @@ import utils.DebugEnum;
 
 public class Bot extends DefaultBWListener implements Runnable {
 
-	protected Com com;
+	private Com com;
 
-	public Mirror mirror;
-	public Game game;
-	public Player self;
+	private Mirror mirror;
+	private Game game;
+	private Player self;
 
 	private boolean firstOnStart;
 	private boolean firstOnFrame;
 	private boolean restarting;
-	private boolean endConditionSatisfied;
+	private boolean endFlag;
 
 	public boolean guiEnabled;
 	public long frames;
@@ -37,10 +37,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 	private int lastFrameSpeed;
 
 	// Maps units (with its unique id) to an arrayList of observers
-	protected HashMap<Integer, ArrayList<OnUnitObserver>> genericObservers;
-	protected ArrayList<UnitKilledObserver> unitKilledObservers;
+	private HashMap<Integer, ArrayList<OnUnitObserver>> onUnitObservers;
+	private ArrayList<UnitKilledObserver> onUnitKilledObservers;
 	
-	//protected ArrayList<GenericAgent> agents;
 	private Master master;
 
 	///////////////////////////////////////////////////////////////////////////
@@ -56,8 +55,8 @@ public class Bot extends DefaultBWListener implements Runnable {
 		this.frameSpeed = 0;
 		this.lastFrameSpeed = frameSpeed;
 
-		this.genericObservers = new HashMap<>();
-		this.unitKilledObservers = new ArrayList<>();
+		this.onUnitObservers = new HashMap<>();
+		this.onUnitKilledObservers = new ArrayList<>();
 	
 		this.master = new Master();
 	}
@@ -79,14 +78,13 @@ public class Bot extends DefaultBWListener implements Runnable {
 			this.firstOnFrame = true;
 			this.restarting = false;
 			this.restartFlag = false;
-			this.endConditionSatisfied = false;
+			this.endFlag = false;
 
 			this.master.onStart();			
 
-			this.genericObservers.clear();
-			this.unitKilledObservers.clear();
+			this.onUnitObservers.clear();
+			this.onUnitKilledObservers.clear();
 
-			this.master.clearActionQueue();
 			//com.ComData.actionQueue.clear();
 
 			if (firstOnStart) { // Only enters the very first execution
@@ -101,8 +99,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 				this.firstOnStart = false;
 			}
 
-			// TODO sync
-			this.com.Sync.signalGameIsReady();
+			// TODO d sync
+			this.master.signalGameIsReady();
+			//this.com.Sync.signalGameIsReady();
 		} catch (Throwable e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
@@ -114,21 +113,21 @@ public class Bot extends DefaultBWListener implements Runnable {
 			com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
 			if (shouldExecuteOnFrame()) {
 				// Draw info even if paused (at the end)
-				if (!endConditionSatisfied && !game.isPaused()) {
+				if (!endFlag && !game.isPaused()) {
 					if (this.firstOnFrame) {
 						firstExecOnFrame();
-						// TODO master onInitDone?
-						// TODO sync
-						com.Sync.signalInitIsDone();
+						// TODO d master onInitDone?
+						// TODO d sync
+						// com.Sync.signalInitIsDone();
+						master.signalInitIsDone();
 					} else {
-						// TODO Super agent?
-						endConditionSatisfied = master.solveEventsAndCheckEnd();
+						endFlag = master.solveEventsAndCheckEnd();
 						//	for (GenericAgent genericAgent : agents) {
 						//		endConditionSatisfied |= genericAgent.solveEventsAndCheckEnd();
 						//	}
 						
 						//endConditionSatisfied = solveEventsAndCheckEnd();
-						// TODO setOnFinal
+						// TODO d setOnFinal
 						//com.ComData.setOnFinal(endConditionSatisfied);
 
 						// This signals that the PREVIOUS onFrame was executed
@@ -139,10 +138,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 					showFramesPerSecs();
 					updateGameSpeed();
 
-					if (!endConditionSatisfied) {
+					if (!endFlag) {
 						master.onFrame();
-						
-						
+												
 						/*
 						ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
 
@@ -156,7 +154,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 						
 						// Call all unitsObserver for each unit
 						for (Unit rawUnit : self.getUnits()) {
-							ArrayList<OnUnitObserver> a = genericObservers.get(rawUnit.getID());
+							ArrayList<OnUnitObserver> a = onUnitObservers.get(rawUnit.getID());
 
 							if (a != null) {
 								if (a.size() > 1) {
@@ -193,7 +191,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 			com.onDebugMessage("DESTROY " + unit.getType().toString() + " id " + unit.getID() + "at frame " + frames,
 					DebugEnum.ON_UNIT_DESTROY);
 
-			for (UnitKilledObserver unitKilledObserver : unitKilledObservers) {
+			for (UnitKilledObserver unitKilledObserver : onUnitKilledObservers) {
 				unitKilledObserver.onUnitKilled(unit);
 			}
 
@@ -251,36 +249,36 @@ public class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 
 	public void registerOnUnitObserver(OnUnitObserver obs) {
-		if (genericObservers.containsKey(obs.getUnitObserved().getID())) {
-			ArrayList<OnUnitObserver> a = genericObservers.get(obs.getUnitObserved().getID());
+		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
+			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
 			a.add(obs);
 
-			genericObservers.put(obs.getUnitObserved().getID(), a);
+			onUnitObservers.put(obs.getUnitObserved().getID(), a);
 		} else {
 			ArrayList<OnUnitObserver> a = new ArrayList<>();
 			a.add(obs);
 
-			genericObservers.put(obs.getUnitObserved().getID(), a);
+			onUnitObservers.put(obs.getUnitObserved().getID(), a);
 		}
 	}
 
 	public void unRegisterOnUnitObserver(OnUnitObserver obs) {
-		if (genericObservers.containsKey(obs.getUnitObserved().getID())) {
-			ArrayList<OnUnitObserver> a = genericObservers.get(obs.getUnitObserved().getID());
+		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
+			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
 			a.remove(obs);
 
-			genericObservers.put(obs.getUnitObserved().getID(), a);
+			onUnitObservers.put(obs.getUnitObserved().getID(), a);
 		}
 	}
 
 	public void registerUnitKilledObserver(UnitKilledObserver obs) {
-		if (!unitKilledObservers.contains(obs))
-			unitKilledObservers.add(obs);
+		if (!onUnitKilledObservers.contains(obs))
+			onUnitKilledObservers.add(obs);
 	}
 
 	public void unRegisterUnitKilledObserver(UnitKilledObserver obs) {
-		if (unitKilledObservers.contains(obs))
-			unitKilledObservers.remove(obs);
+		if (onUnitKilledObservers.contains(obs))
+			onUnitKilledObservers.remove(obs);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
