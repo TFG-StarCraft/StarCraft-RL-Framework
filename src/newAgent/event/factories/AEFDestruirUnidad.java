@@ -47,10 +47,9 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					action.unRegisterOnUnitObserver();
-
 					com.onEvent(this);
-					com.ComData.lastActionOk = correct;
-					com.Sync.signalActionEnded();
+					// TODO Sync
+					//com.Sync.signalActionEnded();
 				}
 
 				@Override
@@ -61,6 +60,16 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public boolean returnsControlToAgent() {
 					return true;
+				}
+
+				@Override
+				public boolean isGoalState() {
+					return false;
+				}
+
+				@Override
+				public boolean lastActionOk() {
+					return correct;
 				}
 			};
 		case CODE_KILL:
@@ -73,9 +82,8 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha matado :)");
-					com.ComData.isFinalStateGoal = true;
 					com.onEvent(this);
-					com.Sync.signalActionEnded();
+					//com.Sync.signalActionEnded();
 				}
 
 				@Override
@@ -85,6 +93,16 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public boolean returnsControlToAgent() {
+					return true;
+				}
+
+				@Override
+				public boolean isGoalState() {
+					return true;
+				}
+
+				@Override
+				public boolean lastActionOk() {
 					return true;
 				}
 			};
@@ -98,9 +116,8 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public void solveEvent() {
 					com.onSendMessage("Randy ha muerto :(");
-					com.ComData.isFinalStateGoal = false;
 					com.onEvent(this);
-					com.Sync.signalActionEnded();
+					//com.Sync.signalActionEnded();
 				}
 
 				@Override
@@ -110,6 +127,16 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public boolean returnsControlToAgent() {
+					return true;
+				}
+
+				@Override
+				public boolean isGoalState() {
+					return false;
+				}
+
+				@Override
+				public boolean lastActionOk() {
 					return true;
 				}
 			};

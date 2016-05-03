@@ -24,7 +24,7 @@ public class ActionDispatchQueue {
 		this.list = new ArrayList<>();
 	}
 
-	public synchronized void queueAction(Action action) {
+	public synchronized void enqueueAction(Action action) {
 		this.list.add(action);
 	}
 

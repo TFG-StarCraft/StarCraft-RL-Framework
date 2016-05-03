@@ -14,8 +14,7 @@ public abstract class UnitAgent extends GenericAgent {
 
 	@Override
 	public void onUnit(Unit unit) {
-		// TODO Auto-generated method stub
-
+		currentAction.onUnit(unit);
 	}
 
 }

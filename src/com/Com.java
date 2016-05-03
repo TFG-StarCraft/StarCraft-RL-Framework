@@ -80,10 +80,10 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	}
 
-	public void restart() {
-		onSendMessage("Com Restart call...");
-		this.ComData.restart = true;
-	}
+//	public void restart() {
+//		onSendMessage("Com Restart call...");
+//		this.ComData.restart = true;
+//	}
 
 	public void addObserver(ComObserver o) {
 		this.observers.add(o);

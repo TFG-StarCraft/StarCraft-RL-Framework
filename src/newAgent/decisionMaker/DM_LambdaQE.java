@@ -120,6 +120,8 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 			//com.onFullQUpdate(QE.showQ());
 
 			//com.restart();
+			
+			agent.onEndIteration(numRandomMoves, i, alpha, epsilon, R);
 			i++;
 		}
 	}

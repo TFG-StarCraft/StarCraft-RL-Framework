@@ -18,16 +18,17 @@ public class State {
 	private Boolean finalState;
 
 	private GenericAgent agent;
-	
+
 	/**
 	 * Initial state constructor
+	 * 
 	 * @param data
 	 * @param com
 	 */
 	public State(GenericAgent agent, StateData data) {
 		this(agent, data, true);
 	}
-	
+
 	private State(GenericAgent agent, StateData data, boolean initialState) {
 		this.agent = agent;
 		this.data = data;
@@ -46,17 +47,18 @@ public class State {
 	}
 
 	public State executeAction(Action action) {
-
-		com.ComData.actionQueue.queueAction(action);
+		agent.enqueueAction(action);
+		// com.ComData.actionQueue.enqueueAction(action);
 		// TODO sync ¿action.wait?
 		com.Sync.waitForActionEnds();
 
 		State SS = new State(agent, this.data.getNewStateData(), false);
 
-		// TODO sync
-		SS.finalState = com.ComData.getOnFinalUpdated();
+		// TODO sync end
+		// SS.finalState = com.ComData.getOnFinalUpdated();
+		SS.finalState = agent.getOnFinalUpdated();
 		SS.reward = SS.calculateReward();
-		
+
 		return SS;
 	}
 
@@ -102,7 +104,7 @@ public class State {
 	public String toString() {
 		String s = "";
 		for (Dimension<?> e : data.getValues()) {
-			 s += (e.getName() + ": " + e.discretize() + "\n");
+			s += (e.getName() + ": " + e.discretize() + "\n");
 		}
 		return s;
 	}

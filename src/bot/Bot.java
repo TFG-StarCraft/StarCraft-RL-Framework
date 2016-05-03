@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import com.Com;
 
-import bot.action.GenericAction;
 import bot.observers.OnUnitObserver;
 import bot.observers.UnitKilledObserver;
 import bwapi.Color;
@@ -16,11 +15,10 @@ import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
-import newAgent.event.AbstractEvent;
-import newAgent.event.factories.AbstractEventsFactory;
+import newAgent.Master;
 import utils.DebugEnum;
 
-public abstract class Bot extends DefaultBWListener implements Runnable {
+public class Bot extends DefaultBWListener implements Runnable {
 
 	protected Com com;
 
@@ -41,16 +39,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	// Maps units (with its unique id) to an arrayList of observers
 	protected HashMap<Integer, ArrayList<OnUnitObserver>> genericObservers;
 	protected ArrayList<UnitKilledObserver> unitKilledObservers;
-
-	///////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
-
-	public abstract boolean solveEventsAndCheckEnd();
-
-	protected final AbstractEventsFactory factory;
-
-	public abstract AbstractEventsFactory getNewFactory();
+	
+	//protected ArrayList<GenericAgent> agents;
+	private Master master;
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -67,8 +58,8 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 
 		this.genericObservers = new HashMap<>();
 		this.unitKilledObservers = new ArrayList<>();
-
-		this.factory = getNewFactory();
+	
+		this.master = new Master();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -87,16 +78,16 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 			this.frames = 0;
 			this.firstOnFrame = true;
 			this.restarting = false;
+			this.restartFlag = false;
 			this.endConditionSatisfied = false;
 
-			this.com.ComData.resetFinal();
-			this.com.ComData.restart = false;
+			this.master.onStart();			
 
 			this.genericObservers.clear();
 			this.unitKilledObservers.clear();
 
-			this.events.clear();
-			com.ComData.actionQueue.clear();
+			this.master.clearActionQueue();
+			//com.ComData.actionQueue.clear();
 
 			if (firstOnStart) { // Only enters the very first execution
 								// (restarts wont enter here)
@@ -126,11 +117,19 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 				if (!endConditionSatisfied && !game.isPaused()) {
 					if (this.firstOnFrame) {
 						firstExecOnFrame();
+						// TODO master onInitDone?
 						// TODO sync
 						com.Sync.signalInitIsDone();
 					} else {
-						endConditionSatisfied = solveEventsAndCheckEnd();
-						com.ComData.setOnFinal(endConditionSatisfied);
+						// TODO Super agent?
+						endConditionSatisfied = master.solveEventsAndCheckEnd();
+						//	for (GenericAgent genericAgent : agents) {
+						//		endConditionSatisfied |= genericAgent.solveEventsAndCheckEnd();
+						//	}
+						
+						//endConditionSatisfied = solveEventsAndCheckEnd();
+						// TODO setOnFinal
+						//com.ComData.setOnFinal(endConditionSatisfied);
 
 						// This signals that the PREVIOUS onFrame was executed
 						// com.Sync.signalIsEndCanBeChecked();
@@ -141,13 +140,21 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 					updateGameSpeed();
 
 					if (!endConditionSatisfied) {
+						master.onFrame();
+						
+						
+						/*
 						ArrayList<GenericAction> actionsToRegister = com.ComData.actionQueue.getQueueAndFlush();
 
+						
+						
 						for (GenericAction action : actionsToRegister) {
 							action.registerOnUnitObserver();
 							onNewAction(action, (Object[]) null);
 						}
-
+						*/
+						
+						// Call all unitsObserver for each unit
 						for (Unit rawUnit : self.getUnits()) {
 							ArrayList<OnUnitObserver> a = genericObservers.get(rawUnit.getID());
 
@@ -178,6 +185,9 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Calls every registered unitKilledObserver
+	 */
 	public void onUnitDestroy(Unit unit) {
 		try {
 			com.onDebugMessage("DESTROY " + unit.getType().toString() + " id " + unit.getID() + "at frame " + frames,
@@ -205,10 +215,17 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		// com.ComData.unit = unit;
 		// }
 		// }
-		com.ComData.resetFinal();
+		this.master.onFirstFrame();
+		//com.ComData.resetFinal();
 		this.firstOnFrame = false;
 	}
 
+	private boolean restartFlag;
+	
+	public void requestRestart() {
+		this.restartFlag = true;
+	}
+	
 	/**
 	 * Checks if the com.ComData.restar flag is true; and if so restarts the
 	 * game
@@ -216,12 +233,10 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 	 * @return true if the game is restarting or intended to be
 	 */
 	private boolean isRestarting() {
-		if (!restarting) {
-			if (com.ComData.restart) {
-				com.onSendMessage("Restart bot call...");
-				this.restarting = true;
-				game.restartGame();
-			}
+		if (!this.restarting && this.restartFlag) {
+			com.onSendMessage("Restart bot call...");
+			this.restarting = true;
+			game.restartGame();
 		}
 
 		return restarting;
@@ -267,14 +282,7 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		if (unitKilledObservers.contains(obs))
 			unitKilledObservers.remove(obs);
 	}
-	/*
-	 * public void addEvent(AbstractEvent event) { com.onDebugMessage("EVENT " +
-	 * frames, DebugEnum.EVENT_AT_FRAME); this.events.add(event); }
-	 */
-
-	public abstract void onEndAction(GenericAction genericAction, Object... args);
-	// public abstract double getReward();
-
+	
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -306,30 +314,30 @@ public abstract class Bot extends DefaultBWListener implements Runnable {
 		}
 	}
 
-	private void printDanger(Unit u) {
-		// 0 1 2
-		// 3 4 5
-		// 6 7 8
-
-		// 0
-		game.drawBoxMap(u.getX() - 60, u.getY() - 60, u.getX() - 20, u.getY() - 20, Color.Red);
-		// 1
-		game.drawBoxMap(u.getX() - 20, u.getY() - 60, u.getX() + 20, u.getY() - 20, Color.Red);
-		// 2
-		game.drawBoxMap(u.getX() + 20, u.getY() - 60, u.getX() + 60, u.getY() - 20, Color.Red);
-		// 3
-		game.drawBoxMap(u.getX() - 60, u.getY() - 20, u.getX() - 20, u.getY() + 20, Color.Red);
-		// 4
-		game.drawBoxMap(u.getX() - 20, u.getY() - 20, u.getX() + 20, u.getY() + 20, Color.Red);
-		// 5
-		game.drawBoxMap(u.getX() + 20, u.getY() - 20, u.getX() + 60, u.getY() + 20, Color.Red);
-		// 6
-		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() - 20, u.getY() + 60, Color.Red);
-		// 7
-		game.drawBoxMap(u.getX() - 20, u.getY() + 20, u.getX() + 20, u.getY() + 60, Color.Red);
-		// 8
-		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() + 60, u.getY() + 60, Color.Red);
-	}
+//	private void printDanger(Unit u) {
+//		// 0 1 2
+//		// 3 4 5
+//		// 6 7 8
+//
+//		// 0
+//		game.drawBoxMap(u.getX() - 60, u.getY() - 60, u.getX() - 20, u.getY() - 20, Color.Red);
+//		// 1
+//		game.drawBoxMap(u.getX() - 20, u.getY() - 60, u.getX() + 20, u.getY() - 20, Color.Red);
+//		// 2
+//		game.drawBoxMap(u.getX() + 20, u.getY() - 60, u.getX() + 60, u.getY() - 20, Color.Red);
+//		// 3
+//		game.drawBoxMap(u.getX() - 60, u.getY() - 20, u.getX() - 20, u.getY() + 20, Color.Red);
+//		// 4
+//		game.drawBoxMap(u.getX() - 20, u.getY() - 20, u.getX() + 20, u.getY() + 20, Color.Red);
+//		// 5
+//		game.drawBoxMap(u.getX() + 20, u.getY() - 20, u.getX() + 60, u.getY() + 20, Color.Red);
+//		// 6
+//		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() - 20, u.getY() + 60, Color.Red);
+//		// 7
+//		game.drawBoxMap(u.getX() - 20, u.getY() + 20, u.getX() + 20, u.getY() + 60, Color.Red);
+//		// 8
+//		game.drawBoxMap(u.getX() - 60, u.getY() + 20, u.getX() + 60, u.getY() + 60, Color.Red);
+//	}
 
 	private long lastTime = System.currentTimeMillis();
 	private long lastFrames = -1;
