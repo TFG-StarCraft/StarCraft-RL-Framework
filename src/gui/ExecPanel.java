@@ -36,9 +36,9 @@ import com.Com;
 import com.observers.ComObserver;
 
 import bwapi.Unit;
+import newAgent.Action;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AEFDestruirUnidad;
-import qLearning.agent.Action;
 import utils.DebugEnum;
 
 import javax.swing.JToggleButton;

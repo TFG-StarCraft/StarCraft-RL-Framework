@@ -1,4 +1,4 @@
-package qLearning.agent.qFunction;
+package newAgent.qFunction;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -6,10 +6,10 @@ import java.util.function.BiFunction;
 
 import javax.swing.JPanel;
 
+import newAgent.AbstractEnvironment;
+import newAgent.Action;
 import newAgent.Const;
 import newAgent.state.State;
-import qLearning.agent.Action;
-import qLearning.environment.AbstractEnvironment;
 
 public class QEArray implements AbstractQEFunction {
 

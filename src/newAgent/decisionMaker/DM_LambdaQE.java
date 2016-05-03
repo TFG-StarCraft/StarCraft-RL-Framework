@@ -5,11 +5,11 @@ import java.util.Random;
 import com.Com;
 
 import bot.Bot;
+import newAgent.Action;
 import newAgent.GenericAgent;
+import newAgent.qFunction.AbstractQEFunction;
+import newAgent.qFunction.QEMap;
 import newAgent.state.State;
-import qLearning.agent.Action;
-import qLearning.agent.qFunction.AbstractQEFunction;
-import qLearning.agent.qFunction.QEMap;
 
 public class DM_LambdaQE extends GenericDecisionMaker {
 

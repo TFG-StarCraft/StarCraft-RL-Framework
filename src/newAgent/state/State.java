@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.Com;
 
+import newAgent.Action;
 import newAgent.GenericAgent;
-import qLearning.agent.Action;
 
 public class State {
 

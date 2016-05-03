@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.Com;
 
-import qLearning.agent.Action;
+import newAgent.Action;
 
 /**
  * This class is used to send actions from de Agent to the Bot. When the Agent

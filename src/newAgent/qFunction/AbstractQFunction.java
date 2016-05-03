@@ -1,11 +1,11 @@
-package qLearning.agent.qFunction;
+package newAgent.qFunction;
 
 import java.io.FileNotFoundException;
 
 import javax.swing.JPanel;
 
+import newAgent.Action;
 import newAgent.state.State;
-import qLearning.agent.Action;
 
 public interface AbstractQFunction {
 

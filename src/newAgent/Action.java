@@ -1,4 +1,4 @@
-package qLearning.agent;
+package newAgent;
 
 import java.util.Arrays;
 
@@ -10,7 +10,6 @@ import bot.action.singleUnit.movement.*;
 import bot.action.singleUnit.movement.relative.*;
 import bot.action.singleUnit.movement.relative.relativeToGroup.*;
 import bwapi.Unit;
-import newAgent.GenericAgent;
 import newAgent.unit.UnitAgent;
 import utils.Config;
 

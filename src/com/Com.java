@@ -10,10 +10,8 @@ import com.observers.BotOberver;
 import com.observers.ComObserver;
 
 import bot.Bot;
-import bot.BotDestruirUnidad;
+import newAgent.Master;
 import newAgent.event.AbstractEvent;
-import qLearning.agent.algorithm.LambdaQ;
-import qLearning.environment.SCEnvironment;
 import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {
@@ -25,13 +23,10 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	public Com(List<ComObserver> observers) {
 		this();
-
 		this.observers = new ArrayList<>(observers);
 	}
 
 	public Com() {
-		//this.ComData = new ComData(this);
-		//this.Sync = new Sync(this);
 		this.observers = new ArrayList<>();
 	}
 
@@ -53,37 +48,20 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 	
 	public Bot bot;
+	public Master master;
 
 	@Override
 	public void run() {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
-		bot = new BotDestruirUnidad(this);
+		master = new Master(this);
+		
+		bot = new Bot(this, master);
 		bot.frameSpeed = startSpeed;
 		bot.guiEnabled = startGui;
 		
-		Thread t1 = new Thread(bot);
-		t1.start();
-
-		onSendMessage("Starting q-Learning");
-
-		// TODO cambiar algoritmo
-		Thread t2 = new Thread(new LambdaQ(this, new SCEnvironment(this), alpha, gamma, epsilon, lambda));
-		t2.start();
-
-		try {
-			t1.join();
-			t2.join();
-		} catch (InterruptedException e) {
-			onError(e.getLocalizedMessage(), true);
-		}
-
+		bot.run();
 	}
-
-//	public void restart() {
-//		onSendMessage("Com Restart call...");
-//		this.ComData.restart = true;
-//	}
 
 	public void addObserver(ComObserver o) {
 		this.observers.add(o);

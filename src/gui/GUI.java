@@ -18,7 +18,7 @@ import javax.swing.filechooser.FileFilter;
 
 import com.Com;
 
-import qLearning.agent.Action;
+import newAgent.Action;
 import utils.BwapiConfig;
 import utils.Config;
 import utils.DebugEnum;

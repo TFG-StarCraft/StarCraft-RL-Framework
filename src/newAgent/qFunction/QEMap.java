@@ -1,4 +1,4 @@
-package qLearning.agent.qFunction;
+package newAgent.qFunction;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -11,10 +11,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import newAgent.AbstractEnvironment;
+import newAgent.Action;
 import newAgent.Const;
 import newAgent.state.State;
-import qLearning.agent.Action;
-import qLearning.environment.AbstractEnvironment;
 
 public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements AbstractQEFunction {
 

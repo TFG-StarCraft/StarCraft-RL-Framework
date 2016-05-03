@@ -1,4 +1,4 @@
-package qLearning.agent.qFunction;
+package newAgent.qFunction;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 import javax.swing.JPanel;
 
+import newAgent.AbstractEnvironment;
+import newAgent.Action;
 import newAgent.state.State;
-import qLearning.agent.Action;
-import qLearning.environment.AbstractEnvironment;
 
 public class QAarray implements AbstractQFunction {
 

@@ -13,8 +13,6 @@ import bwapi.Unit;
 import newAgent.decisionMaker.GenericDecisionMaker;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AbstractEventsFactory;
-import qLearning.agent.Action;
-import qLearning.environment.AbstractEnvironment;
 import utils.DebugEnum;
 import utils.SafeNotify;
 
