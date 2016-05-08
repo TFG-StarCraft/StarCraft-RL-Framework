@@ -153,17 +153,17 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	public static final int SYNC_END_CAN_BE_CHECKED = 2;
 	public static final int SYNC_ACTION_END = 3;
 
-	public void signalGameIsReady() {
-		this.safeNotify.safeNotify(SYNC_GAME_IS_STARTED);
-	}
-
-	public void waitForBotGameIsStarted() {
-		try {
-			this.safeNotify.safeWait(SYNC_GAME_IS_STARTED);
-		} catch (InterruptedException e) {
-			com.onError(e.getLocalizedMessage(), true);
-		}
-	}
+//	public void signalGameIsReady() {
+//		this.safeNotify.safeNotify(SYNC_GAME_IS_STARTED);
+//	}
+//
+//	public void waitForBotGameIsStarted() {
+//		try {
+//			this.safeNotify.safeWait(SYNC_GAME_IS_STARTED);
+//		} catch (InterruptedException e) {
+//			com.onError(e.getLocalizedMessage(), true);
+//		}
+//	}
 
 	public void signalInitIsDone() {
 		this.safeNotify.safeNotify(SYNC_BOT_ENDS_INIT);

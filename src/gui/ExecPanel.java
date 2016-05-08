@@ -68,7 +68,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	private TabGraph tabGraphActions;
 	private TabGraph tabGraphKills;
 	private TabGraph tabGraphReward;
-	private TabDanger tabDanger;
+	// TODO tab danger
+	// private TabDanger tabDanger;
 
 	private JScrollPane qTabScroll;
 	private JPanel qPanel;
@@ -108,8 +109,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.tabGraphReward = new TabGraph("Episodes", "Reward");
 		this.topTabbedPanel.add("Reward", tabGraphReward);
 		
-		this.tabDanger = new TabDanger();
-		this.topTabbedPanel.add("Units", tabDanger);
+		//this.tabDanger = new TabDanger();
+		//this.topTabbedPanel.add("Units", tabDanger);
 
 		qPanel = new JPanel(new FlowLayout());
 		this.qTabScroll = new JScrollPane(qPanel);
@@ -575,110 +576,110 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	}
 
-	private class TabDanger extends JPanel {		
-		private static final long serialVersionUID = -429614650656376442L;
-		private JLabel labelAllies;
-		private JLabel labelEnemies;
-		private BoxLayout layoutgb;
-		private Graphics g;
-		
-		public TabDanger(){
-			this.layoutgb = new BoxLayout(this, BoxLayout.Y_AXIS);
-			
-			this.setLayout(layoutgb);
-			
-			this.labelAllies = new JLabel(" Allies: 0");
-			this.labelEnemies = new JLabel(" Enemies: 0");
-			this.labelAllies.setForeground(new Color(0.0f, 1.0f, 0.0f, 1.0f));
-			this.labelEnemies.setForeground(new Color(1.0f, 0.0f, 0.0f, 1.0f));
-
-			Font font = new Font(labelAllies.getFont().getName(), Font.BOLD, (int)Math.ceil(labelAllies.getFont().getSize()*1.5));
-			this.labelAllies.setFont(font);
-			this.labelEnemies.setFont(font);
-			
-			this.add(this.labelEnemies);
-			this.add(this.labelAllies);
-		}
-		
-		public void paint(Graphics g){
-			super.paint(g);
-			this.g = g;
-			
-			this.setBackground(Color.BLACK);
-			int sizeX = this.getWidth();
-			int sizeY = this.getHeight();
-
-			Unit unit = com.ComData.unit;
-			if(unit != null){		
-				
-				Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
-				Point centerRect = (Point) center.clone();			
-				centerRect.setLocation(center.getX()+unit.getType().sightRange()/2-unit.getType().width()/2, center.getY()+unit.getType().sightRange()/2-unit.getType().height()/2);
-
-				paintCircle(center, unit.getType().sightRange(), new Color(0.0f, 1.0f, 1.0f, 0.5f));
-
-				paintRectangle(centerRect, new Dimension(unit.getType().width(), unit.getType().height()), new Color(0.0f, 1.0f, 1.0f, 0.8f));		
-
-				
-				Unit anotherUnit;
-				List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
-
-				for(int i = 0; i < list.size(); i++){
-					anotherUnit = list.get(i);
-					int distX = (unit.getX() - anotherUnit.getX());
-					int distY = (unit.getY() - anotherUnit.getY());
-					
-					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
-						Point centerAux = new Point(center.x-distX-20, center.y-distY-20);
-						Point centerRectAux =  (Point) centerAux.clone();
-						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
-
-						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(0.0f, 1.0f, 0.0f, 0.5f));
-						
-						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(0.0f, 1.0f, 0.0f, 0.8f));
-					}else{
-						Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
-						Point centerRectAux =  (Point) centerAux.clone();
-						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
-
-						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(1.0f, 0.0f, 0.0f, 0.5f));
-						
-						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(1.0f, 0.0f, 0.0f, 0.8f));
-					}
-				
-				}
-				this.updateUnitsAround();
-			}
-		}
-
-		private void paintCircle(Point position, int radius, Color color){
-			g.setColor(color);
-			g.fillOval(position.x, position.y, radius, radius);
-			g.setColor(Color.BLACK);
-			g.drawOval(position.x, position.y, radius, radius);
-		}
-		
-		private void paintRectangle(Point position, Dimension dimension, Color color){
-			g.setColor(color);
-			g.fillRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
-			g.setColor(Color.BLACK);
-			g.drawRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
-		}
-		
-		public void updateUnitsAround(){
-			List<Unit> list = com.ComData.unit.getUnitsInRadius(com.ComData.unit.getType().sightRange());
-			int ally = 0, enemy = 0;
-			for(int i = 0; i < list.size(); i++){
-				if(list.get(i).getPlayer().isAlly(com.ComData.unit.getPlayer()))
-					ally++;
-				else
-					enemy++;
-			}
-			this.labelAllies.setText(" Allies: " + ally);
-			this.labelEnemies.setText(" Enemies: " + enemy);
-			
-		}
-	};
+//	private class TabDanger extends JPanel {		
+//		private static final long serialVersionUID = -429614650656376442L;
+//		private JLabel labelAllies;
+//		private JLabel labelEnemies;
+//		private BoxLayout layoutgb;
+//		private Graphics g;
+//		
+//		public TabDanger(){
+//			this.layoutgb = new BoxLayout(this, BoxLayout.Y_AXIS);
+//			
+//			this.setLayout(layoutgb);
+//			
+//			this.labelAllies = new JLabel(" Allies: 0");
+//			this.labelEnemies = new JLabel(" Enemies: 0");
+//			this.labelAllies.setForeground(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+//			this.labelEnemies.setForeground(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+//
+//			Font font = new Font(labelAllies.getFont().getName(), Font.BOLD, (int)Math.ceil(labelAllies.getFont().getSize()*1.5));
+//			this.labelAllies.setFont(font);
+//			this.labelEnemies.setFont(font);
+//			
+//			this.add(this.labelEnemies);
+//			this.add(this.labelAllies);
+//		}
+//		
+//		public void paint(Graphics g){
+//			super.paint(g);
+//			this.g = g;
+//			
+//			this.setBackground(Color.BLACK);
+//			int sizeX = this.getWidth();
+//			int sizeY = this.getHeight();
+//
+//			Unit unit = com.ComData.unit;
+//			if(unit != null){		
+//				
+//				Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
+//				Point centerRect = (Point) center.clone();			
+//				centerRect.setLocation(center.getX()+unit.getType().sightRange()/2-unit.getType().width()/2, center.getY()+unit.getType().sightRange()/2-unit.getType().height()/2);
+//
+//				paintCircle(center, unit.getType().sightRange(), new Color(0.0f, 1.0f, 1.0f, 0.5f));
+//
+//				paintRectangle(centerRect, new Dimension(unit.getType().width(), unit.getType().height()), new Color(0.0f, 1.0f, 1.0f, 0.8f));		
+//
+//				
+//				Unit anotherUnit;
+//				List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
+//
+//				for(int i = 0; i < list.size(); i++){
+//					anotherUnit = list.get(i);
+//					int distX = (unit.getX() - anotherUnit.getX());
+//					int distY = (unit.getY() - anotherUnit.getY());
+//					
+//					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
+//						Point centerAux = new Point(center.x-distX-20, center.y-distY-20);
+//						Point centerRectAux =  (Point) centerAux.clone();
+//						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+//
+//						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(0.0f, 1.0f, 0.0f, 0.5f));
+//						
+//						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(0.0f, 1.0f, 0.0f, 0.8f));
+//					}else{
+//						Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
+//						Point centerRectAux =  (Point) centerAux.clone();
+//						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+//
+//						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(1.0f, 0.0f, 0.0f, 0.5f));
+//						
+//						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(1.0f, 0.0f, 0.0f, 0.8f));
+//					}
+//				
+//				}
+//				this.updateUnitsAround();
+//			}
+//		}
+//
+//		private void paintCircle(Point position, int radius, Color color){
+//			g.setColor(color);
+//			g.fillOval(position.x, position.y, radius, radius);
+//			g.setColor(Color.BLACK);
+//			g.drawOval(position.x, position.y, radius, radius);
+//		}
+//		
+//		private void paintRectangle(Point position, Dimension dimension, Color color){
+//			g.setColor(color);
+//			g.fillRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
+//			g.setColor(Color.BLACK);
+//			g.drawRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
+//		}
+//		
+//		public void updateUnitsAround(){
+//			List<Unit> list = com.ComData.unit.getUnitsInRadius(com.ComData.unit.getType().sightRange());
+//			int ally = 0, enemy = 0;
+//			for(int i = 0; i < list.size(); i++){
+//				if(list.get(i).getPlayer().isAlly(com.ComData.unit.getPlayer()))
+//					ally++;
+//				else
+//					enemy++;
+//			}
+//			this.labelAllies.setText(" Allies: " + ally);
+//			this.labelEnemies.setText(" Enemies: " + enemy);
+//			
+//		}
+//	};
 	
 	/*******************/
 	// GETTER / SETTER //
@@ -763,7 +764,8 @@ public class ExecPanel extends JPanel implements ComObserver {
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
 		this.tabConsole.onFpsAverageAnnoucement(fps);
-		this.tabDanger.repaint();
+		// TODO tab danger
+		//this.tabDanger.repaint();
 	}
 
 	/**

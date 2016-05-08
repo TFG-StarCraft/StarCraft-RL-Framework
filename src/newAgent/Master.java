@@ -6,6 +6,7 @@ import com.Com;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.unit.MarineUnit;
 
 public class Master {
@@ -17,10 +18,13 @@ public class Master {
 	
 	protected Com com;
 	
-	public Master(Com com) {
+	protected DecisionMakerPrams params;
+	
+	public Master(Com com, DecisionMakerPrams params) {
 		this.agentsNotFinished = new ArrayList<>();
 		this.agentsFinished = new ArrayList<>();
 		this.threads = new ArrayList<>();
+		this.params = params;
 		this.com = com;
 	}
 	
@@ -82,7 +86,7 @@ public class Master {
 
 		for (Unit unit : com.bot.self.getUnits()) {
 			if (unit.getType() == UnitType.Terran_Marine) {
-				this.agentsNotFinished.add(new MarineUnit(unit, com, com.bot));
+				this.agentsNotFinished.add(new MarineUnit(unit, com, com.bot, params));
 			}
 		}
 		
@@ -97,11 +101,11 @@ public class Master {
 	// SYNC ///////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public void signalGameIsReady() {
-		for (GenericAgent genericAgent : agentsNotFinished) {
-			genericAgent.signalGameIsReady();
-		}
-	}
+//	public void signalGameIsReady() {
+//		for (GenericAgent genericAgent : agentsNotFinished) {
+//			genericAgent.signalGameIsReady();
+//		}
+//	}
 
 	public void signalInitIsDone() {
 		for (GenericAgent genericAgent : agentsNotFinished) {

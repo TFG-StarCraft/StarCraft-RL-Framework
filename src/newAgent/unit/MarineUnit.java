@@ -12,6 +12,7 @@ import bot.commonFunctions.HP;
 import bwapi.Unit;
 import newAgent.Const;
 import newAgent.decisionMaker.DM_LambdaQE;
+import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AEFDestruirUnidad;
 import newAgent.state.DataMarine;
@@ -19,10 +20,10 @@ import newAgent.state.State;
 
 public class MarineUnit extends UnitAgent {
 
-	public MarineUnit(Unit unit, Com com, Bot bot) {
+	public MarineUnit(Unit unit, Com com, Bot bot, DecisionMakerPrams params) {
 		super(unit, com, bot);
 		// TODO
-		this.decisionMaker = new DM_LambdaQE(this, null);
+		this.decisionMaker = new DM_LambdaQE(this, params);
 	}
 
 	@Override
@@ -80,8 +81,8 @@ public class MarineUnit extends UnitAgent {
 	@Override
 	public void onEndAction(GenericAction genericAction, boolean correct) {
 		// TODO ASSERT PRE DEBUG
-		if (genericAction != currentAction)
-			com.onError("end action != current action", true);
+//		if (genericAction != currentAction)
+//			com.onError("end action != current action", true);
 
 		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, correct));
 	}

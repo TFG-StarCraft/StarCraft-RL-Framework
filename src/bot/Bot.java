@@ -97,7 +97,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 				this.firstOnStart = false;
 			}
 
-			this.master.signalGameIsReady();
+			//this.master.signalGameIsReady();
 		} catch (Throwable e) {
 			com.onError(e.getLocalizedMessage(), true);
 		}
@@ -118,7 +118,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 						master.signalInitIsDone();
 					} else {
 						// Check end, all agents will check end condition, and
-						// if all agents end, master will cause bot to resatrt
+						// if all agents end, master will cause bot to restart
 						endFlag = master.solveEventsAndCheckEnd();
 					}
 

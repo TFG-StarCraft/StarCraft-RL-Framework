@@ -29,15 +29,8 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 	protected double init_epsilon;
 	protected double init_alpha;
 	protected double init_gamma;
-	
-	public static class Params extends DecisionMakerPrams {
-		public double epsilon;
-		public double alpha;
-		public double gamma;
-		public double lambda;
-	}
 
-	public DM_LambdaQE(GenericAgent agent, Params params) {
+	public DM_LambdaQE(GenericAgent agent, DecisionMakerPrams params) {
 		this.com = agent.getCom();
 		this.bot = agent.getBot();
 		this.agent = agent;
@@ -57,74 +50,74 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 
 		int i = 0;
 		// TODO decisionMakerEnd
-		//while (true) {
-			// TODO d sync
-			// com.Sync.waitForBotGameIsStarted();
-			agent.waitForBotGameIsStarted();
+		// while (true) {
+		// TODO d sync
+		// com.Sync.waitForBotGameIsStarted();
+		// agent.waitForBotGameIsStarted();
 
-			State S = agent.getInitState();
+		State S = agent.getInitState();
+		System.out.println("Init state done");
+		Action A = nextAction(S);
+		this.numRandomMoves = 0;
+		QE.resetE();
 
-			Action A = nextAction(S);
-			this.numRandomMoves = 0;
-			QE.resetE();
+		Double R = 0.0;
+		
+		while (!S.isFinalState()) {
+			Action AA, AStar;
+			double delta;
 
-			Double R = 0.0;
+			double E;
+
+			// Blocks until action A ends
+			State SS = S.executeAction(A);
+
+			R = SS.getReward();
+			com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
+
+			AA = nextAction(SS);
+			AStar = nextOptimalAction(SS);
+
+			delta = R + gamma * QE.getQ(SS, AStar) - QE.getQ(S, A);
+
+			// TODO update QE
+			E = QE.getE(S, A) + 1;
+			/* E update alternatives: */
+			// E = 1;
+			// E = (1 - alpha) * Q.getE(S, A) + 1;
 			
-			while (!S.isFinalState()) {
-				Action AA, AStar;
-				double delta;
+			QE.setE(S, A, E);
+			QE.replaceValues((k, v) -> {
+				v.q = v.q + alpha * delta * v.e;
+				if (AA.equals(AStar)) {
+					v.e = gamma * lambda * v.e;
+				} else {
+					v.e = 0;
+				}
 
-				double E;
-
-				// Blocks until action A ends
-				State SS = S.executeAction(A);
-
-				R = SS.getReward();
-				com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
-
-				AA = nextAction(SS);
-				AStar = nextOptimalAction(SS);
-
-				delta = R + gamma * QE.getQ(SS, AStar) - QE.getQ(S, A);
-
-				// TODO update QE
-				E = QE.getE(S, A) + 1;
-				/* E update alternatives: */
-				// E = 1;
-				// E = (1 - alpha) * Q.getE(S, A) + 1;
-				
-				QE.setE(S, A, E);
-				QE.replaceValues((k, v) -> {
-					v.q = v.q + alpha * delta * v.e;
-					if (AA.equals(AStar)) {
-						v.e = gamma * lambda * v.e;
-					} else {
-						v.e = 0;
-					}
-
-					return v;
-				});
-				
-				S = SS;
-				A = AA;
-			}
-
-			// Decrement alpha
-			this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (350 / (double) (i+1))));
-			// Increment epsilon
-			this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
+				return v;
+			});
 			
-			// TODO decisionMakerEndIteraction
-			// Iteration end
-			//com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon, R);
+			S = SS;
+			A = AA;
+		}
 
-			//com.onFullQUpdate(QE.showQ());
+		// Decrement alpha
+		this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (350 / (double) (i+1))));
+		// Increment epsilon
+		this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
+		
+		// TODO decisionMakerEndIteraction
+		// Iteration end
+		//com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon, R);
 
-			//com.restart();
-			
-			agent.onEndIteration(numRandomMoves, i, alpha, epsilon, R);
-			i++;
-		//}
+		//com.onFullQUpdate(QE.showQ());
+
+		//com.restart();
+		
+		agent.onEndIteration(numRandomMoves, i, alpha, epsilon, R);
+		i++;
+	//}
 	}
 
 	public Action nextOptimalAction(State S) {

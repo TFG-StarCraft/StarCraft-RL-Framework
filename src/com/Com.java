@@ -11,6 +11,7 @@ import com.observers.ComObserver;
 
 import bot.Bot;
 import newAgent.Master;
+import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.event.AbstractEvent;
 import utils.DebugEnum;
 
@@ -54,7 +55,7 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	public void run() {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
-		master = new Master(this);
+		master = new Master(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda));
 		
 		bot = new Bot(this, master);
 		bot.frameSpeed = startSpeed;

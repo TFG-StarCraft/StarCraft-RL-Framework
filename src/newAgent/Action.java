@@ -96,6 +96,7 @@ public class Action {
 
 	public Action(int i, GenericAgent agent) {
 		this.e = values[i];
+		this.agent = agent;
 		this.ordinal = ordinals[e.ordinal()];
 	}
 
