@@ -7,6 +7,9 @@ import com.Com;
 import bwapi.Unit;
 import bwapi.UnitType;
 import newAgent.decisionMaker.DecisionMakerPrams;
+import newAgent.decisionMaker.Shared_LambdaQE;
+import newAgent.state.DataMarine;
+import newAgent.state.State;
 import newAgent.unit.MarineUnit;
 
 public class Master {
@@ -82,13 +85,33 @@ public class Master {
 		
 		threads.clear();
 	}
-		
+	Shared_LambdaQE shared;
 	public void onFirstFrame() {
 		// TODO d first frame master
 
+		if (shared == null)
+		shared = new Shared_LambdaQE(params, new AbstractEnvironment() {
+			
+			@Override
+			public int getNumDims() {
+				return DataMarine.getNumDims();
+			}
+
+			@Override
+			public ArrayList<Integer> getNumValuesPerDims() {
+				return DataMarine.getNumValuesPerDims();
+			}
+			
+			@Override
+			public State getInitState() {
+				// TODO
+				throw new RuntimeException();
+			}
+		});
+		
 		for (Unit unit : com.bot.self.getUnits()) {
 			if (unit.getType() == UnitType.Terran_Marine) {
-				this.agentsNotFinished.add(new MarineUnit(unit, com, com.bot, params));
+				this.agentsNotFinished.add(new MarineUnit(this, unit, com, com.bot, shared));
 			}
 		}
 		

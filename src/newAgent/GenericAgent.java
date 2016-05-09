@@ -31,7 +31,8 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	protected ActionDispatchQueue actionsToDispatch;
 	protected ArrayList<AbstractEvent> events;
 
-	public GenericAgent(Unit unit, Com com, Bot bot) {
+	public GenericAgent(Master master, Unit unit, Com com, Bot bot) {
+		this.master = master;
 		this.unit = unit;
 		this.com = com;
 		this.bot = bot;

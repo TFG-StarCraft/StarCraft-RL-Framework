@@ -12,8 +12,9 @@ import bot.commonFunctions.CheckAround;
 import bot.commonFunctions.HP;
 import bwapi.Unit;
 import newAgent.Const;
+import newAgent.Master;
 import newAgent.decisionMaker.DM_LambdaQE;
-import newAgent.decisionMaker.DecisionMakerPrams;
+import newAgent.decisionMaker.Shared_LambdaQE;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AEFDestruirUnidad;
 import newAgent.state.DataMarine;
@@ -23,11 +24,12 @@ public class MarineUnit extends UnitAgent {
 
 	private HashMap<Integer, Unit> map;
 	
-	public MarineUnit(Unit unit, Com com, Bot bot, DecisionMakerPrams params) {
-		super(unit, com, bot);
-		// TODO
-		this.decisionMaker = new DM_LambdaQE(this, params);
+	public MarineUnit(Master master, Unit unit, Com com, Bot bot, Shared_LambdaQE shared) {
+		super(master, unit, com, bot);
+
 		this.map = new HashMap<>();
+		
+		this.decisionMaker = new DM_LambdaQE(this, shared);
 	}
 
 	@Override
