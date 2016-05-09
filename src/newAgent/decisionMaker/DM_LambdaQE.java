@@ -13,42 +13,89 @@ import newAgent.state.State;
 
 public class DM_LambdaQE extends GenericDecisionMaker {
 
-	protected Com com;
-	protected Bot bot;
+	protected static Com com;
+	protected static Bot bot;
 	protected GenericAgent agent;
 
 	protected int numRandomMoves;
 
+	// Shared
+	protected static boolean initialized = false;
+	
 	protected static AbstractQEFunction QE;
 
-	protected double epsilon;
-	protected double alpha;
-	protected double gamma;
-	protected double lambda;
+	protected static double epsilon;
+	protected static double alpha;
+	protected static double gamma;
+	protected static double lambda;
 
-	protected double init_epsilon;
-	protected double init_alpha;
-	protected double init_gamma;
+	protected static double init_epsilon;
+	protected static double init_alpha;
+	protected static double init_gamma;
+	
+	protected static int i;
+		
+	protected synchronized static void initShared(DecisionMakerPrams params, GenericAgent agent) {
+		if (!initialized) {
+			initialized = true;
+			alpha = init_alpha = params.alpha;
+			gamma = init_gamma = params.gamma;
+			epsilon = init_epsilon = params.epsilon;
+			lambda = params.lambda;
+			
+			if (QE == null)
+				QE = new QEMap(agent);
+			
+			i = 0;
+		}
+	}
+		
+	protected synchronized static void resetQE() {
+		QE.resetE();
+	}
+	
+	protected synchronized static void updateQE(State S, Action A, Action AA, Action AStar, double delta) {
+		double E;
+		
+		 E = QE.getE(S, A) + 1;
+		/* E update alternatives: */
+		// E = 1;
+		// E = (1 - alpha) * Q.getE(S, A) + 1;
+		
+		QE.setE(S, A, E);
+		QE.replaceValues((k, v) -> {
+			v.q = v.q + alpha * delta * v.e;
+			if (AA.equals(AStar)) {
+				v.e = gamma * lambda * v.e;
+			} else {
+				v.e = 0;
+			}
+
+			return v;
+		});
+	}
+	
+	protected synchronized static void updateParams() {
+		// Decrement alpha
+		alpha = init_alpha - init_alpha * (Math.exp(- (350 / (double) (i+1))));
+		// Increment epsilon
+		epsilon = init_epsilon + (1 - init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
+		
+		i++;
+	}
 
 	public DM_LambdaQE(GenericAgent agent, DecisionMakerPrams params) {
-		this.com = agent.getCom();
-		this.bot = agent.getBot();
+		com = agent.getCom();
+		bot = agent.getBot();
 		this.agent = agent;
 
-		if (QE == null)
-			QE = new QEMap(agent);
-		
-		this.alpha = this.init_alpha = params.alpha;
-		this.gamma = this.init_gamma = params.gamma;
-		this.epsilon = this.init_epsilon = params.epsilon;
-		this.lambda = params.lambda;
+		initShared(params, agent);		
 	}
 
 	@Override
 	public void run() {
 		com.onSendMessage(this.getClass().getName() + " started");
 
-		int i = 0;
 		// TODO decisionMakerEnd
 		// while (true) {
 		// TODO d sync
@@ -59,15 +106,13 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 		System.out.println("Init state done");
 		Action A = nextAction(S);
 		this.numRandomMoves = 0;
-		QE.resetE();
+		resetQE();
 
 		Double R = 0.0;
 		
 		while (!S.isFinalState()) {
 			Action AA, AStar;
 			double delta;
-
-			double E;
 
 			// Blocks until action A ends
 			State SS = S.executeAction(A);
@@ -80,33 +125,14 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 
 			delta = R + gamma * QE.getQ(SS, AStar) - QE.getQ(S, A);
 
-			// TODO update QE
-			E = QE.getE(S, A) + 1;
-			/* E update alternatives: */
-			// E = 1;
-			// E = (1 - alpha) * Q.getE(S, A) + 1;
-			
-			QE.setE(S, A, E);
-			QE.replaceValues((k, v) -> {
-				v.q = v.q + alpha * delta * v.e;
-				if (AA.equals(AStar)) {
-					v.e = gamma * lambda * v.e;
-				} else {
-					v.e = 0;
-				}
-
-				return v;
-			});
-			
+			updateQE(S, A, AA, AStar, delta);
+						
 			S = SS;
 			A = AA;
 		}
 
-		// Decrement alpha
-		this.alpha = this.init_alpha - this.init_alpha * (Math.exp(- (350 / (double) (i+1))));
-		// Increment epsilon
-		this.epsilon = this.init_epsilon + (1 - this.init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
-		
+		updateParams();
+				
 		// TODO decisionMakerEndIteraction
 		// Iteration end
 		//com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon, R);
@@ -116,7 +142,6 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 		//com.restart();
 		
 		agent.onEndIteration(numRandomMoves, i, alpha, epsilon, R);
-		i++;
 	//}
 	}
 
