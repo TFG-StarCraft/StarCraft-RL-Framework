@@ -2,6 +2,7 @@ package newAgent.decisionMaker;
 
 import newAgent.AbstractEnvironment;
 import newAgent.Action;
+import newAgent.GenericAgent;
 import newAgent.qFunction.AbstractQEFunction;
 import newAgent.qFunction.QEMap;
 import newAgent.state.State;
@@ -12,16 +13,16 @@ public class Shared_LambdaQE {
 	
 	AbstractQEFunction QE;
 
-	double epsilon;
-	double alpha;
-	double gamma;
-	double lambda;
-
-	double init_epsilon;
-	double init_alpha;
-	double init_gamma;
-	
-	int i;
+	private double epsilon;
+	private double alpha;
+	private double gamma;
+	private double lambda;
+   
+	private double init_epsilon;
+	private double init_alpha;
+	private double init_gamma;
+	        
+	private int i;
 		
 	public Shared_LambdaQE(DecisionMakerPrams params, AbstractEnvironment abstractEnvironment) {
 		if (!initialized) {
@@ -38,42 +39,47 @@ public class Shared_LambdaQE {
 		}
 	}
 		
-	protected synchronized void resetQE() {
-		QE.resetE();
+	protected synchronized void resetQE(GenericAgent a) {
+		if (a.shouldResetQE())
+			QE.resetE();
 	}
 	
-	protected synchronized void updateQE(State S, Action A, Action AA, Action AStar, double delta) {
-		double E;
-		
-		 E = QE.getE(S, A) + 1;
-		/* E update alternatives: */
-		// E = 1;
-		// E = (1 - alpha) * Q.getE(S, A) + 1;
-		
-		QE.setE(S, A, E);
-		QE.replaceValues((k, v) -> {
-			v.q = v.q + alpha * delta * v.e;
-			if (AA.equals(AStar)) {
-				v.e = gamma * lambda * v.e;
-			} else {
-				v.e = 0;
-			}
+	protected synchronized void updateQE(GenericAgent a, State S, Action A, Action AA, Action AStar, double delta) {
+		if (a.shouldUpdateQE()) {
+			double E;
+			
+			 E = QE.getE(S, A) + 1;
+			/* E update alternatives: */
+			// E = 1;
+			// E = (1 - alpha) * Q.getE(S, A) + 1;
+			
+			QE.setE(S, A, E);
+			QE.replaceValues((k, v) -> {
+				v.q = v.q + alpha * delta * v.e;
+				if (AA.equals(AStar)) {
+					v.e = gamma * lambda * v.e;
+				} else {
+					v.e = 0;
+				}
+	
+				return v;
+			});
+		}
+	}
+	
+	protected synchronized void updateParams(GenericAgent a) {
+		if (a.shouldUpdateParams()) {
+			// Decrement alpha
+			alpha = init_alpha - init_alpha * (Math.exp(- (350 / (double) (i+1))));
+			// Increment epsilon
+			epsilon = init_epsilon + (1 - init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
+			
+			i++;
+		}
+	}
+	
 
-			return v;
-		});
-	}
-	
-	protected synchronized void updateParams() {
-		// Decrement alpha
-		alpha = init_alpha - init_alpha * (Math.exp(- (350 / (double) (i+1))));
-		// Increment epsilon
-		epsilon = init_epsilon + (1 - init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
-		
-		i++;
-	}
-	
-
-	public AbstractQEFunction getQE() {
+	public synchronized AbstractQEFunction getQE() {
 		return QE;
 	}
 

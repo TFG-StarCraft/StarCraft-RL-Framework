@@ -204,4 +204,16 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
+
+	public boolean shouldResetQE() {
+		return master.shouldResetQE(this);
+	}
+
+	public boolean shouldUpdateQE() {
+		return master.shouldUpdateQE(this);
+	}
+
+	public boolean shouldUpdateParams() {
+		return master.shouldUpdateParams(this);
+	}
 }

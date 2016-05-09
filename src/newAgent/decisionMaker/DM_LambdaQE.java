@@ -41,7 +41,7 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 		System.out.println("Init state done");
 		Action A = nextAction(S);
 		this.numRandomMoves = 0;
-		shared.resetQE();
+		shared.resetQE(agent);
 
 		Double R = 0.0;
 		
@@ -60,13 +60,13 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 
 			delta = R + shared.getGamma() * shared.getQE().getQ(SS, AStar) - shared.getQE().getQ(S, A);
 
-			shared.updateQE(S, A, AA, AStar, delta);
+			shared.updateQE(agent, S, A, AA, AStar, delta);
 						
 			S = SS;
 			A = AA;
 		}
 
-		shared.updateParams();
+		shared.updateParams(agent);
 				
 		// TODO decisionMakerEndIteraction
 		// Iteration end
@@ -101,7 +101,7 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 		double e = r.nextDouble();
 		Action mov = null;
 
-		if (e < shared.epsilon) {
+		if (e < shared.getEpsilon()) {
 			mov = nextOptimalAction(S);
 		} else {
 			numRandomMoves++;
