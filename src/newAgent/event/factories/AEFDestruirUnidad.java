@@ -18,7 +18,11 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 	/**
 	 * Expeted args: none
 	 */
-	public static final int CODE_KILLED = 3;
+	public static final int CODE_KILL_ALL = 3;
+	/**
+	 * Expeted args: none
+	 */
+	public static final int CODE_KILLED = 4;
 
 	private Com com;
 
@@ -84,7 +88,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public boolean isFinalEvent() {
-					return true;
+					return false;
 				}
 
 				@Override
@@ -94,7 +98,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 
 				@Override
 				public boolean isGoalState() {
-					return true;
+					return false;
 				}
 
 				@Override
@@ -128,6 +132,39 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 				@Override
 				public boolean isGoalState() {
 					return false;
+				}
+
+				@Override
+				public boolean lastActionOk() {
+					return true;
+				}
+			};
+		case CODE_KILL_ALL:
+			if (args.length != 0) {
+				throw new IllegalArgumentException();
+			}
+
+			return new AbstractEvent(code) {
+
+				@Override
+				public void notifyEvent() {
+					com.onSendMessage("Randy ha matado a todo :)");
+					com.onEvent(this);
+				}
+
+				@Override
+				public boolean isFinalEvent() {
+					return true;
+				}
+
+				@Override
+				public boolean returnsControlToAgent() {
+					return true;
+				}
+
+				@Override
+				public boolean isGoalState() {
+					return true;
 				}
 
 				@Override

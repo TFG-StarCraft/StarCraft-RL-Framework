@@ -47,13 +47,13 @@ public class StarcraftLauncher {
 
 				if (isSCRunning()) {
 					// It should be closed
-					com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecución", true);
+					com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecuciÃ³n", true);
 				}
 
 			} catch (InterruptedException e) {
-				com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecución", true);
+				com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecuciÃ³n", true);
 			} catch (IOException e1) {
-				com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecución", true);
+				com.onError("No se pudo ejecutar StarCraft, no se pudo cerrar la anterior ejecuciÃ³n", true);
 			}
 		}
 	}

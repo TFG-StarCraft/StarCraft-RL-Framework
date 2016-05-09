@@ -99,6 +99,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 			//this.master.signalGameIsReady();
 		} catch (Throwable e) {
+			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
@@ -156,6 +157,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 				printUnitsInfo();
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
@@ -175,6 +177,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 			super.onUnitDestroy(unit);
 		} catch (Throwable e) {
+			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}

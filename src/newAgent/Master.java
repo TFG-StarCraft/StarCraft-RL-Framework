@@ -30,23 +30,24 @@ public class Master {
 	
 	public boolean solveEventsAndCheckEnd() {
 		boolean endConditionSatisfied = false;
-		boolean tmp;
 		int i = 0;
 		
 		while (i < agentsNotFinished.size()) {
 			// if is final
-			if (tmp = agentsNotFinished.get(i).solveEventsAndCheckEnd()) {
-				
-				agentsNotFinished.get(i).notifyEnd(tmp);
-				
-				agentsFinished.add(agentsNotFinished.remove(i));
+			GenericAgent a;
+			if (agentsNotFinished.get(i).solveEventsAndCheckEnd()) {
+				a = agentsNotFinished.remove(i);
+				agentsFinished.add(a);
+				com.bot.unRegisterUnitKilledObserver(a);
 			} else {
 				i++;
 			}
 		}
 		
-		if (agentsNotFinished.size() == 0)
+		if (agentsNotFinished.size() == 0) {
 			endConditionSatisfied = true;
+			com.bot.requestRestart();
+		}
 
 		return endConditionSatisfied;
 	}
@@ -74,6 +75,7 @@ public class Master {
 			try {
 				thread.join();
 			} catch (InterruptedException e) {
+				e.printStackTrace();
 				com.onError(e.getLocalizedMessage(), true);
 			}
 		}
@@ -91,6 +93,7 @@ public class Master {
 		}
 		
 		for (GenericAgent genericAgent : agentsNotFinished) {
+			com.bot.registerUnitKilledObserver(genericAgent);
 			Thread	t = new Thread(genericAgent);
 			t.start();
 			threads.add(t);

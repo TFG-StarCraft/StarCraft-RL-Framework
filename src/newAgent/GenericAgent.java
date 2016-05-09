@@ -68,7 +68,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		this.onNewAction();
 	}
 
-	public abstract void notifyEnd(boolean tmp);
+	//public abstract void notifyEnd(boolean tmp);
 
 	public abstract boolean solveEventsAndCheckEnd();
 
@@ -173,21 +173,22 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		try {
 			this.safeNotify.safeWait(SYNC_BOT_ENDS_INIT);
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
 
-	public void signalEndCanBeChecked() {
-		this.safeNotify.safeNotify(SYNC_END_CAN_BE_CHECKED);
-	}
-
-	public void waitForEndCanBeChecked() {
-		try {
-			this.safeNotify.safeWait(SYNC_END_CAN_BE_CHECKED);
-		} catch (InterruptedException e) {
-			com.onError(e.getLocalizedMessage(), true);
-		}
-	}
+//	public void signalEndCanBeChecked() {
+//		this.safeNotify.safeNotify(SYNC_END_CAN_BE_CHECKED);
+//	}
+//
+//	public void waitForEndCanBeChecked() {
+//		try {
+//			this.safeNotify.safeWait(SYNC_END_CAN_BE_CHECKED);
+//		} catch (InterruptedException e) {
+//			com.onError(e.getLocalizedMessage(), true);
+//		}
+//	}
 
 	public void signalActionEnded() {
 		this.safeNotify.safeNotify(SYNC_ACTION_END);
@@ -198,6 +199,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		try {
 			this.safeNotify.safeWait(SYNC_ACTION_END);
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}

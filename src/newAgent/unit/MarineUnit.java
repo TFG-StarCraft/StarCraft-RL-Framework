@@ -1,6 +1,7 @@
 package newAgent.unit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.Com;
@@ -20,10 +21,13 @@ import newAgent.state.State;
 
 public class MarineUnit extends UnitAgent {
 
+	private HashMap<Integer, Unit> map;
+	
 	public MarineUnit(Unit unit, Com com, Bot bot, DecisionMakerPrams params) {
 		super(unit, com, bot);
 		// TODO
 		this.decisionMaker = new DM_LambdaQE(this, params);
+		this.map = new HashMap<>();
 	}
 
 	@Override
@@ -55,17 +59,16 @@ public class MarineUnit extends UnitAgent {
 	int cont = 0;
 
 	@Override
-	public void onUnitKilled(Unit unit) {
-		if (unit.getID() == (unit.getID())) {
+	public void onUnitKilled(Unit u) {
+		if (this.unit.getID() == u.getID()) {
 			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
-			cont = 0;
 		} else {
-			// TODO solo unidad deseada
-			if (cont == 0)
-				cont++;
-			else {
-				addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
-				cont = 0;
+			if (this.map.containsKey(u.getID())) {
+				this.map.remove(u.getID());
+				if (this.map.size() == 0)
+					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL_ALL));
+				else
+					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
 			}
 		}
 	}
@@ -106,22 +109,27 @@ public class MarineUnit extends UnitAgent {
 			action.registerOnUnitObserver();
 			onNewAction(action);
 		}
+		
+		for (Unit u : CheckAround.getEnemyUnitsAround(unit)) {
+			if (!this.map.containsKey(u.getID()))
+				this.map.put(u.getID(), u);
+		}
 	}
 
-	private boolean lastEndCondition;
+	private boolean endCondition;
 
-	@Override
-	public void notifyEnd(boolean tmp) {
-		lastEndCondition = tmp;
-		// TODO d Notify
-		signalEndCanBeChecked();
-	}
+//	@Override
+//	public void notifyEnd(boolean tmp) {
+//		endCondition = tmp;
+//		// TODO d Notify
+//		signalEndCanBeChecked();
+//	}
 
 	@Override
 	public Boolean getOnFinalUpdated() {
 		// TODO d wait
-		waitForEndCanBeChecked();
-		return lastEndCondition;
+		//waitForEndCanBeChecked();
+		return endCondition;
 	}
 	
 	private double nextReward;
@@ -174,15 +182,19 @@ public class MarineUnit extends UnitAgent {
 					nextReward = r * newAgent.Const.REWARD_MULT_FACTOR;
 				}
 
+				this.endCondition = event.isFinalEvent();
+
 				event.notifyEvent();
+				this.currentAction.unRegisterOnUnitObserver();
+
 				// Signal AFTER onEnd and reward are set
 				this.signalActionEnded();
-				this.currentAction.unRegisterOnUnitObserver();
 				
 				break;
 			}
 		}
 
+		this.events.clear();
 		return isFinal;
 	}
 
