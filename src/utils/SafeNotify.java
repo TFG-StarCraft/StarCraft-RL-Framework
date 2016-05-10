@@ -4,29 +4,17 @@ import java.util.concurrent.Semaphore;
 
 public class SafeNotify {
 
-	private int code;
-	private Object o;
-
 	Semaphore s;
 
-	public SafeNotify(Object o) {
-		this.o = o;
-		this.code = -1;
+	public SafeNotify() {
 		this.s = new Semaphore(0);
 	}
 
-	public void safeWait(int code) throws InterruptedException {
-
-		this.code = code;
-
+	public void safeWait() throws InterruptedException {
 		s.acquire();
-
 	}
 
-	public void safeNotify(int code) {
-
+	public void safeNotify() {
 		s.release();
-
 	}
-
 }

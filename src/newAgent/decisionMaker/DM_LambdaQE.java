@@ -31,17 +31,11 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 	public void run() {
 		com.onSendMessage(this.getClass().getName() + " started");
 
-		// TODO decisionMakerEnd
-		// while (true) {
-		// TODO d sync
-		// com.Sync.waitForBotGameIsStarted();
-		// agent.waitForBotGameIsStarted();
-
 		State S = agent.getInitState();
-		System.out.println("Init state done");
+		
 		Action A = nextAction(S);
 		this.numRandomMoves = 0;
-		shared.resetQE(agent);
+		// QE reset done in master
 
 		Double R = 0.0;
 		
@@ -66,29 +60,20 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 			A = AA;
 		}
 
-		shared.updateParams(agent);
-				
-		// TODO decisionMakerEndIteraction
-		// Iteration end
-		//com.onEndIteration(steps, numRandomMoves, i, alpha, epsilon, R);
-
-		//com.onFullQUpdate(QE.showQ());
-
-		//com.restart();
-		
+		// Params update done in master		
 		agent.onEndIteration(numRandomMoves, shared.get_i(), shared.getAlpha(), shared.getEpsilon(), R);
-	//}
 	}
 
 	public Action nextOptimalAction(State S) {
 		double q = Double.NEGATIVE_INFINITY;
+		double qq;
 		Action mov = null;
 		// Probar movimientos
 		for (int i = 0; i < Action.values().length; i++) {
 			Action A = new Action(i, agent);
 			// Hasta encontrar uno valido, y ademas sela el mejor (greedy)
-			if (shared.QE.getQ(S, A) >= q && S.esAccionValida(A)) {
-				q = shared.QE.getQ(S, A);
+			if ((qq = shared.getQE().getQ(S, A)) >= q && S.esAccionValida(A)) {
+				q = qq;
 				mov = A;
 			}
 		}

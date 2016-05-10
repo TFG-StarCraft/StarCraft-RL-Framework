@@ -36,7 +36,7 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		this.unit = unit;
 		this.com = com;
 		this.bot = bot;
-		this.safeNotify = new SafeNotify(this);
+		this.safeNotify = new SafeNotify();
 		this.currentAction = null;
 
 		this.events = new ArrayList<>();
@@ -149,71 +149,35 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	// SYNC ///////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public static final int SYNC_GAME_IS_STARTED = 0;
-	public static final int SYNC_BOT_ENDS_INIT = 1;
-	public static final int SYNC_END_CAN_BE_CHECKED = 2;
-	public static final int SYNC_ACTION_END = 3;
-
-//	public void signalGameIsReady() {
-//		this.safeNotify.safeNotify(SYNC_GAME_IS_STARTED);
-//	}
-//
-//	public void waitForBotGameIsStarted() {
-//		try {
-//			this.safeNotify.safeWait(SYNC_GAME_IS_STARTED);
-//		} catch (InterruptedException e) {
-//			com.onError(e.getLocalizedMessage(), true);
-//		}
-//	}
-
 	public void signalInitIsDone() {
-		this.safeNotify.safeNotify(SYNC_BOT_ENDS_INIT);
+		this.safeNotify.safeNotify();
 	}
 
 	public void waitForBotEndsInit() {
 		try {
-			this.safeNotify.safeWait(SYNC_BOT_ENDS_INIT);
+			this.safeNotify.safeWait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
 
-//	public void signalEndCanBeChecked() {
-//		this.safeNotify.safeNotify(SYNC_END_CAN_BE_CHECKED);
-//	}
-//
-//	public void waitForEndCanBeChecked() {
-//		try {
-//			this.safeNotify.safeWait(SYNC_END_CAN_BE_CHECKED);
-//		} catch (InterruptedException e) {
-//			com.onError(e.getLocalizedMessage(), true);
-//		}
-//	}
-
 	public void signalActionEnded() {
-		this.safeNotify.safeNotify(SYNC_ACTION_END);
+		this.safeNotify.safeNotify();
 
 	}
 
 	public void waitForActionEnds() {
 		try {
-			this.safeNotify.safeWait(SYNC_ACTION_END);
+			this.safeNotify.safeWait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			com.onError(e.getLocalizedMessage(), true);
 		}
-	}
-
-	public boolean shouldResetQE() {
-		return master.shouldResetQE(this);
 	}
 
 	public boolean shouldUpdateQE() {
 		return master.shouldUpdateQE(this);
 	}
 
-	public boolean shouldUpdateParams() {
-		return master.shouldUpdateParams(this);
-	}
 }

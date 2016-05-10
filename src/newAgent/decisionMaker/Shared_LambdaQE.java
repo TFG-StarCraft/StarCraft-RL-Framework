@@ -9,9 +9,9 @@ import newAgent.state.State;
 
 public class Shared_LambdaQE {
 	// Shared
-	protected boolean initialized = false;
+	private boolean initialized = false;
 	
-	AbstractQEFunction QE;
+	private AbstractQEFunction QE;
 
 	private double epsilon;
 	private double alpha;
@@ -20,7 +20,6 @@ public class Shared_LambdaQE {
    
 	private double init_epsilon;
 	private double init_alpha;
-	private double init_gamma;
 	        
 	private int i;
 		
@@ -28,7 +27,7 @@ public class Shared_LambdaQE {
 		if (!initialized) {
 			initialized = true;
 			alpha = init_alpha = params.alpha;
-			gamma = init_gamma = params.gamma;
+			gamma = params.gamma;
 			epsilon = init_epsilon = params.epsilon;
 			lambda = params.lambda;
 			
@@ -37,11 +36,6 @@ public class Shared_LambdaQE {
 			
 			i = 0;
 		}
-	}
-		
-	protected synchronized void resetQE(GenericAgent a) {
-		if (a.shouldResetQE())
-			QE.resetE();
 	}
 	
 	protected synchronized void updateQE(GenericAgent a, State S, Action A, Action AA, Action AStar, double delta) {
@@ -67,15 +61,13 @@ public class Shared_LambdaQE {
 		}
 	}
 	
-	protected synchronized void updateParams(GenericAgent a) {
-		if (a.shouldUpdateParams()) {
-			// Decrement alpha
-			alpha = init_alpha - init_alpha * (Math.exp(- (350 / (double) (i+1))));
-			// Increment epsilon
-			epsilon = init_epsilon + (1 - init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
-			
-			i++;
-		}
+	public void updateParams() {
+		// Decrement alpha
+		alpha = init_alpha - init_alpha * (Math.exp(- (350 / (double) (i+1))));
+		// Increment epsilon
+		epsilon = init_epsilon + (1 - init_epsilon) * (Math.exp(- (450 / (double) (i+1))));
+		
+		i++;
 	}
 	
 

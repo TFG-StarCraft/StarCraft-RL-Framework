@@ -93,6 +93,9 @@ public class Master {
 			}
 		}
 
+		if (shared != null)
+			shared.updateParams();
+		
 		threads.clear();
 	}
 
@@ -140,6 +143,8 @@ public class Master {
 
 		com.onDebugMessage("Agent num" + learningAgent + ", " + allAgents.get(learningAgent).getClass() + ", learning",
 				DebugEnum.AGENT_LEARNING);
+		
+		shared.getQE().resetE();
 
 		for (GenericAgent genericAgent : agentsNotFinished) {
 			com.bot.registerUnitKilledObserver(genericAgent);
@@ -165,15 +170,7 @@ public class Master {
 		}
 	}
 
-	public boolean shouldResetQE(GenericAgent genericAgent) {
-		return genericAgent == allAgents.get(learningAgent);
-	}
-
 	public boolean shouldUpdateQE(GenericAgent genericAgent) {
-		return genericAgent == allAgents.get(learningAgent);
-	}
-
-	public boolean shouldUpdateParams(GenericAgent genericAgent) {
 		return genericAgent == allAgents.get(learningAgent);
 	}
 
