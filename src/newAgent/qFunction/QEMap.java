@@ -42,6 +42,7 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 	@Override
 	public double getQ(State S, Action A) {
 		Set set = this.get(getHash(S, A));
+		System.out.println(getHash(S, A));
 /*
 		if (set == null) {
 			set = new Set(Const.Q_GENERAL, 0, S, A);
