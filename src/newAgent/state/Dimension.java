@@ -27,7 +27,12 @@ public abstract class Dimension<T> {
 
 	public abstract Dimension<T> getNewDimension();
 
-	public abstract int discretize();
+	public int discretize() {
+		// Clamp discrete balue between 0 and max
+		return Math.max(0, Math.min(max, impDiscretize()));
+	}
+	
+	protected abstract int impDiscretize();
 	
 	public abstract T getCurrentValueFromBot();
 

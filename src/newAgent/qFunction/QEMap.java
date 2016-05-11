@@ -7,7 +7,6 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
