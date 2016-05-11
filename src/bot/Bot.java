@@ -67,6 +67,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onStart() {
 		try {
+			this.initFrame = 0;
 			// onStart is also called after re-start
 			this.game = mirror.getGame();
 			this.self = game.self();
@@ -104,8 +105,19 @@ public class Bot extends DefaultBWListener implements Runnable {
 		}
 	}
 
+	private int initFrame = 0;
+	
 	@Override
 	public void onFrame() {
+		if (initFrame == 0)
+			game.pauseGame();
+		if (initFrame < 100) {
+			initFrame++;
+			return;
+		}
+		if (initFrame == 100)
+			game.resumeGame();
+		
 		try {
 			com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
 			if (shouldExecuteOnFrame()) {

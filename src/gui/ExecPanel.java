@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import javax.swing.JButton;
@@ -77,7 +79,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 * @param com
 	 *            = Comunication.
 	 */
-	public ExecPanel(GUI gui, Com com) {
+	public ExecPanel(GUI gui, Com com) {		
 		this.gui = gui;
 		this.com = com;
 		this.com.addObserver(this);
@@ -92,18 +94,17 @@ public class ExecPanel extends JPanel implements ComObserver {
 		this.tabConsole = new TabConsole();
 		this.topTabbedPanel.add("Console", tabConsole);
 
-
 		this.tabGraphActions = new TabGraph("Episodes", "Movs");
 		this.topTabbedPanel.add("Movs", tabGraphActions);
 
 		this.tabGraphKills = new TabGraph("Episodes", "Kills");
 		this.topTabbedPanel.add("Kills", tabGraphKills);
-		
+
 		this.tabGraphReward = new TabGraph("Episodes", "Reward");
 		this.topTabbedPanel.add("Reward", tabGraphReward);
-		
-		//this.tabDanger = new TabDanger();
-		//this.topTabbedPanel.add("Units", tabDanger);
+
+		// this.tabDanger = new TabDanger();
+		// this.topTabbedPanel.add("Units", tabDanger);
 
 		qPanel = new JPanel(new FlowLayout());
 		this.qTabScroll = new JScrollPane(qPanel);
@@ -123,9 +124,45 @@ public class ExecPanel extends JPanel implements ComObserver {
 		private JTextField t_alpha, t_gamma, t_epsilon, t_lambda;
 
 		private class PanelButtons extends JPanel {
-
+			
 			private static final long serialVersionUID = -2630532443748193074L;
 
+			private void runall() {
+				double alpha, gamma, epsilon, lambda;
+
+				try {
+					alpha = Double.parseDouble(t_alpha.getText());
+					if (alpha < 0 || alpha >= 1)
+						throw new NumberFormatException();
+					gamma = Double.parseDouble(t_gamma.getText());
+					if (gamma < 0 || gamma >= 1)
+						throw new NumberFormatException();
+					epsilon = Double.parseDouble(t_epsilon.getText());
+					if (epsilon < 0 || epsilon >= 1)
+						throw new NumberFormatException();
+					lambda = Double.parseDouble(t_lambda.getText());
+					if (lambda < 0 || lambda >= 1)
+						throw new NumberFormatException();
+					com.configureParams(alpha, gamma, epsilon, lambda);
+					com.configureBot(b, frameSpeed);
+
+					tglbtnGui.setEnabled(true);
+					run.setEnabled(false);
+					Action.init();
+					gui.menuBar.actionMenu.setEnabled(false);
+					t_alpha.setEditable(false);
+					t_gamma.setEditable(false);
+					t_epsilon.setEditable(false);
+					t_lambda.setEditable(false);
+					new Thread(com).start();
+				} catch (NumberFormatException e1) {
+					t_alpha.setText(Double.toString(newAgent.Const.ALPHA));
+					t_gamma.setText(Double.toString(newAgent.Const.GAMMA));
+					t_epsilon.setText(Double.toString(newAgent.Const.EPSLLON_EGREEDY));
+					t_lambda.setText(Double.toString(newAgent.Const.LAMBDA));
+				}
+			}
+			
 			/** Run button. */
 			private JButton run;
 			/** Shut starcraft button. */
@@ -137,43 +174,31 @@ public class ExecPanel extends JPanel implements ComObserver {
 				super(new GridBagLayout());
 
 				this.run = new JButton("Run");
+				gui.addKeyListener(new KeyListener() {
+
+					@Override
+					public void keyTyped(KeyEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) {
+						
+					}
+
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_A) {
+							runall();
+						}
+					}
+				});
 				this.run.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						double alpha, gamma, epsilon, lambda;
-
-						try {
-							alpha = Double.parseDouble(t_alpha.getText());
-							if (alpha < 0 || alpha >= 1)
-								throw new NumberFormatException();
-							gamma = Double.parseDouble(t_gamma.getText());
-							if (gamma < 0 || gamma >= 1)
-								throw new NumberFormatException();
-							epsilon = Double.parseDouble(t_epsilon.getText());
-							if (epsilon < 0 || epsilon >= 1)
-								throw new NumberFormatException();
-							lambda = Double.parseDouble(t_lambda.getText());
-							if (lambda < 0 || lambda >= 1)
-								throw new NumberFormatException();
-							com.configureParams(alpha, gamma, epsilon, lambda);
-							com.configureBot(b, frameSpeed);
-
-							tglbtnGui.setEnabled(true);
-							run.setEnabled(false);
-							Action.init();
-							gui.menuBar.actionMenu.setEnabled(false);
-							t_alpha.setEditable(false);
-							t_gamma.setEditable(false);
-							t_epsilon.setEditable(false);
-							t_lambda.setEditable(false);
-							new Thread(com).start();
-						} catch (NumberFormatException e1) {
-							t_alpha.setText(Double.toString(newAgent.Const.ALPHA));
-							t_gamma.setText(Double.toString(newAgent.Const.GAMMA));
-							t_epsilon.setText(Double.toString(newAgent.Const.EPSLLON_EGREEDY));
-							t_lambda.setText(Double.toString(newAgent.Const.LAMBDA));
-						}
+						runall();
 					}
 				});
 
@@ -231,10 +256,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 		/** Label for frames per second. */
 		private JLabel lblTextFps;
 		private JTextField t_FPS;
-		
+
 		private JLabel lblTextEPS;
 		private JTextField t_EPS;
-		
+
 		/** Label for speed. */
 		private JLabel lblSpeed;
 		/** Text field for speed. */
@@ -249,18 +274,18 @@ public class ExecPanel extends JPanel implements ComObserver {
 		private JTextArea textConsole;
 
 		private JPanel panelControl;
-		
+
 		private TabConsole() {
 			this.setLayout(new GridBagLayout());
-			
+
 			this.panelButtons = new PanelButtons();
 			this.panelButtons.setFocusable(false);
-			
+
 			this.l_alpha = new JLabel("Alpha: ", SwingConstants.RIGHT);
 			this.t_alpha = new JTextField();
 			this.t_alpha.setText(Double.toString(newAgent.Const.ALPHA));
 			this.t_alpha.setColumns(5);
-			
+
 			this.l_gamma = new JLabel("Gamma: ", SwingConstants.RIGHT);
 			this.t_gamma = new JTextField();
 			this.t_gamma.setText(Double.toString(newAgent.Const.GAMMA));
@@ -275,9 +300,9 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.t_lambda = new JTextField();
 			this.t_lambda.setText(Double.toString(newAgent.Const.LAMBDA));
 			this.t_lambda.setColumns(5);
-			
+
 			lblSpeed = new JLabel("Speed:", SwingConstants.RIGHT);
-			
+
 			textFieldSpeed = new JTextField();
 			textFieldSpeed.setText("0");
 			textFieldSpeed.setColumns(5);
@@ -309,13 +334,13 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.t_FPS.setColumns(5);
 			this.t_FPS.setEditable(false);
 			this.t_FPS.setBorder(null);
-			
+
 			lblTextEPS = new JLabel("EPS: ", SwingConstants.RIGHT);
 			t_EPS = new JTextField("0", JLabel.LEFT);
 			this.t_EPS.setColumns(5);
 			this.t_EPS.setEditable(false);
 			this.t_EPS.setBorder(null);
-			
+
 			this.lblTxtDeaths = new JLabel("Muertes: ", SwingConstants.RIGHT);
 			this.lblDeaths = new JLabel("0", SwingConstants.LEFT);
 			this.lblTxtKills = new JLabel("Asesinatos: ", SwingConstants.RIGHT);
@@ -327,7 +352,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 			this.textConsole.setEditable(false);
 
 			this.panelControl = new JPanel(new GridBagLayout());
-			
+
 			this.scrollConsole = new JScrollPane(textConsole);
 			this.scrollConsole.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -338,16 +363,16 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 		private void locateElements() {
-			
-			//Locate elements of the control panel
+
+			// Locate elements of the control panel
 			GridBagConstraints c = new GridBagConstraints();
-			
+
 			// Add parameters alpha, epsillon and lambda.
 			c.insets = new Insets(20, 0, 0, 0);
 			c.gridheight = 1;
 			c.gridwidth = 1;
 			c.weightx = 1;
-			
+
 			c.gridx = 0;
 			c.gridy = 0;
 			panelControl.add(l_alpha, c);
@@ -369,21 +394,21 @@ public class ExecPanel extends JPanel implements ComObserver {
 			c.gridx = 5;
 			c.gridy = 0;
 			panelControl.add(t_epsilon, c);
-			
+
 			c.gridx = 6;
 			c.gridy = 0;
 			panelControl.add(l_lambda, c);
 			c.gridx = 7;
 			c.gridy = 0;
 			panelControl.add(t_lambda, c);
-			
+
 			// Add the information of speed and fps.
 			c.gridheight = 1;
 			c.gridwidth = 3;
 			c.gridx = 0;
 			c.gridy = 1;
 			panelControl.add(lblTextFps, c);
-			
+
 			c.gridx = 1;
 			c.gridy = 1;
 			panelControl.add(t_FPS, c);
@@ -391,11 +416,11 @@ public class ExecPanel extends JPanel implements ComObserver {
 			c.gridx = 2;
 			c.gridy = 1;
 			panelControl.add(lblTextEPS, c);
-			
+
 			c.gridx = 3;
 			c.gridy = 1;
 			panelControl.add(t_EPS, c);
-			
+
 			c.gridx = 4;
 			c.gridy = 1;
 			panelControl.add(lblSpeed, c);
@@ -446,29 +471,28 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 		private final DecimalFormat df = new DecimalFormat("0.######");
-		
+
 		private long T_INI = System.currentTimeMillis();
-		
+
 		public void onEndIteration(int i, int movimientos, int nume, double alpha, double epsilon) {
 			String alphas = df.format(alpha);
 			String epsilons = df.format(epsilon);
-			
+
 			this.textConsole.append("movimientos: " + movimientos + " nume: " + nume + " episodio " + i + "\n");
 			this.textConsole.append("alpha: " + alphas + " epsilon: " + epsilons + "\n");
-			
+
 			this.t_alpha.setText(alphas);
 			this.t_epsilon.setText(epsilons);
-			
+
 			if (i % 10 == 0)
 				T_INI = System.currentTimeMillis();
-			
-			double eps = (i % 10) / (double)((System.currentTimeMillis() - T_INI) / (double) 1e3);
+
+			double eps = (i % 10) / (double) ((System.currentTimeMillis() - T_INI) / (double) 1e3);
 			if (i != 10)
 				this.t_EPS.setText("" + eps);
-			
+
 			this.repaint();
 		}
-		
 
 		private final DecimalFormat df2 = new DecimalFormat("###0.##");
 
@@ -499,7 +523,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 		}
 
 	}
-	
+
 	/////////////////////
 
 	private class TabGraph extends JPanel {
@@ -569,111 +593,128 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 	}
 
-//	private class TabDanger extends JPanel {		
-//		private static final long serialVersionUID = -429614650656376442L;
-//		private JLabel labelAllies;
-//		private JLabel labelEnemies;
-//		private BoxLayout layoutgb;
-//		private Graphics g;
-//		
-//		public TabDanger(){
-//			this.layoutgb = new BoxLayout(this, BoxLayout.Y_AXIS);
-//			
-//			this.setLayout(layoutgb);
-//			
-//			this.labelAllies = new JLabel(" Allies: 0");
-//			this.labelEnemies = new JLabel(" Enemies: 0");
-//			this.labelAllies.setForeground(new Color(0.0f, 1.0f, 0.0f, 1.0f));
-//			this.labelEnemies.setForeground(new Color(1.0f, 0.0f, 0.0f, 1.0f));
-//
-//			Font font = new Font(labelAllies.getFont().getName(), Font.BOLD, (int)Math.ceil(labelAllies.getFont().getSize()*1.5));
-//			this.labelAllies.setFont(font);
-//			this.labelEnemies.setFont(font);
-//			
-//			this.add(this.labelEnemies);
-//			this.add(this.labelAllies);
-//		}
-//		
-//		public void paint(Graphics g){
-//			super.paint(g);
-//			this.g = g;
-//			
-//			this.setBackground(Color.BLACK);
-//			int sizeX = this.getWidth();
-//			int sizeY = this.getHeight();
-//
-//			Unit unit = com.ComData.unit;
-//			if(unit != null){		
-//				
-//				Point center = new Point(sizeX/2-unit.getType().sightRange()/2, sizeY/2-unit.getType().sightRange()/2);
-//				Point centerRect = (Point) center.clone();			
-//				centerRect.setLocation(center.getX()+unit.getType().sightRange()/2-unit.getType().width()/2, center.getY()+unit.getType().sightRange()/2-unit.getType().height()/2);
-//
-//				paintCircle(center, unit.getType().sightRange(), new Color(0.0f, 1.0f, 1.0f, 0.5f));
-//
-//				paintRectangle(centerRect, new Dimension(unit.getType().width(), unit.getType().height()), new Color(0.0f, 1.0f, 1.0f, 0.8f));		
-//
-//				
-//				Unit anotherUnit;
-//				List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
-//
-//				for(int i = 0; i < list.size(); i++){
-//					anotherUnit = list.get(i);
-//					int distX = (unit.getX() - anotherUnit.getX());
-//					int distY = (unit.getY() - anotherUnit.getY());
-//					
-//					if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
-//						Point centerAux = new Point(center.x-distX-20, center.y-distY-20);
-//						Point centerRectAux =  (Point) centerAux.clone();
-//						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
-//
-//						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(0.0f, 1.0f, 0.0f, 0.5f));
-//						
-//						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(0.0f, 1.0f, 0.0f, 0.8f));
-//					}else{
-//						Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
-//						Point centerRectAux =  (Point) centerAux.clone();
-//						centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2, centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
-//
-//						paintCircle(centerAux, anotherUnit.getType().sightRange(), new Color(1.0f, 0.0f, 0.0f, 0.5f));
-//						
-//						paintRectangle(centerRectAux, new Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()), new Color(1.0f, 0.0f, 0.0f, 0.8f));
-//					}
-//				
-//				}
-//				this.updateUnitsAround();
-//			}
-//		}
-//
-//		private void paintCircle(Point position, int radius, Color color){
-//			g.setColor(color);
-//			g.fillOval(position.x, position.y, radius, radius);
-//			g.setColor(Color.BLACK);
-//			g.drawOval(position.x, position.y, radius, radius);
-//		}
-//		
-//		private void paintRectangle(Point position, Dimension dimension, Color color){
-//			g.setColor(color);
-//			g.fillRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
-//			g.setColor(Color.BLACK);
-//			g.drawRect(position.x, position.y, (int) dimension.getWidth(), (int) dimension.getHeight());
-//		}
-//		
-//		public void updateUnitsAround(){
-//			List<Unit> list = com.ComData.unit.getUnitsInRadius(com.ComData.unit.getType().sightRange());
-//			int ally = 0, enemy = 0;
-//			for(int i = 0; i < list.size(); i++){
-//				if(list.get(i).getPlayer().isAlly(com.ComData.unit.getPlayer()))
-//					ally++;
-//				else
-//					enemy++;
-//			}
-//			this.labelAllies.setText(" Allies: " + ally);
-//			this.labelEnemies.setText(" Enemies: " + enemy);
-//			
-//		}
-//	};
-	
+	// private class TabDanger extends JPanel {
+	// private static final long serialVersionUID = -429614650656376442L;
+	// private JLabel labelAllies;
+	// private JLabel labelEnemies;
+	// private BoxLayout layoutgb;
+	// private Graphics g;
+	//
+	// public TabDanger(){
+	// this.layoutgb = new BoxLayout(this, BoxLayout.Y_AXIS);
+	//
+	// this.setLayout(layoutgb);
+	//
+	// this.labelAllies = new JLabel(" Allies: 0");
+	// this.labelEnemies = new JLabel(" Enemies: 0");
+	// this.labelAllies.setForeground(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+	// this.labelEnemies.setForeground(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+	//
+	// Font font = new Font(labelAllies.getFont().getName(), Font.BOLD,
+	// (int)Math.ceil(labelAllies.getFont().getSize()*1.5));
+	// this.labelAllies.setFont(font);
+	// this.labelEnemies.setFont(font);
+	//
+	// this.add(this.labelEnemies);
+	// this.add(this.labelAllies);
+	// }
+	//
+	// public void paint(Graphics g){
+	// super.paint(g);
+	// this.g = g;
+	//
+	// this.setBackground(Color.BLACK);
+	// int sizeX = this.getWidth();
+	// int sizeY = this.getHeight();
+	//
+	// Unit unit = com.ComData.unit;
+	// if(unit != null){
+	//
+	// Point center = new Point(sizeX/2-unit.getType().sightRange()/2,
+	// sizeY/2-unit.getType().sightRange()/2);
+	// Point centerRect = (Point) center.clone();
+	// centerRect.setLocation(center.getX()+unit.getType().sightRange()/2-unit.getType().width()/2,
+	// center.getY()+unit.getType().sightRange()/2-unit.getType().height()/2);
+	//
+	// paintCircle(center, unit.getType().sightRange(), new Color(0.0f, 1.0f,
+	// 1.0f, 0.5f));
+	//
+	// paintRectangle(centerRect, new Dimension(unit.getType().width(),
+	// unit.getType().height()), new Color(0.0f, 1.0f, 1.0f, 0.8f));
+	//
+	//
+	// Unit anotherUnit;
+	// List<Unit> list = unit.getUnitsInRadius(unit.getType().sightRange());
+	//
+	// for(int i = 0; i < list.size(); i++){
+	// anotherUnit = list.get(i);
+	// int distX = (unit.getX() - anotherUnit.getX());
+	// int distY = (unit.getY() - anotherUnit.getY());
+	//
+	// if(anotherUnit.getPlayer().isAlly(unit.getPlayer())){
+	// Point centerAux = new Point(center.x-distX-20, center.y-distY-20);
+	// Point centerRectAux = (Point) centerAux.clone();
+	// centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2,
+	// centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+	//
+	// paintCircle(centerAux, anotherUnit.getType().sightRange(), new
+	// Color(0.0f, 1.0f, 0.0f, 0.5f));
+	//
+	// paintRectangle(centerRectAux, new
+	// Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()),
+	// new Color(0.0f, 1.0f, 0.0f, 0.8f));
+	// }else{
+	// Point centerAux = new Point(center.x-distX+20, center.y-distY+20);
+	// Point centerRectAux = (Point) centerAux.clone();
+	// centerRectAux.setLocation(centerAux.getX()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().width()/2,
+	// centerAux.getY()+anotherUnit.getType().sightRange()/2-anotherUnit.getType().height()/2);
+	//
+	// paintCircle(centerAux, anotherUnit.getType().sightRange(), new
+	// Color(1.0f, 0.0f, 0.0f, 0.5f));
+	//
+	// paintRectangle(centerRectAux, new
+	// Dimension(anotherUnit.getType().width(), anotherUnit.getType().height()),
+	// new Color(1.0f, 0.0f, 0.0f, 0.8f));
+	// }
+	//
+	// }
+	// this.updateUnitsAround();
+	// }
+	// }
+	//
+	// private void paintCircle(Point position, int radius, Color color){
+	// g.setColor(color);
+	// g.fillOval(position.x, position.y, radius, radius);
+	// g.setColor(Color.BLACK);
+	// g.drawOval(position.x, position.y, radius, radius);
+	// }
+	//
+	// private void paintRectangle(Point position, Dimension dimension, Color
+	// color){
+	// g.setColor(color);
+	// g.fillRect(position.x, position.y, (int) dimension.getWidth(), (int)
+	// dimension.getHeight());
+	// g.setColor(Color.BLACK);
+	// g.drawRect(position.x, position.y, (int) dimension.getWidth(), (int)
+	// dimension.getHeight());
+	// }
+	//
+	// public void updateUnitsAround(){
+	// List<Unit> list =
+	// com.ComData.unit.getUnitsInRadius(com.ComData.unit.getType().sightRange());
+	// int ally = 0, enemy = 0;
+	// for(int i = 0; i < list.size(); i++){
+	// if(list.get(i).getPlayer().isAlly(com.ComData.unit.getPlayer()))
+	// ally++;
+	// else
+	// enemy++;
+	// }
+	// this.labelAllies.setText(" Allies: " + ally);
+	// this.labelEnemies.setText(" Enemies: " + enemy);
+	//
+	// }
+	// };
+
 	/*******************/
 	// GETTER / SETTER //
 	/////////////////////
@@ -758,7 +799,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 	public void onFpsAverageAnnouncement(double fps) {
 		this.tabConsole.onFpsAverageAnnoucement(fps);
 		// TODO tab danger
-		//this.tabDanger.repaint();
+		// this.tabDanger.repaint();
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +37,69 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 	}
 
 	private int getHash(State S, Action A) {
-		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
+		int index = Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
+		if (index > dimsSize * Action.values().length) {
+
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
+		}
+		return index;
 	}
 
 	@Override

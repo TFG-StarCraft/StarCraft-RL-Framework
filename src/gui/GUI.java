@@ -211,6 +211,7 @@ public class GUI extends JFrame {
 	}
 
 	public static void main(String[] args) throws IOException {
+		utils.StarcraftLauncher.closeSC(null);
 		File folder = new File(new File("").getAbsolutePath());
 		ArrayList<String> a = new ArrayList<>();
 		File[] listOfFiles = folder.listFiles();

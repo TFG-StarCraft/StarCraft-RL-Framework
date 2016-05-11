@@ -10,8 +10,8 @@ import bwapi.UnitType;
 
 public class DataMarine extends StateData {
 
-	private static final int MAX_LIFE_DISCRETE = 5;
-	private static final int MAX_DISTANCE_DISCRETE = 10;
+	private static final int MAX_LIFE_DISCRETE = 50;
+	private static final int MAX_DISTANCE_DISCRETE = 100;
 
 	// Classes extending Dimension
 	// To create a new dimension:
@@ -58,7 +58,9 @@ public class DataMarine extends StateData {
 
 		@Override
 		public int discretize() {
-			return (int) Math.floor(getRawValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange());
+			return Math.min(
+					(int) Math.floor(getRawValue() * getMaxDiscreteValue() / UnitType.Terran_Marine.sightRange()),
+					getMaxDiscreteValue());
 		}
 
 		@Override
@@ -76,8 +78,8 @@ public class DataMarine extends StateData {
 	public static ArrayList<Integer> getNumValuesPerDims() {
 		ArrayList<Integer> a = new ArrayList<>();
 
-		a.add(MAX_LIFE_DISCRETE);
-		a.add(MAX_DISTANCE_DISCRETE);
+		a.add(MAX_LIFE_DISCRETE + 1);
+		a.add(MAX_DISTANCE_DISCRETE + 1);
 
 		return a;
 	}
@@ -87,7 +89,7 @@ public class DataMarine extends StateData {
 	}
 
 	private Unit unit;
-	
+
 	public DataMarine(Com com, Unit unit) {
 		this.com = com;
 		this.unit = unit;
@@ -107,7 +109,7 @@ public class DataMarine extends StateData {
 		for (Dimension<?> dimension : dimensions) {
 			r.dimensions.add(dimension.getNewDimension());
 		}
-		
+
 		return r;
 	}
 
