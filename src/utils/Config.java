@@ -27,7 +27,6 @@ public class Config {
 		} catch (FileNotFoundException e) {
 			createDefaultProps();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -44,7 +43,6 @@ public class Config {
 		try {
 			prop.store(new FileOutputStream(CONFIG_FILE_NAME), "");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -61,7 +59,6 @@ public class Config {
 		try {
 			prop.store(new FileOutputStream(CONFIG_FILE_NAME), "");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -38,10 +38,7 @@ public class MarineUnit extends UnitAgent {
 	}
 
 	@Override
-	public State getInitState() {
-		// TODO d sync
-		// com.Sync.waitForBotEndsInit();
-		
+	public State getInitState() {		
 		this.waitForBotEndsInit();
 		
 		return new State(this, new DataMarine(com, unit));
@@ -56,9 +53,6 @@ public class MarineUnit extends UnitAgent {
 	public ArrayList<Integer> getNumValuesPerDims() {
 		return DataMarine.getNumValuesPerDims();
 	}
-
-	// TODO cont
-	int cont = 0;
 
 	@Override
 	public void onUnitKilled(Unit u) {
@@ -94,17 +88,6 @@ public class MarineUnit extends UnitAgent {
 
 	@Override
 	public void onFrame() {
-		// TODO Auto-generated method stub
-		/*
-		 * ArrayList<GenericAction> actionsToRegister =
-		 * com.ComData.actionQueue.getQueueAndFlush();
-		 * 
-		 * 
-		 * 
-		 * for (GenericAction action : actionsToRegister) {
-		 * action.registerOnUnitObserver(); onNewAction(action, (Object[])
-		 * null); }
-		 */
 		ArrayList<GenericAction> actionsToRegister = this.actionsToDispatch.getQueueAndFlush();
 
 		for (GenericAction action : actionsToRegister) {
@@ -120,17 +103,8 @@ public class MarineUnit extends UnitAgent {
 
 	private boolean endCondition;
 
-//	@Override
-//	public void notifyEnd(boolean tmp) {
-//		endCondition = tmp;
-//		// TODO d Notify
-//		signalEndCanBeChecked();
-//	}
-
 	@Override
 	public Boolean getOnFinalUpdated() {
-		// TODO d wait
-		//waitForEndCanBeChecked();
 		return endCondition;
 	}
 	

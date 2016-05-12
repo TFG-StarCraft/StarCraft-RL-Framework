@@ -125,9 +125,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 				if (!endFlag && !game.isPaused()) {
 					if (this.firstOnFrame) {
 						firstExecOnFrame();
-						// TODO d master onInitDone?
-						// TODO d sync
-						// com.Sync.signalInitIsDone();
 						master.signalInitIsDone();
 					} else {
 						// Check end, all agents will check end condition, and

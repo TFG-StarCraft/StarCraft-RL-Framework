@@ -178,13 +178,10 @@ public class ExecPanel extends JPanel implements ComObserver {
 
 					@Override
 					public void keyTyped(KeyEvent e) {
-						// TODO Auto-generated method stub
-
 					}
 
 					@Override
-					public void keyReleased(KeyEvent e) {
-						
+					public void keyReleased(KeyEvent e) {						
 					}
 
 					@Override
@@ -833,7 +830,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	@Override
 	public void onEndTrain() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -841,7 +837,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	@Override
 	public void onActionTaken() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -849,7 +844,6 @@ public class ExecPanel extends JPanel implements ComObserver {
 	 */
 	@Override
 	public void onActionFail() {
-		// TODO Auto-generated method stub
 	}
 
 }

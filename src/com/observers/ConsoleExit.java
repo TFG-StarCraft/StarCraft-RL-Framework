@@ -21,20 +21,14 @@ public class ConsoleExit implements ComObserver {
 
 	@Override
 	public void onEndTrain() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onActionTaken() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onActionFail() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -49,8 +43,6 @@ public class ConsoleExit implements ComObserver {
 
 	@Override
 	public void onFpsAverageAnnouncement(double fps) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -65,9 +57,7 @@ public class ConsoleExit implements ComObserver {
 	}
 
 	@Override
-	public void onFullQUpdate(JPanel panel) {
-		// TODO Auto-generated method stub
-		
+	public void onFullQUpdate(JPanel panel) {		
 	}
 
 }

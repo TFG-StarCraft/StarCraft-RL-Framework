@@ -42,7 +42,6 @@ public class QMap extends HashMap<Integer, QMap.Set> implements AbstractQFunctio
 	}
 
 	private int getHash(State S, Action A) {
-		// TODO correct?
 		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 

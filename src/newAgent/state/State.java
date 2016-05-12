@@ -42,21 +42,15 @@ public class State {
 	}
 
 	public boolean esAccionValida(Action a) {
-		// TODO unit
 		return a.toAction(com).isPossible();
 	}
 
 	public State executeAction(Action action) {
 		agent.enqueueAction(action);
-		// com.ComData.actionQueue.enqueueAction(action);
-		// TODO d sync ¿action.wait?
 		agent.waitForActionEnds();
-		// com.Sync.waitForActionEnds();
 
 		State SS = new State(agent, this.data.getNewStateData(), false);
 
-		// TODO d sync end
-		// SS.finalState = com.ComData.getOnFinalUpdated();
 		SS.finalState = agent.getOnFinalUpdated();
 		SS.reward = agent.getRewardUpdated();
 
@@ -75,7 +69,6 @@ public class State {
 	}
 
 	public int hashCode() {
-		// TODO Correct?
 		long r = 0;
 
 		ArrayList<Dimension<?>> a = data.getValues();

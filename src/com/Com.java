@@ -77,20 +77,14 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 
 	@Override
 	public void onEndTrain() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onActionTaken() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onActionFail() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onEvent(AbstractEvent abstractEvent) {

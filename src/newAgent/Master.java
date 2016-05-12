@@ -78,7 +78,6 @@ public class Master {
 
 	public void onStart() {
 		clearActionQueue();
-		// TODO resetFinal ¿done?
 		allAgents.clear();
 		agentsNotFinished.clear();
 		agentsFinished.clear();
@@ -102,8 +101,6 @@ public class Master {
 	Shared_LambdaQE shared;
 
 	public void onFirstFrame() {
-		// TODO d first frame master
-
 		if (shared == null)
 			shared = new Shared_LambdaQE(params, new AbstractEnvironment() {
 

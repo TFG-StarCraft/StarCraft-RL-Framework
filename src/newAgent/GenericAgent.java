@@ -60,7 +60,6 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	}
 
 	public void onEndIteration(int numRandomMoves, int i, double alpha, double epsilon, Double r) {
-		// TODO decisionMakerEndIteraction
 		com.onEndIteration(0, numRandomMoves, i, alpha, epsilon, r);
 	}
 
@@ -68,8 +67,6 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		this.currentAction = action;
 		this.onNewAction();
 	}
-
-	//public abstract void notifyEnd(boolean tmp);
 
 	public abstract boolean solveEventsAndCheckEnd();
 

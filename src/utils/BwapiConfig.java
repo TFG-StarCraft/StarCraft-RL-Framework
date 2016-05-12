@@ -31,7 +31,6 @@ public class BwapiConfig {
 			}
 			sc.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -44,7 +43,6 @@ public class BwapiConfig {
 			
 			pw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

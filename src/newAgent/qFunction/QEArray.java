@@ -32,7 +32,6 @@ public class QEArray implements AbstractQEFunction {
 	}
 
 	private int getHash(State S, Action A) {
-		// TODO correct?
 		return Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
 	}
 
