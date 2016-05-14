@@ -10,8 +10,8 @@ import bwapi.UnitType;
 
 public class DataMarine extends StateData {
 
-	private static final int MAX_LIFE_DISCRETE = 4;
-	private static final int MAX_DISTANCE_DISCRETE = 4;
+	private static final int MAX_LIFE_DISCRETE = 9;
+	private static final int MAX_DISTANCE_DISCRETE = 9;
 
 	// Classes extending Dimension
 	// To create a new dimension:
