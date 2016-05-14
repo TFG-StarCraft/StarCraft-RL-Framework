@@ -148,6 +148,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 								if (a != null) {
 									if (a.size() > 1) {
 										com.onSendMessage("NumOfObservers: " + a.size());
+										com.onError("NumOfObservers: " + a.size(), false);
 									}
 									int i = 0;
 									while (i < a.size()) {

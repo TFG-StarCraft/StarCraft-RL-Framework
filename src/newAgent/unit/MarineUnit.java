@@ -92,6 +92,7 @@ public class MarineUnit extends UnitAgent {
 		
 		if (actionsToRegister.size() > 1) {
 			System.err.println("More than 1 action to register");
+			com.onError("More than 1 action to register", false);
 		}
 
 		for (GenericAction action : actionsToRegister) {
