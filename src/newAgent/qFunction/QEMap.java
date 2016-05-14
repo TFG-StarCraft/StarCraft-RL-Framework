@@ -37,74 +37,12 @@ public class QEMap extends HashMap<Integer, AbstractQEFunction.Set> implements A
 
 	private int getHash(State S, Action A) {
 		int index = Long.hashCode(S.hashCode() + dimsSize * A.ordinal());
-		if (index > dimsSize * Action.values().length) {
-
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-			System.err.println(S.toString() + " " + S.getData().getValues() + " " + A.toString());
-		}
 		return index;
 	}
 
 	@Override
 	public double getQ(State S, Action A) {
 		Set set = this.get(getHash(S, A));
-		System.out.println(getHash(S, A));
 /*
 		if (set == null) {
 			set = new Set(Const.Q_GENERAL, 0, S, A);

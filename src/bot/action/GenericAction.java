@@ -2,13 +2,12 @@ package bot.action;
 
 import com.Com;
 
-import bot.observers.OnUnitObserver;
 import bwapi.Order;
 import bwapi.Unit;
 import newAgent.GenericAgent;
 import utils.DebugEnum;
 
-public abstract class GenericAction implements OnUnitObserver {
+public abstract class GenericAction {
 
 	protected Com com;
 
@@ -82,12 +81,12 @@ public abstract class GenericAction implements OnUnitObserver {
 		this.actionStarted = false;
 		this.specialStart = specialStart;
 		
-		agent.onNewAction(this);
+		//agent.onNewAction(this);
 	}
 
 	protected Order order;
 
-	@Override
+	//@Override
 	public void onUnit(Unit unit) {
 		if (unit.equals(this.unit)) {
 
@@ -123,7 +122,7 @@ public abstract class GenericAction implements OnUnitObserver {
 			this.actionStarted = true;
 		}
 	}
-
+/*
 	@Override
 	public Unit getUnitObserved() {
 		return this.unit;
@@ -138,7 +137,7 @@ public abstract class GenericAction implements OnUnitObserver {
 	public void unRegisterOnUnitObserver() {
 		this.com.bot.unRegisterOnUnitObserver(this);
 	}
-
+*/
 	/**
 	 * 
 	 * @return true if this action has been executing more than

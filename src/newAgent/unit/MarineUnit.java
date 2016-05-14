@@ -80,8 +80,8 @@ public class MarineUnit extends UnitAgent {
 	@Override
 	public void onEndAction(GenericAction genericAction, boolean correct) {
 		// TODO ASSERT PRE DEBUG
-//		if (genericAction != currentAction)
-//			com.onError("end action != current action", true);
+		if (genericAction != currentAction)
+			com.onError("end action != current action", true);
 
 		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, correct));
 	}
@@ -89,11 +89,18 @@ public class MarineUnit extends UnitAgent {
 	@Override
 	public void onFrame() {
 		ArrayList<GenericAction> actionsToRegister = this.actionsToDispatch.getQueueAndFlush();
+		
+		if (actionsToRegister.size() > 1) {
+			System.err.println("More than 1 action to register");
+		}
 
 		for (GenericAction action : actionsToRegister) {
-			action.registerOnUnitObserver();
+			// TODO only agents observe unit
+			// action.registerOnUnitObserver();
 			onNewAction(action);
 		}
+		if (this.currentAction != null)
+			this.currentAction.onUnit(this.unit);
 		
 		for (Unit u : CheckAround.getEnemyUnitsAround(unit)) {
 			if (!this.map.containsKey(u.getID()))
@@ -160,8 +167,10 @@ public class MarineUnit extends UnitAgent {
 
 				this.endCondition = event.isFinalEvent();
 
-				event.notifyEvent();
-				this.currentAction.unRegisterOnUnitObserver();
+				event.notifyEvent();			
+				// TODO only agents observe unit
+				// this.currentAction.unRegisterOnUnitObserver();
+				this.currentAction = null;
 
 				// Signal AFTER onEnd and reward are set
 				this.signalActionEnded();

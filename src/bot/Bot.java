@@ -136,28 +136,30 @@ public class Bot extends DefaultBWListener implements Runnable {
 					showFramesPerSecs();
 					updateGameSpeed();
 
-					if (!endFlag) {
-						// Register pending actions for every agent
-						master.onFrame();
-
-						// Call all unitsObserver for each unit
-						for (Unit rawUnit : self.getUnits()) {
-							ArrayList<OnUnitObserver> a = onUnitObservers.get(rawUnit.getID());
-
-							if (a != null) {
-								if (a.size() > 1) {
-									com.onSendMessage("NumOfActions: " + a.size());
-								}
-								int i = 0;
-								while (i < a.size()) {
-									int lastSize = a.size();
-									OnUnitObserver observer = a.get(i);
-									observer.onUnit(rawUnit);
-
-									if (lastSize == a.size())
-										i++;
-									// else en onUnit se llamo a borrar el
-									// observador
+					synchronized (this) {
+						if (!endFlag) {
+							// Register pending actions for every agent
+							master.onFrame();
+	
+							// Call all unitsObserver for each unit
+							for (Unit rawUnit : self.getUnits()) {
+								ArrayList<OnUnitObserver> a = onUnitObservers.get(rawUnit.getID());
+	
+								if (a != null) {
+									if (a.size() > 1) {
+										com.onSendMessage("NumOfObservers: " + a.size());
+									}
+									int i = 0;
+									while (i < a.size()) {
+										int lastSize = a.size();
+										OnUnitObserver observer = a.get(i);
+										observer.onUnit(rawUnit);
+	
+										if (lastSize == a.size())
+											i++;
+										// else en onUnit se llamo a borrar el
+										// observador
+									}
 								}
 							}
 						}
@@ -203,7 +205,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 	private boolean restartFlag;
 	
-	public void requestRestart() {
+	public synchronized void requestRestart() {
 		this.restartFlag = true;
 	}
 	
@@ -231,7 +233,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public void registerOnUnitObserver(OnUnitObserver obs) {
+	public synchronized void registerOnUnitObserver(OnUnitObserver obs) {
 		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
 			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
 			a.add(obs);
@@ -245,21 +247,22 @@ public class Bot extends DefaultBWListener implements Runnable {
 		}
 	}
 
-	public void unRegisterOnUnitObserver(OnUnitObserver obs) {
+	public synchronized void unRegisterOnUnitObserver(OnUnitObserver obs) {
 		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
 			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
-			a.remove(obs);
-
+			//a.remove(obs);
+			// TODO
+			a.clear();
 			onUnitObservers.put(obs.getUnitObserved().getID(), a);
 		}
 	}
 
-	public void registerUnitKilledObserver(UnitKilledObserver obs) {
+	public synchronized void registerUnitKilledObserver(UnitKilledObserver obs) {
 		if (!onUnitKilledObservers.contains(obs))
 			onUnitKilledObservers.add(obs);
 	}
 
-	public void unRegisterUnitKilledObserver(UnitKilledObserver obs) {
+	public synchronized void unRegisterUnitKilledObserver(UnitKilledObserver obs) {
 		if (onUnitKilledObservers.contains(obs))
 			onUnitKilledObservers.remove(obs);
 	}
