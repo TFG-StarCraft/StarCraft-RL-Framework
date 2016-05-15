@@ -87,8 +87,8 @@ public class Master {
 			try {
 				thread.join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
-				com.onError(e.getLocalizedMessage(), true);
+//				e.printStackTrace();
+//				com.onError(e.getLocalizedMessage(), true);
 			}
 		}
 
@@ -101,6 +101,7 @@ public class Master {
 	Shared_LambdaQE shared;
 
 	public void onFirstFrame() {
+		halt = false;
 		if (shared == null)
 			shared = new Shared_LambdaQE(params, new AbstractEnvironment() {
 
@@ -149,17 +150,27 @@ public class Master {
 			t.start();
 			threads.add(t);
 		}
+	}	
+
+	private boolean halt;
+	
+	public synchronized void onTimeOut() {
+		if (!halt) {
+			halt = true;
+			for (GenericAgent genericAgent : agentsNotFinished) {
+				genericAgent.onTimeOut();
+			}
+			for (Thread thread : threads) {
+				thread.interrupt();
+			}
+			com.onDebugMessage("Time out", DebugEnum.TIME_OUT);
+			com.bot.requestRestart();
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// SYNC ///////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
-
-	// public void signalGameIsReady() {
-	// for (GenericAgent genericAgent : agentsNotFinished) {
-	// genericAgent.signalGameIsReady();
-	// }
-	// }
 
 	public void signalInitIsDone() {
 		for (GenericAgent genericAgent : agentsNotFinished) {
@@ -168,7 +179,7 @@ public class Master {
 	}
 
 	public boolean shouldUpdateQE(GenericAgent genericAgent) {
-		return genericAgent == allAgents.get(learningAgent);
+		return !halt && genericAgent == allAgents.get(learningAgent);
 	}
 
 }

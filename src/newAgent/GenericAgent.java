@@ -72,6 +72,10 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 
 	public abstract void onFrame();
 
+	public void onTimeOut() {
+		decisionMaker.timeOut();
+	}
+	
 	public abstract void onNewAction();
 
 	public abstract void onEndAction(GenericAction genericAction, boolean correct);
@@ -168,13 +172,12 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 		try {
 			this.safeNotify.safeWait();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-			com.onError(e.getLocalizedMessage(), true);
+//			e.printStackTrace();
+//			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
 
 	public boolean shouldUpdateQE() {
 		return master.shouldUpdateQE(this);
 	}
-
 }

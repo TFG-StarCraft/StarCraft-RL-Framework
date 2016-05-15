@@ -23,5 +23,6 @@ public abstract class GenericDecisionMaker implements Runnable {
 	}
 */
 	public abstract void run();
+	public abstract void timeOut();
 
 }

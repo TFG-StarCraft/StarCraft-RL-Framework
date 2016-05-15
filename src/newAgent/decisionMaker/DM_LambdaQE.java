@@ -39,12 +39,14 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 
 		Double R = 0.0;
 		
-		while (!S.isFinalState()) {
+		while (!S.isFinalState() && !isHalted()) {
 			Action AA, AStar;
 			double delta;
 
 			// Blocks until action A ends
 			State SS = S.executeAction(A);
+			if (isHalted()) 
+				return;
 
 			R = SS.getReward();
 			com.onDebugMessage(R.toString(), utils.DebugEnum.REWARD);
@@ -59,11 +61,23 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 			S = SS;
 			A = AA;
 		}
-
+		if (isHalted()) 
+			return;
 		// Params update done in master		
 		agent.onEndIteration(numRandomMoves, shared.get_i(), shared.getAlpha(), shared.getEpsilon(), R);
 	}
+	
+	private boolean halt = false;
+	
+	public synchronized boolean isHalted() {
+		return halt;
+	}
 
+	@Override
+	public synchronized void timeOut() {
+		this.halt = true;
+	}
+	
 	public Action nextOptimalAction(State S) {
 		double q = Double.NEGATIVE_INFINITY;
 		double qq;

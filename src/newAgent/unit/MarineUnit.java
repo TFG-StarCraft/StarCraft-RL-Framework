@@ -22,6 +22,8 @@ import newAgent.state.State;
 
 public class MarineUnit extends UnitAgent {
 
+	private static final int TIMEOUT = 1500;
+	
 	private HashMap<Integer, Unit> map;
 	
 	public MarineUnit(Master master, Unit unit, Com com, Bot bot, Shared_LambdaQE shared) {
@@ -29,6 +31,7 @@ public class MarineUnit extends UnitAgent {
 
 		this.map = new HashMap<>();
 		
+		this.frameCount = 0;
 		this.decisionMaker = new DM_LambdaQE(this, shared);
 	}
 
@@ -86,13 +89,20 @@ public class MarineUnit extends UnitAgent {
 		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, correct));
 	}
 
+	private int frameCount;
+	
 	@Override
 	public void onFrame() {
+		if (frameCount >= TIMEOUT) {
+			master.onTimeOut();
+			return;
+		}
+		
+		frameCount++;
 		ArrayList<GenericAction> actionsToRegister = this.actionsToDispatch.getQueueAndFlush();
 		
 		if (actionsToRegister.size() > 1) {
 			System.err.println("More than 1 action to register");
-			com.onError("More than 1 action to register", false);
 		}
 
 		for (GenericAction action : actionsToRegister) {
