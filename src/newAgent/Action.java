@@ -10,7 +10,8 @@ import bot.action.singleUnit.movement.*;
 import bot.action.singleUnit.movement.relative.*;
 import bot.action.singleUnit.movement.relative.relativeToGroup.*;
 import bwapi.Unit;
-import newAgent.unit.UnitAgent;
+import newAgent.agent.GenericAgent;
+import newAgent.agent.unit.UnitAgent;
 import utils.Config;
 
 /**

@@ -6,7 +6,7 @@ import bot.action.GenericAction;
 import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 import utils.DebugEnum;
 
 /**

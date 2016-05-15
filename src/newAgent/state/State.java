@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.Com;
 
 import newAgent.Action;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 public class State {
 

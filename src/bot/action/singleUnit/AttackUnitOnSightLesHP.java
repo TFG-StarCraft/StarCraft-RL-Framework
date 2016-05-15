@@ -8,7 +8,7 @@ import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
 import bwapi.Order;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 public class AttackUnitOnSightLesHP extends GenericAction {
 

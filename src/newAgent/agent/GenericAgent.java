@@ -1,4 +1,4 @@
-package newAgent;
+package newAgent.agent;
 
 import java.util.ArrayList;
 
@@ -7,16 +7,16 @@ import com.Com;
 import bot.Bot;
 import bot.action.ActionDispatchQueue;
 import bot.action.GenericAction;
-import bot.observers.OnUnitObserver;
-import bot.observers.UnitKilledObserver;
-import bwapi.Unit;
+import newAgent.AbstractEnvironment;
+import newAgent.Action;
+import newAgent.Master;
 import newAgent.decisionMaker.GenericDecisionMaker;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AbstractEventsFactory;
 import utils.DebugEnum;
 import utils.SafeNotify;
 
-public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver, AbstractEnvironment, Runnable {
+public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 
 	protected Com com;
 	protected Bot bot;
@@ -24,16 +24,14 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	protected SafeNotify safeNotify;
 
 	protected GenericDecisionMaker decisionMaker;
-	protected Unit unit;
 	protected GenericAction currentAction;
 
 	protected AbstractEventsFactory factory;
 	protected ActionDispatchQueue actionsToDispatch;
 	protected ArrayList<AbstractEvent> events;
 
-	public GenericAgent(Master master, Unit unit, Com com, Bot bot) {
+	public GenericAgent(Master master, Com com, Bot bot) {
 		this.master = master;
-		this.unit = unit;
 		this.com = com;
 		this.bot = bot;
 		this.safeNotify = new SafeNotify();
@@ -48,6 +46,9 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	public void run() {
 		this.decisionMaker.run();
 	}
+
+	public abstract void onFirstFrame();
+	public abstract void onFinish();
 	
 	protected abstract void setUpFactory();
 
@@ -81,50 +82,6 @@ public abstract class GenericAgent implements OnUnitObserver, UnitKilledObserver
 	public abstract void onEndAction(GenericAction genericAction, boolean correct);
 
 	public abstract double getRewardUpdated();
-
-	////////////////////
-	// onUnitObserver //
-	////////////////////
-
-	@Override
-	public abstract void onUnit(Unit unit);
-
-	@Override
-	public Unit getUnitObserved() {
-		// TODO Auto-generated method stub
-		return unit;
-	}
-
-	@Override
-	public void registerOnUnitObserver() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void unRegisterOnUnitObserver() {
-		// TODO Auto-generated method stub
-
-	}
-
-	////////////////////////
-	// unitKilledObserver //
-	////////////////////////
-
-	@Override
-	public abstract void onUnitKilled(Unit unit);
-
-	@Override
-	public void registerUnitKilledObserver() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void unRegisterUnitKilledObserver() {
-		// TODO Auto-generated method stub
-
-	}
 
 	////////////
 	// Events //

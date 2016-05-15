@@ -6,7 +6,7 @@ import com.Com;
 
 import bot.Bot;
 import newAgent.Action;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 import newAgent.state.State;
 
 public class DM_LambdaQE extends GenericDecisionMaker {

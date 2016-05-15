@@ -4,7 +4,7 @@ import com.Com;
 
 import bwapi.Order;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 import utils.DebugEnum;
 
 public abstract class GenericAction {

@@ -2,7 +2,7 @@ package newAgent.decisionMaker;
 
 import newAgent.AbstractEnvironment;
 import newAgent.Action;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 import newAgent.qFunction.AbstractQEFunction;
 import newAgent.qFunction.QEMap;
 import newAgent.state.State;

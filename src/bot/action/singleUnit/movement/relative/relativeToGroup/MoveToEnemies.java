@@ -7,7 +7,7 @@ import com.Com;
 import bot.action.singleUnit.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 /**
  * Movement. Approaching to a target unit.

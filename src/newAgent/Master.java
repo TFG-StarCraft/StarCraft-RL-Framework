@@ -6,11 +6,12 @@ import com.Com;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import newAgent.agent.GenericAgent;
+import newAgent.agent.unit.MarineUnit;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.decisionMaker.Shared_LambdaQE;
 import newAgent.state.DataMarine;
 import newAgent.state.State;
-import newAgent.unit.MarineUnit;
 import utils.DebugEnum;
 
 public class Master {
@@ -50,7 +51,7 @@ public class Master {
 			if (agentsNotFinished.get(i).solveEventsAndCheckEnd()) {
 				a = agentsNotFinished.remove(i);
 				agentsFinished.add(a);
-				com.bot.unRegisterUnitKilledObserver(a);
+				a.onFinish();
 			} else {
 				i++;
 			}
@@ -145,7 +146,7 @@ public class Master {
 		shared.getQE().resetE();
 
 		for (GenericAgent genericAgent : agentsNotFinished) {
-			com.bot.registerUnitKilledObserver(genericAgent);
+			genericAgent.onFirstFrame();
 			Thread t = new Thread(genericAgent);
 			t.start();
 			threads.add(t);

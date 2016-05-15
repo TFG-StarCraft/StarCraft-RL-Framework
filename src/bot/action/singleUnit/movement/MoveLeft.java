@@ -3,7 +3,7 @@ package bot.action.singleUnit.movement;
 import com.Com;
 
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 /**
  * Movement. Move left.

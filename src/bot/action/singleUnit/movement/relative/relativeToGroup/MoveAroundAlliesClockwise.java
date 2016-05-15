@@ -8,7 +8,7 @@ import bot.action.singleUnit.movement.MoveAction;
 import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 public class MoveAroundAlliesClockwise extends MoveAction implements ClokwiseMove {
 

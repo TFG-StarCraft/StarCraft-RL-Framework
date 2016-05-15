@@ -4,7 +4,7 @@ import com.Com;
 
 import bot.action.singleUnit.movement.MoveAction;
 import bwapi.Unit;
-import newAgent.GenericAgent;
+import newAgent.agent.GenericAgent;
 
 public abstract class RelativeMove extends MoveAction {
 
