@@ -15,7 +15,7 @@ import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
-import newAgent.Master;
+import newAgent.master.GenericMaster;
 import utils.DebugEnum;
 
 public class Bot extends DefaultBWListener implements Runnable {
@@ -40,13 +40,13 @@ public class Bot extends DefaultBWListener implements Runnable {
 	private HashMap<Integer, ArrayList<OnUnitObserver>> onUnitObservers;
 	private ArrayList<UnitKilledObserver> onUnitKilledObservers;
 	
-	private Master master;
+	private GenericMaster master;
 
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	public Bot(Com com, Master master) {
+	public Bot(Com com, GenericMaster master) {
 		this.com = com;
 		this.master = master;
 		this.mirror = new Mirror();

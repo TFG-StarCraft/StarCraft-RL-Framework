@@ -9,10 +9,10 @@ import bot.action.ActionDispatchQueue;
 import bot.action.GenericAction;
 import newAgent.AbstractEnvironment;
 import newAgent.Action;
-import newAgent.Master;
 import newAgent.decisionMaker.GenericDecisionMaker;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AbstractEventsFactory;
+import newAgent.master.GenericMaster;
 import utils.DebugEnum;
 import utils.SafeNotify;
 
@@ -20,7 +20,7 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 
 	protected Com com;
 	protected Bot bot;
-	protected Master master;
+	protected GenericMaster master;
 	protected SafeNotify safeNotify;
 
 	protected GenericDecisionMaker decisionMaker;
@@ -30,7 +30,7 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 	protected ActionDispatchQueue actionsToDispatch;
 	protected ArrayList<AbstractEvent> events;
 
-	public GenericAgent(Master master, Com com, Bot bot) {
+	public GenericAgent(GenericMaster master, Com com, Bot bot) {
 		this.master = master;
 		this.com = com;
 		this.bot = bot;

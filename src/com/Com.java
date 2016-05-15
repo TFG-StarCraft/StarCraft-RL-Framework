@@ -10,15 +10,13 @@ import com.observers.BotOberver;
 import com.observers.ComObserver;
 
 import bot.Bot;
-import newAgent.Master;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.event.AbstractEvent;
+import newAgent.master.GenericMaster;
+import newAgent.master.MarineMaster;
 import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {
-
-	//public ComData ComData;
-	//public Sync Sync;
 
 	private ArrayList<ComObserver> observers;
 
@@ -49,13 +47,13 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	}
 	
 	public Bot bot;
-	public Master master;
+	public GenericMaster master;
 
 	@Override
 	public void run() {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
-		master = new Master(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda));
+		master = new MarineMaster(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda));
 		
 		bot = new Bot(this, master);
 		bot.frameSpeed = startSpeed;

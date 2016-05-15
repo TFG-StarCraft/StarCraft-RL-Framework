@@ -6,12 +6,12 @@ import bot.Bot;
 import bot.observers.OnUnitObserver;
 import bot.observers.UnitKilledObserver;
 import bwapi.Unit;
-import newAgent.Master;
 import newAgent.agent.GenericAgent;
+import newAgent.master.GenericMaster;
 
 public abstract class UnitAgent extends GenericAgent implements OnUnitObserver, UnitKilledObserver {
 		
-	public UnitAgent(Master master, Unit unit, Com com, Bot bot) {
+	public UnitAgent(GenericMaster master, Unit unit, Com com, Bot bot) {
 		super(master, com, bot);
 		this.unit = unit;
 	}
