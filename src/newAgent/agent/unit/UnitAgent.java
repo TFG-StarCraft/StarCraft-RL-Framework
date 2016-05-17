@@ -21,10 +21,6 @@ public abstract class UnitAgent extends GenericAgent {
 	// onUnitObserver //
 	////////////////////
 
-	public void onUnit(Unit unit) {
-		currentAction.onUnit(unit);
-	}
-	
 	public Unit getUnitObserved() {
 		return unit;
 	}

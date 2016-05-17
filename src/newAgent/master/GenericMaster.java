@@ -22,8 +22,7 @@ public abstract class GenericMaster {
 
 	protected DecisionMakerPrams params;
 	protected Shared_LambdaQE shared;
-
-	protected int numAgents;
+	
 	protected int learningAgent;
 	protected boolean halted;
 	
@@ -35,7 +34,6 @@ public abstract class GenericMaster {
 		this.params = params;
 		this.com = com;
 
-		this.numAgents = -1;
 		this.learningAgent = 0;
 	}
 

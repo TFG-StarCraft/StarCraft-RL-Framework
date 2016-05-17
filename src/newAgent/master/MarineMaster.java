@@ -8,7 +8,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import newAgent.AbstractEnvironment;
 import newAgent.agent.GenericAgent;
-import newAgent.agent.unit.MarineUnit;
+import newAgent.agent.unit.MarineUnitAgent;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.decisionMaker.Shared_LambdaQE;
 import newAgent.state.DataMarine;
@@ -17,8 +17,11 @@ import utils.DebugEnum;
 
 public class MarineMaster extends GenericMaster {
 
+	protected int numAgents;
+	
 	public MarineMaster(Com com, DecisionMakerPrams params) {
 		super(com, params);
+		this.numAgents = -1;
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class MarineMaster extends GenericMaster {
 
 		for (Unit unit : com.bot.self.getUnits()) {
 			if (unit.getType() == UnitType.Terran_Marine) {
-				GenericAgent a = new MarineUnit(this, unit, com, com.bot, shared);
+				GenericAgent a = new MarineUnitAgent(this, unit, com, com.bot, shared);
 				this.agentsNotFinished.add(a);
 				this.allAgents.add(a);
 			}
