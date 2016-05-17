@@ -25,6 +25,12 @@ public class MarineUnit extends UnitAgent {
 	private static final int TIMEOUT = 1500;
 	
 	private HashMap<Integer, Unit> map;
+	private double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
+
+	private int frameCount;
+	
+	private boolean endCondition;
+	private double nextReward;
 	
 	public MarineUnit(GenericMaster master, Unit unit, Com com, Bot bot, Shared_LambdaQE shared) {
 		super(master, unit, com, bot);
@@ -34,6 +40,10 @@ public class MarineUnit extends UnitAgent {
 		this.frameCount = 0;
 		this.decisionMaker = new DM_LambdaQE(this, shared);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// ENVIRONMENT ////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 	@Override
 	protected void setUpFactory() {
@@ -57,39 +67,9 @@ public class MarineUnit extends UnitAgent {
 		return DataMarine.getNumValuesPerDims();
 	}
 
-	@Override
-	public void onUnitDestroy(Unit u) {
-		if (this.unit.getID() == u.getID()) {
-			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
-		} else {
-			if (this.map.containsKey(u.getID())) {
-				this.map.remove(u.getID());
-				if (this.map.size() == 0)
-					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL_ALL));
-				else
-					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
-			}
-		}
-	}
-
-	private double iniMyHP, iniEnemyHP, endMyHP, endEnemyHP;
-
-	@Override
-	public void onNewAction() {
-		iniMyHP = unit.getHitPoints();
-		iniEnemyHP = HP.getHPOfEnemiesAround(unit);
-	}
-
-	@Override
-	public void onEndAction(GenericAction genericAction, boolean correct) {
-		// TODO ASSERT PRE DEBUG
-		if (genericAction != currentAction)
-			com.onError("end action != current action", true);
-
-		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, correct));
-	}
-
-	private int frameCount;
+	///////////////////////////////////////////////////////////////////////////
+	// BWAPI //////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	
 	@Override
 	public void onFrame() {
@@ -106,10 +86,9 @@ public class MarineUnit extends UnitAgent {
 		}
 
 		for (GenericAction action : actionsToRegister) {
-			// TODO only agents observe unit
-			// action.registerOnUnitObserver();
 			onNewAction(action);
 		}
+		
 		if (this.currentAction != null)
 			this.currentAction.onUnit(this.unit);
 		
@@ -118,21 +97,45 @@ public class MarineUnit extends UnitAgent {
 				this.map.put(u.getID(), u);
 		}
 	}
-
-	private boolean endCondition;
-
-	@Override
-	public Boolean getOnFinalUpdated() {
-		return endCondition;
-	}
 	
-	private double nextReward;
-
 	@Override
-	public double getRewardUpdated() {
-		return nextReward;
+	public void onUnitDestroy(Unit u) {
+		if (this.unit.getID() == u.getID()) {
+			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
+		} else {
+			if (this.map.containsKey(u.getID())) {
+				this.map.remove(u.getID());
+				if (this.map.size() == 0)
+					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL_ALL));
+				else
+					addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILL));
+			}
+		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// ACTIONS ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
+	@Override
+	public void onNewAction() {
+		iniMyHP = unit.getHitPoints();
+		iniEnemyHP = HP.getHPOfEnemiesAround(unit);
+	}
+
+	@Override
+	public void onEndAction(GenericAction genericAction, boolean correct) {
+		// TODO ASSERT PRE DEBUG
+		if (genericAction != currentAction)
+			com.onError("end action != current action", true);
+
+		addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEFAULT_ACTION, genericAction, correct));
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// EVENTS /////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	public boolean solveEventsAndCheckEnd() {
 		// Three possible scenarios:
@@ -193,9 +196,14 @@ public class MarineUnit extends UnitAgent {
 		this.events.clear();
 		return isFinal;
 	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// SYNC ///////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
-
+	
+	@Override
+	public Boolean getOnFinalUpdated() {
+		return endCondition;
+	}
+	
+	@Override
+	public double getRewardUpdated() {
+		return nextReward;
+	}
 }

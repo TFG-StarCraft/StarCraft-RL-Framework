@@ -43,16 +43,33 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 		setUpFactory();
 	}
 
-	@Override
-	public void run() {
-		this.decisionMaker.run();
-	}
+	///////////////////////////////////////////////////////////////////////////
+	// ABSTRACT ///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
-	public abstract void onFirstFrame();
-	public abstract void onFinish();
-	
 	protected abstract void setUpFactory();
+	// BWAPI
+	public abstract void onFirstFrame();
+	public abstract void onFrame();	
+	public abstract void onUnitDestroy(Unit u);	
+	public abstract void onFinish();
+	// Actions
+	protected abstract void onNewAction();
+	public abstract void onEndAction(GenericAction genericAction, boolean correct);
+	// Events / reward
+	public abstract boolean solveEventsAndCheckEnd();
+	public abstract double getRewardUpdated();
+	public abstract Boolean getOnFinalUpdated();
 
+	///////////////////////////////////////////////////////////////////////////
+	// ACTIONS ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	
+	public void onNewAction(GenericAction action) {
+		this.currentAction = action;
+		this.onNewAction();
+	}
+	
 	public void clearActionQueue() {
 		this.actionsToDispatch.clear();
 	}
@@ -65,47 +82,20 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 		com.onEndIteration(0, numRandomMoves, i, alpha, epsilon, r);
 	}
 
-	public void onNewAction(GenericAction action) {
-		this.currentAction = action;
-		this.onNewAction();
-	}
-
-	public abstract boolean solveEventsAndCheckEnd();
-
-	public abstract void onFrame(); 
-	
-	public abstract void onUnitDestroy(Unit u);
-
 	public void onTimeOut() {
 		decisionMaker.timeOut();
 	}
 	
-	public abstract void onNewAction();
-
-	public abstract void onEndAction(GenericAction genericAction, boolean correct);
-
-	public abstract double getRewardUpdated();
-
-	////////////
-	// Events //
-	////////////
+	///////////////////////////////////////////////////////////////////////////
+	// EVENTS /////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 	protected void addEvent(AbstractEvent event) {
 		com.onDebugMessage("EVENT from" + this.getClass().getName() + ", " + this.toString() + " at " + bot.frames,
 				DebugEnum.EVENT_AT_FRAME);
 		this.events.add(event);
 	}
-
-	public Com getCom() {
-		return com;
-	}
-
-	public Bot getBot() {
-		return bot;
-	}
-
-	public abstract Boolean getOnFinalUpdated();
-
+	
 	///////////////////////////////////////////////////////////////////////////
 	// SYNC ///////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -136,9 +126,27 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 //			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 	public boolean shouldUpdateQE() {
 		return master.shouldUpdateQE(this);
+	}
+	
+	
+	public Com getCom() {
+		return com;
+	}
+
+	public Bot getBot() {
+		return bot;
+	}
+	
+	@Override
+	public void run() {
+		this.decisionMaker.run();
 	}
 
 }
