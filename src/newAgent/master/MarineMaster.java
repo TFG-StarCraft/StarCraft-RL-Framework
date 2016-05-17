@@ -72,7 +72,6 @@ public class MarineMaster extends GenericMaster {
 			t.start();
 			threads.add(t);
 		}
-	}	
-
-
+	}
+	
 }

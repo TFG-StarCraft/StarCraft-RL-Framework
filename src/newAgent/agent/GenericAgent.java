@@ -7,6 +7,7 @@ import com.Com;
 import bot.Bot;
 import bot.action.ActionDispatchQueue;
 import bot.action.GenericAction;
+import bwapi.Unit;
 import newAgent.AbstractEnvironment;
 import newAgent.Action;
 import newAgent.decisionMaker.GenericDecisionMaker;
@@ -71,7 +72,9 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 
 	public abstract boolean solveEventsAndCheckEnd();
 
-	public abstract void onFrame();
+	public abstract void onFrame(); 
+	
+	public abstract void onUnitDestroy(Unit u);
 
 	public void onTimeOut() {
 		decisionMaker.timeOut();
@@ -137,4 +140,5 @@ public abstract class GenericAgent implements AbstractEnvironment, Runnable {
 	public boolean shouldUpdateQE() {
 		return master.shouldUpdateQE(this);
 	}
+
 }

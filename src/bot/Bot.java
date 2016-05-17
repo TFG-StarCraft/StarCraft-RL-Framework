@@ -1,12 +1,7 @@
 package bot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.Com;
 
-import bot.observers.OnUnitObserver;
-import bot.observers.UnitKilledObserver;
 import bwapi.Color;
 import bwapi.DefaultBWListener;
 import bwapi.Game;
@@ -28,6 +23,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 	private boolean firstOnStart;
 	private boolean firstOnFrame;
+	private boolean restartFlag;
 	private boolean restarting;
 	private boolean endFlag;
 
@@ -35,10 +31,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 	public long frames;
 	public int frameSpeed;
 	private int lastFrameSpeed;
-
-	// Maps units (with its unique id) to an arrayList of observers
-	private HashMap<Integer, ArrayList<OnUnitObserver>> onUnitObservers;
-	private ArrayList<UnitKilledObserver> onUnitKilledObservers;
+	private int initFrame = 0;
 	
 	private GenericMaster master;
 
@@ -55,9 +48,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 		this.frameSpeed = 0;
 		this.lastFrameSpeed = frameSpeed;
-
-		this.onUnitObservers = new HashMap<>();
-		this.onUnitKilledObservers = new ArrayList<>();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -67,6 +57,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 	@Override
 	public void onStart() {
 		try {
+			this.lastTime = System.currentTimeMillis();
+			this.lastFrames = -1;
+		
 			this.initFrame = 0;
 			// onStart is also called after re-start
 			this.game = mirror.getGame();
@@ -82,9 +75,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 			//com.ComData.actionQueue.clear();
 			this.master.onStart();			
-
-			this.onUnitObservers.clear();
-			this.onUnitKilledObservers.clear();
 
 			if (firstOnStart) { // Only enters the very first execution
 								// (restarts wont enter here)
@@ -104,8 +94,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 			com.onError(e.getLocalizedMessage(), true);
 		}
 	}
-
-	private int initFrame = 0;
 	
 	@Override
 	public void onFrame() {
@@ -139,31 +127,7 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 					synchronized (this) {
 						if (!endFlag) {
-							// Register pending actions for every agent
 							master.onFrame();
-	
-							// Call all unitsObserver for each unit
-							for (Unit rawUnit : self.getUnits()) {
-								ArrayList<OnUnitObserver> a = onUnitObservers.get(rawUnit.getID());
-	
-								if (a != null) {
-									if (a.size() > 1) {
-										com.onSendMessage("NumOfObservers: " + a.size());
-										com.onError("NumOfObservers: " + a.size(), false);
-									}
-									int i = 0;
-									while (i < a.size()) {
-										int lastSize = a.size();
-										OnUnitObserver observer = a.get(i);
-										observer.onUnit(rawUnit);
-	
-										if (lastSize == a.size())
-											i++;
-										// else en onUnit se llamo a borrar el
-										// observador
-									}
-								}
-							}
 						}
 					}
 				}
@@ -183,11 +147,9 @@ public class Bot extends DefaultBWListener implements Runnable {
 		try {
 			com.onDebugMessage("DESTROY " + unit.getType().toString() + " id " + unit.getID() + "at frame " + frames,
 					DebugEnum.ON_UNIT_DESTROY);
-
-			for (UnitKilledObserver unitKilledObserver : onUnitKilledObservers) {
-				unitKilledObserver.onUnitKilled(unit);
-			}
-
+			
+			master.onUnitDestroy(unit);
+			
 			super.onUnitDestroy(unit);
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -204,8 +166,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 		this.master.onFirstFrame();
 		this.firstOnFrame = false;
 	}
-
-	private boolean restartFlag;
 	
 	public synchronized void requestRestart() {
 		this.restartFlag = true;
@@ -229,44 +189,6 @@ public class Bot extends DefaultBWListener implements Runnable {
 
 	private boolean shouldExecuteOnFrame() {
 		return !game.isReplay() && !isRestarting();
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
-
-	public synchronized void registerOnUnitObserver(OnUnitObserver obs) {
-		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
-			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
-			a.add(obs);
-
-			onUnitObservers.put(obs.getUnitObserved().getID(), a);
-		} else {
-			ArrayList<OnUnitObserver> a = new ArrayList<>();
-			a.add(obs);
-
-			onUnitObservers.put(obs.getUnitObserved().getID(), a);
-		}
-	}
-
-	public synchronized void unRegisterOnUnitObserver(OnUnitObserver obs) {
-		if (onUnitObservers.containsKey(obs.getUnitObserved().getID())) {
-			ArrayList<OnUnitObserver> a = onUnitObservers.get(obs.getUnitObserved().getID());
-			//a.remove(obs);
-			// TODO
-			a.clear();
-			onUnitObservers.put(obs.getUnitObserved().getID(), a);
-		}
-	}
-
-	public synchronized void registerUnitKilledObserver(UnitKilledObserver obs) {
-		if (!onUnitKilledObservers.contains(obs))
-			onUnitKilledObservers.add(obs);
-	}
-
-	public synchronized void unRegisterUnitKilledObserver(UnitKilledObserver obs) {
-		if (onUnitKilledObservers.contains(obs))
-			onUnitKilledObservers.remove(obs);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////

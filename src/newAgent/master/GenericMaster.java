@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.Com;
 
+import bwapi.Unit;
 import newAgent.agent.GenericAgent;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.decisionMaker.Shared_LambdaQE;
@@ -61,6 +62,12 @@ public abstract class GenericMaster {
 	}
 
 	public abstract void onFirstFrame();
+	
+	public void onUnitDestroy(Unit u) {
+		for (GenericAgent genericAgent : agentsNotFinished) {
+			genericAgent.onUnitDestroy(u);
+		}
+	}
 
 	public void onFrame() {
 		for (GenericAgent genericAgent : agentsNotFinished) {
