@@ -22,7 +22,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 	/**
 	 * Expeted args: none
 	 */
-	public static final int CODE_KILLED = 4;
+	public static final int CODE_DEAD = 4;
 
 	private Com com;
 
@@ -106,7 +106,7 @@ public class AEFDestruirUnidad extends AbstractEventsFactory {
 					return true;
 				}
 			};
-		case CODE_KILLED:
+		case CODE_DEAD:
 			if (args.length != 0) {
 				throw new IllegalArgumentException();
 			}

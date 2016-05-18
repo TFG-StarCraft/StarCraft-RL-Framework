@@ -66,7 +66,7 @@ public class GroupMaster extends GenericMaster {
 			}
 			
 			for (Entry<Integer, List<Unit>> entry : groups.entrySet()) {
-				GenericAgent a = new MarineGroupAgent(this, com, com.bot, entry.getValue());
+				GenericAgent a = new MarineGroupAgent(this, com, com.bot, entry.getValue(), entry.getKey());
 				this.agentsNotFinished.add(a);
 				this.allAgents.add(a);
 			}

@@ -18,15 +18,15 @@ public class AEFGroup extends AbstractEventsFactory {
 	/**
 	 * Expeted args: args[0] : numOfGroup
 	 */
-	public static final int CODE_KILL_ALL = 3;
+	public static final int CODE_KILL_ALL = 4;
 	/**
 	 * Expeted args: args[0] : numOfGroup
 	 */
-	public static final int CODE_KILLED = 4;
+	public static final int CODE_DEAD = 3;
 	/**
 	 * Expeted args: args[0] : numOfGroup
 	 */
-	public static final int CODE_KILLED_ALL = 5;
+	public static final int CODE_DEAD_ALL = 5;
 
 	private Com com;
 
@@ -117,7 +117,7 @@ public class AEFGroup extends AbstractEventsFactory {
 					return true;
 				}
 			};
-		case CODE_KILLED:
+		case CODE_DEAD:
 			if (args.length != 1) {
 				throw new IllegalArgumentException();
 			}
@@ -194,7 +194,7 @@ public class AEFGroup extends AbstractEventsFactory {
 					return true;
 				}
 			};
-			case CODE_KILLED_ALL:
+			case CODE_DEAD_ALL:
 				if (args.length != 1) {
 					throw new IllegalArgumentException();
 				}

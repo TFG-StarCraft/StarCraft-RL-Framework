@@ -101,7 +101,7 @@ public class MarineUnitAgent extends UnitAgent {
 	@Override
 	public void onUnitDestroy(Unit u) {
 		if (this.unit.getID() == u.getID()) {
-			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_KILLED));
+			addEvent(factory.newAbstractEvent(AEFDestruirUnidad.CODE_DEAD));
 		} else {
 			if (this.map.containsKey(u.getID())) {
 				this.map.remove(u.getID());

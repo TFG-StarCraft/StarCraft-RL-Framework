@@ -500,7 +500,7 @@ public class ExecPanel extends JPanel implements ComObserver {
 				this.kills++;
 				this.lblKills.setText(Integer.toString(kills));
 				break;
-			case AEFDestruirUnidad.CODE_KILLED:
+			case AEFDestruirUnidad.CODE_DEAD:
 				tabGraphKills.update(0);
 				this.deaths++;
 				this.lblDeaths.setText(Integer.toString(deaths));
