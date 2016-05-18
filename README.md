@@ -8,6 +8,8 @@
 
 [JMathPlot] (https://github.com/yannrichet/jmathplot)
 
+[Weka (clustering)] (http://www.cs.waikato.ac.nz/ml/weka/)
+
 [JavaNativeAccess] (https://github.com/java-native-access/jna)
 
 ## Configuración del entorno x86

@@ -2,7 +2,7 @@ package bot.action.singleUnit.movement;
 
 import com.Com;
 
-import bot.action.GenericAction;
+import bot.action.singleUnit.GenericUnitAction;
 import bwapi.Order;
 import bwapi.Position;
 import bwapi.Unit;
@@ -16,7 +16,7 @@ import utils.DebugEnum;
  * @author Raúl Martín Guadaño
  * @author Miguel Ascanio Gómez
  */
-public abstract class MoveAction extends GenericAction {
+public abstract class MoveAction extends GenericUnitAction {
 	/** Initial pos of the unit. */
 	protected int iniX, iniY;
 	/** Target pos of the unit. */

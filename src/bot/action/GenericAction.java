@@ -3,7 +3,6 @@ package bot.action;
 import com.Com;
 
 import bwapi.Order;
-import bwapi.Unit;
 import newAgent.agent.GenericAgent;
 import utils.DebugEnum;
 
@@ -12,7 +11,6 @@ public abstract class GenericAction {
 	protected Com com;
 
 	// Unit that is executing the action
-	protected final Unit unit;
 	protected final GenericAgent agent;
 
 	// Frame num were the action should have finished, reaching this frame
@@ -23,7 +21,10 @@ public abstract class GenericAction {
 	protected long maxFramesOfExecuting;
 
 	protected boolean actionStarted;
-
+	
+	// Current BWAPI order
+	protected Order order;
+	
 	final protected boolean specialStart;
 
 	/**
@@ -72,43 +73,17 @@ public abstract class GenericAction {
 	 *            therefore it wont be called in onUnit
 	 */
 
-	public GenericAction(GenericAgent agent, Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
+	public GenericAction(GenericAgent agent, Com com, Long maxFramesOfExecuting, boolean specialStart) {
 		this.agent = agent;
 		this.com = com;
-		this.unit = unit;
 
 		this.maxFramesOfExecuting = maxFramesOfExecuting;
 		this.actionStarted = false;
 		this.specialStart = specialStart;
-		
-		//agent.onNewAction(this);
 	}
 
-	protected Order order;
-
-	//@Override
-	public void onUnit(Unit unit) {
-		if (unit.equals(this.unit)) {
-
-			if (actionStarted && isFramesLimitsReached()) {
-				com.onDebugMessage("End - frame limit" + this.getClass(), DebugEnum.FRAME_LIMIT);
-				onEndAction(false);
-			} else {
-				if (!specialStart) {
-					startAction();
-				}
-				executeAction();
-				if (actionStarted && order != null && order != unit.getOrder()) {
-					com.onDebugMessage("End - Bad order" + (order == null ? ", null" : ", not equals"), DebugEnum.BAD_ORDER);
-					onEndAction(false);
-				}
-			}
-		} else {
-			// TODO es necesario? Debería cumplirse
-			throw new RuntimeException();
-		}
-	}
-
+	public abstract void onFrame();
+	
 	/**
 	 * Starts this action. This means that the action can be executing
 	 * maxFramesOfExecuting frames from the first call of this method. This
@@ -122,28 +97,13 @@ public abstract class GenericAction {
 			this.actionStarted = true;
 		}
 	}
-/*
-	@Override
-	public Unit getUnitObserved() {
-		return this.unit;
-	}
 
-	@Override
-	public void registerOnUnitObserver() {
-		this.com.bot.registerOnUnitObserver(this);
-	}
-
-	@Override
-	public void unRegisterOnUnitObserver() {
-		this.com.bot.unRegisterOnUnitObserver(this);
-	}
-*/
 	/**
 	 * 
 	 * @return true if this action has been executing more than
 	 *         maxFramesOfExecuting frames.
 	 */
-	private boolean isFramesLimitsReached() {
+	protected boolean isFramesLimitsReached() {
 		return com.bot.frames >= this.frameEnd;
 	}
 

@@ -90,7 +90,7 @@ public class MarineUnitAgent extends UnitAgent {
 		}
 		
 		if (this.currentAction != null)
-			this.currentAction.onUnit(this.unit);
+			this.currentAction.onFrame();
 		
 		for (Unit u : CheckAround.getEnemyUnitsAround(unit)) {
 			if (!this.map.containsKey(u.getID()))
