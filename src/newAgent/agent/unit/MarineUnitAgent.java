@@ -182,8 +182,6 @@ public class MarineUnitAgent extends UnitAgent {
 				this.endCondition = event.isFinalEvent();
 
 				event.notifyEvent();			
-				// TODO only agents observe unit
-				// this.currentAction.unRegisterOnUnitObserver();
 				this.currentAction = null;
 
 				// Signal AFTER onEnd and reward are set
