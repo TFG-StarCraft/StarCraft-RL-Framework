@@ -17,7 +17,7 @@ import newAgent.master.GenericMaster;
 import utils.DebugEnum;
 import utils.SafeNotify;
 
-public abstract class GenericAgent implements AbstractEnvironment, Runnable {
+public abstract class GenericAgent implements AbstractEnvironment, Runnable, OnEndActionObserver {
 
 	protected Com com;
 	protected Bot bot;

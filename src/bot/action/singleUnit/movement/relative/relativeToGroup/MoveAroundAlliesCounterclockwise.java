@@ -8,11 +8,11 @@ import bot.action.singleUnit.movement.MoveAction;
 import bot.action.singleUnit.movement.relative.ClokwiseMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 
 public class MoveAroundAlliesCounterclockwise extends MoveAction implements ClokwiseMove {
 
-	public MoveAroundAlliesCounterclockwise(GenericAgent agent, Com com, Unit unit) {
+	public MoveAroundAlliesCounterclockwise(OnEndActionObserver agent, Com com, Unit unit) {
 		super(agent, com, unit);
 	}	
 

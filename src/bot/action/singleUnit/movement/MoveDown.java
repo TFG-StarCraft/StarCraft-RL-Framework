@@ -3,7 +3,7 @@ package bot.action.singleUnit.movement;
 import com.Com;
 
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 
 /**
  * Movement. Move down.
@@ -23,7 +23,7 @@ public class MoveDown extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveDown(GenericAgent agent, Com com, Unit unit) {
+	public MoveDown(OnEndActionObserver agent, Com com, Unit unit) {
 		super(agent, com, unit);
 	}	
 	

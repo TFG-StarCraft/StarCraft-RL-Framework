@@ -3,7 +3,7 @@ package bot.action.singleUnit.movement;
 import com.Com;
 
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 
 /**
  * Movement. Move left.
@@ -24,7 +24,7 @@ public class MoveLeft extends MoveAction {
 	 * @param unit Unit to move.
 	 * @param agentEpoch 
 	 */
-	public MoveLeft(GenericAgent agent, Com com, Unit unit) {
+	public MoveLeft(OnEndActionObserver agent, Com com, Unit unit) {
 		super(agent, com, unit);
 	}	
 	

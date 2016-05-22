@@ -4,14 +4,14 @@ import com.Com;
 
 import bot.action.GenericAction;
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 import utils.DebugEnum;
 
 public abstract class GenericUnitAction extends GenericAction {
 
 	protected final Unit unit;	
 	
-	public GenericUnitAction(GenericAgent agent, Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
+	public GenericUnitAction(OnEndActionObserver agent, Com com, Unit unit, Long maxFramesOfExecuting, boolean specialStart) {
 		super(agent, com, maxFramesOfExecuting, specialStart);
 		
 		this.unit = unit;

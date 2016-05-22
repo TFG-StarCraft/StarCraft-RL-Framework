@@ -11,6 +11,7 @@ import bot.action.singleUnit.movement.relative.*;
 import bot.action.singleUnit.movement.relative.relativeToGroup.*;
 import bwapi.Unit;
 import newAgent.agent.GenericAgent;
+import newAgent.agent.group.MarineGroupAgent;
 import newAgent.agent.unit.UnitAgent;
 import utils.Config;
 
@@ -37,52 +38,72 @@ public class Action {
 
 		M_FROM_ALLIES, M_TO_ALLIES, M_FROM_ENE, M_TO_ENE,
 
-		ATTACK_LESS_HP;
+		ATTACK_LESS_HP,
+		
+		///////////////////////////////////////// 
+		// Group
+		///////////////////////////////////////// 
+
+		G_UP, G_DOWN, G_LEFT, G_RIGHT
+		
+		;
 
 		public GenericAction toAction(Com com, GenericAgent agent) {
-			// TODO execptions, instanceof........
-			Unit unit = ((UnitAgent) agent).getUnitObserved();
-			switch (this) {
-			case M_UP:
-				return new MoveUp(agent, com, unit);
-			case M_DOWN:
-				return new MoveDown(agent, com, unit);
-			case M_LEFT:
-				return new MoveLeft(agent, com, unit);
-			case M_RIGHT:
-				return new MoveRight(agent, com, unit);
+			if (agent instanceof UnitAgent) {
+				Unit unit = ((UnitAgent) agent).getUnitObserved();
+				switch (this) {
+				case M_UP:
+					return new MoveUp(agent, com, unit);
+				case M_DOWN:
+					return new MoveDown(agent, com, unit);
+				case M_LEFT:
+					return new MoveLeft(agent, com, unit);
+				case M_RIGHT:
+					return new MoveRight(agent, com, unit);
+	
+				case M_APPROACH:
+					return new MoveApproach(agent, com, unit);
+				case M_AWAY:
+					return new MoveAway(agent, com, unit);
+				case M_ARR_COUNTERCLOCKWISE:
+					return new MoveAroundCounterclockwise(agent, com, unit);
+				case M_ARR_CLOCKWISE:
+					return new MoveAroundClockwise(agent, com, unit);
+	
+				case M_ARR_ENE_COUNTCLOCKW:
+					return new MoveAroundEnemiesCounterclockwise(agent, com, unit);
+				case M_ARR_ENE_CLOCKW:
+					return new MoveAroundEnemiesClockwise(agent, com, unit);
+				case M_ARR_ALLIES_COUNTCLOCKW:
+					return new MoveAroundAlliesCounterclockwise(agent, com, unit);
+				case M_ARR_ALLIES_CLOCKW:
+					return new MoveAroundAlliesClockwise(agent, com, unit);
+	
+				case M_FROM_ENE:
+					return new MoveFromEnemies(agent, com, unit);
+				case M_TO_ENE:
+					return new MoveToEnemies(agent, com, unit);
+				case M_FROM_ALLIES:
+					return new MoveFromAllies(agent, com, unit);
+				case M_TO_ALLIES:
+					return new MoveToAllies(agent, com, unit);
+	
+				case ATTACK_LESS_HP:
+					return new AttackUnitOnSightLesHP(agent, com, unit);
+				default:
+					throw new IllegalArgumentException("Accion no valida");
+				}
+			} else if (agent instanceof MarineGroupAgent) {
+				switch (this) {
+				case G_UP:
+					
+					break;
 
-			case M_APPROACH:
-				return new MoveApproach(agent, com, unit);
-			case M_AWAY:
-				return new MoveAway(agent, com, unit);
-			case M_ARR_COUNTERCLOCKWISE:
-				return new MoveAroundCounterclockwise(agent, com, unit);
-			case M_ARR_CLOCKWISE:
-				return new MoveAroundClockwise(agent, com, unit);
-
-			case M_ARR_ENE_COUNTCLOCKW:
-				return new MoveAroundEnemiesCounterclockwise(agent, com, unit);
-			case M_ARR_ENE_CLOCKW:
-				return new MoveAroundEnemiesClockwise(agent, com, unit);
-			case M_ARR_ALLIES_COUNTCLOCKW:
-				return new MoveAroundAlliesCounterclockwise(agent, com, unit);
-			case M_ARR_ALLIES_CLOCKW:
-				return new MoveAroundAlliesClockwise(agent, com, unit);
-
-			case M_FROM_ENE:
-				return new MoveFromEnemies(agent, com, unit);
-			case M_TO_ENE:
-				return new MoveToEnemies(agent, com, unit);
-			case M_FROM_ALLIES:
-				return new MoveFromAllies(agent, com, unit);
-			case M_TO_ALLIES:
-				return new MoveToAllies(agent, com, unit);
-
-			case ATTACK_LESS_HP:
-				return new AttackUnitOnSightLesHP(agent, com, unit);
-			default:
-				throw new IllegalArgumentException("Accion no valida");
+				default:
+					break;
+				}
+			} else {
+				throw new IllegalArgumentException("Agente desconocido");
 			}
 		}
 

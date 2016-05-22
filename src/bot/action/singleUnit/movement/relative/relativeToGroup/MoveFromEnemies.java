@@ -7,7 +7,7 @@ import com.Com;
 import bot.action.singleUnit.movement.relative.RelativeMove;
 import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 
 /**
  * Movement. Approaching to a target unit.
@@ -31,7 +31,7 @@ public class MoveFromEnemies extends RelativeMove {
 	 *            Unit to move.
 	 * @param agentEpoch
 	 */
-	public MoveFromEnemies(GenericAgent agent, Com com, Unit unit) {
+	public MoveFromEnemies(OnEndActionObserver agent, Com com, Unit unit) {
 		super(agent, com, unit);
 	}	
 

@@ -3,7 +3,7 @@ package bot.action;
 import com.Com;
 
 import bwapi.Order;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 import utils.DebugEnum;
 
 public abstract class GenericAction {
@@ -11,7 +11,7 @@ public abstract class GenericAction {
 	protected Com com;
 
 	// Unit that is executing the action
-	protected final GenericAgent agent;
+	protected final OnEndActionObserver agent;
 
 	// Frame num were the action should have finished, reaching this frame
 	// before the action has ended (reaching endPos in this case), the action
@@ -34,7 +34,7 @@ public abstract class GenericAction {
 	 * 	- if the action hasn't started yet, it starts. 
 	 * 	- if the action isn't finished yet, but no termination condition is
 	 *	satisfied (i.e. the unit hasn't arrived to the target position, but
-	 * 	keeps moving), the action keeps going whitout problem. 
+	 * 	keeps moving), the action keeps going without problem. 
 	 * 	- if the action has reached its goal, onEndAction is called and the 
 	 * 	agent is usually notified that an action has ended correctly. 
 	 * 	- if the action has't reached its goal, but it has been interrupted 
@@ -72,8 +72,7 @@ public abstract class GenericAction {
 	 *            if the startAction is called inside of execute action, and
 	 *            therefore it wont be called in onUnit
 	 */
-
-	public GenericAction(GenericAgent agent, Com com, Long maxFramesOfExecuting, boolean specialStart) {
+	public GenericAction(OnEndActionObserver agent, Com com, Long maxFramesOfExecuting, boolean specialStart) {
 		this.agent = agent;
 		this.com = com;
 
