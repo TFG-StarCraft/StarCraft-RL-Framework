@@ -91,7 +91,7 @@ public class DM_LambdaQE extends GenericDecisionMaker {
 				mov = A;
 			}
 		}
-
+		
 		return mov;
 	}
 

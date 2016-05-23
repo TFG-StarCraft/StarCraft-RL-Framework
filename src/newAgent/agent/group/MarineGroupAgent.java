@@ -11,9 +11,12 @@ import bot.commonFunctions.CheckAround;
 import bwapi.Unit;
 import newAgent.Const;
 import newAgent.agent.GenericAgent;
+import newAgent.decisionMaker.DM_LambdaQE;
+import newAgent.decisionMaker.Shared_LambdaQE;
 import newAgent.event.AbstractEvent;
 import newAgent.event.factories.AEFGroup;
 import newAgent.master.GenericMaster;
+import newAgent.state.DataGroup;
 import newAgent.state.State;
 
 public class MarineGroupAgent extends GenericAgent {
@@ -30,7 +33,7 @@ public class MarineGroupAgent extends GenericAgent {
 	private int frameCount;
 	private int numGroup;
 
-	public MarineGroupAgent(GenericMaster master, Com com, Bot bot, List<Unit> units, int numGroup) {
+	public MarineGroupAgent(GenericMaster master, Com com, Bot bot, List<Unit> units, int numGroup, Shared_LambdaQE shared) {
 		super(master, com, bot);
 		this.allUnits = new ArrayList<>(units);
 		this.aliveUnits = new ArrayList<>(units);
@@ -39,6 +42,9 @@ public class MarineGroupAgent extends GenericAgent {
 		this.numGroup = numGroup;
 		this.enemies = new ArrayList<>();
 		// TODO Auto-generated constructor stub
+		
+
+		this.decisionMaker = new DM_LambdaQE(this, shared);
 	}
 
 	@Override
@@ -52,20 +58,19 @@ public class MarineGroupAgent extends GenericAgent {
 
 	@Override
 	public State getInitState() {
-		// TODO Auto-generated method stub
-		return null;
+		this.waitForBotEndsInit();
+		
+		return new State(this, new DataGroup());
 	}
 
 	@Override
 	public int getNumDims() {
-		// TODO Auto-generated method stub
-		return 0;
+		return DataGroup.getNumDims();
 	}
 
 	@Override
 	public ArrayList<Integer> getNumValuesPerDims() {
-		// TODO Auto-generated method stub
-		return null;
+		return DataGroup.getNumValuesPerDims();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -251,7 +256,11 @@ public class MarineGroupAgent extends GenericAgent {
 
 	@Override
 	public double getRewardUpdated() {
-		return nextReward;
+		return 2;
+	}
+
+	public List<Unit> getUnits() {
+		return this.aliveUnits;
 	}
 
 }

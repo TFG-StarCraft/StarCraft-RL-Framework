@@ -106,7 +106,11 @@ public class Bot extends DefaultBWListener implements Runnable {
 		// Pause 200 frames
 		if (initFrame == 200)
 			game.resumeGame();
-
+		if (initFrame < 300) {
+			initFrame++;
+			return;
+		}
+		
 		try {
 			com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
 			if (shouldExecuteOnFrame()) {

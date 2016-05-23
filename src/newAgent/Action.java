@@ -96,11 +96,15 @@ public class Action {
 			} else if (agent instanceof MarineGroupAgent) {
 				switch (this) {
 				case G_UP:
-					
-					break;
-
+					return new bot.action.groupUnit.movement.MoveUp((MarineGroupAgent) agent, com, (long) 100, false);
+				case G_DOWN:
+					return new bot.action.groupUnit.movement.MoveDown((MarineGroupAgent) agent, com, (long) 100, false);
+				case G_RIGHT:
+					return new bot.action.groupUnit.movement.MoveRight((MarineGroupAgent) agent, com, (long) 100, false);
+				case G_LEFT:
+					return new bot.action.groupUnit.movement.MoveLeft((MarineGroupAgent) agent, com, (long) 100, false);
 				default:
-					break;
+					throw new IllegalArgumentException("Accion no valida");
 				}
 			} else {
 				throw new IllegalArgumentException("Agente desconocido");

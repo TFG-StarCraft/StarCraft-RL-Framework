@@ -15,6 +15,7 @@ import newAgent.agent.GenericAgent;
 import newAgent.agent.group.MarineGroupAgent;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.decisionMaker.Shared_LambdaQE;
+import newAgent.state.DataGroup;
 import newAgent.state.State;
 import utils.DebugEnum;
 import weka.clusterers.SimpleKMeans;
@@ -40,14 +41,14 @@ public class GroupMaster extends GenericMaster {
 				public int getNumDims() {
 					// TODO group environment
 					// return DataMarine.getNumDims();
-					return 0;
+					return DataGroup.getNumDims();
 				}
 
 				@Override
 				public ArrayList<Integer> getNumValuesPerDims() {
 					// TODO group environment
 					// return DataMarine.getNumValuesPerDims();
-					return null;
+					return DataGroup.getNumValuesPerDims();
 				}
 
 				@Override
@@ -66,7 +67,7 @@ public class GroupMaster extends GenericMaster {
 			}
 			
 			for (Entry<Integer, List<Unit>> entry : groups.entrySet()) {
-				GenericAgent a = new MarineGroupAgent(this, com, com.bot, entry.getValue(), entry.getKey());
+				GenericAgent a = new MarineGroupAgent(this, com, com.bot, entry.getValue(), entry.getKey(), shared);
 				this.agentsNotFinished.add(a);
 				this.allAgents.add(a);
 			}

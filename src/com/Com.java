@@ -13,6 +13,7 @@ import bot.Bot;
 import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.event.AbstractEvent;
 import newAgent.master.GenericMaster;
+import newAgent.master.GroupMaster;
 import newAgent.master.MarineMaster;
 import utils.DebugEnum;
 
@@ -53,8 +54,8 @@ public class Com implements Runnable, AgentObserver, BotOberver {
 	public void run() {
 		utils.StarcraftLauncher.launchChaosLauncher(this);
 
-		master = new MarineMaster(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda));
-		
+		//master = new MarineMaster(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda));
+		master = new GroupMaster(this, new DecisionMakerPrams(alpha, gamma, epsilon, lambda), 3);
 		bot = new Bot(this, master);
 		bot.frameSpeed = startSpeed;
 		bot.guiEnabled = startGui;
