@@ -12,7 +12,7 @@ public class MoveRight extends MoveAction {
 		// TODO Auto-generated constructor stub
 	}
 	@Override
-	protected bot.action.singleUnit.movement.MoveAction getMoveAction(Unit unit) {
+	protected bot.action.singleUnit.movement.MoveAction getAction(Unit unit) {
 		// TODO Auto-generated method stub
 		return new bot.action.singleUnit.movement.MoveRight(this, com, unit);
 	}

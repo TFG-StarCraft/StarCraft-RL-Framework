@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class DataGroup extends StateData {
 
 	private static final int MAX_1 = 9;
-	private static final int MAX_DISTANCE_DISCRETE = 9;
 	
 	public class Test1 extends Dimension<Integer> {
 

@@ -13,7 +13,7 @@ public class MoveDown extends MoveAction {
 	}
 
 	@Override
-	protected bot.action.singleUnit.movement.MoveAction getMoveAction(Unit unit) {
+	protected bot.action.singleUnit.movement.MoveAction getAction(Unit unit) {
 		// TODO Auto-generated method stub
 		return new bot.action.singleUnit.movement.MoveDown(this, com, unit);
 	}

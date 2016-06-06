@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.Com;
 
 import bot.action.*;
-import bot.action.singleUnit.AttackUnitOnSightLesHP;
+import bot.action.singleUnit.AttackUnitOnSightLessHP;
 import bot.action.singleUnit.movement.*;
 import bot.action.singleUnit.movement.relative.*;
 import bot.action.singleUnit.movement.relative.relativeToGroup.*;
@@ -44,7 +44,7 @@ public class Action {
 		// Group
 		///////////////////////////////////////// 
 
-		G_UP, G_DOWN, G_LEFT, G_RIGHT
+		G_UP, G_DOWN, G_LEFT, G_RIGHT, G_ATTACK_LESS_HP
 		
 		;
 
@@ -89,20 +89,23 @@ public class Action {
 					return new MoveToAllies(agent, com, unit);
 	
 				case ATTACK_LESS_HP:
-					return new AttackUnitOnSightLesHP(agent, com, unit);
+					return new AttackUnitOnSightLessHP(agent, com, unit);
 				default:
 					throw new IllegalArgumentException("Accion no valida");
 				}
 			} else if (agent instanceof MarineGroupAgent) {
+				MarineGroupAgent groupAgent = (MarineGroupAgent) agent;
 				switch (this) {
 				case G_UP:
-					return new bot.action.groupUnit.movement.MoveUp((MarineGroupAgent) agent, com, (long) 100, false);
+					return new bot.action.groupUnit.movement.MoveUp(groupAgent, com, (long) 100, false);
 				case G_DOWN:
-					return new bot.action.groupUnit.movement.MoveDown((MarineGroupAgent) agent, com, (long) 100, false);
+					return new bot.action.groupUnit.movement.MoveDown(groupAgent, com, (long) 100, false);
 				case G_RIGHT:
-					return new bot.action.groupUnit.movement.MoveRight((MarineGroupAgent) agent, com, (long) 100, false);
+					return new bot.action.groupUnit.movement.MoveRight(groupAgent, com, (long) 100, false);
 				case G_LEFT:
-					return new bot.action.groupUnit.movement.MoveLeft((MarineGroupAgent) agent, com, (long) 100, false);
+					return new bot.action.groupUnit.movement.MoveLeft(groupAgent, com, (long) 100, false);
+				case G_ATTACK_LESS_HP:
+					return new bot.action.groupUnit.AttackUnitOnSightLessHP(groupAgent, com);
 				default:
 					throw new IllegalArgumentException("Accion no valida");
 				}

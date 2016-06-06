@@ -14,7 +14,6 @@ import newAgent.decisionMaker.DecisionMakerPrams;
 import newAgent.event.AbstractEvent;
 import newAgent.master.GenericMaster;
 import newAgent.master.GroupMaster;
-import newAgent.master.MarineMaster;
 import utils.DebugEnum;
 
 public class Com implements Runnable, AgentObserver, BotOberver {

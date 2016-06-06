@@ -7,11 +7,11 @@ import com.Com;
 import bot.commonFunctions.CheckAround;
 import bwapi.Order;
 import bwapi.Unit;
-import newAgent.agent.GenericAgent;
+import newAgent.agent.OnEndActionObserver;
 
-public class AttackUnitOnSightLesHP extends GenericUnitAction {
+public class AttackUnitOnSightLessHP extends GenericUnitAction {
 
-	public AttackUnitOnSightLesHP(GenericAgent agent, Com com, Unit atacante) {
+	public AttackUnitOnSightLessHP(OnEndActionObserver agent, Com com, Unit atacante) {
 		super(agent, com, atacante, bot.Const.FRAMES_ATTACK, false);
 	}
 

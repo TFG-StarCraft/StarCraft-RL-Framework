@@ -97,19 +97,23 @@ public class Bot extends DefaultBWListener implements Runnable {
 	
 	@Override
 	public void onFrame() {
-		if (initFrame == 0)
+		if (initFrame == 0) {
+			game.setLocalSpeed(40);
 			game.pauseGame();
+		}
 		if (initFrame < 200) {
 			initFrame++;
 			return;
 		}
 		// Pause 200 frames
-		if (initFrame == 200)
+		if (initFrame == 200) {
 			game.resumeGame();
-		if (initFrame < 300) {
-			initFrame++;
-			return;
+			game.setLocalSpeed(frameSpeed);
 		}
+//		if (initFrame < 210) {
+//			initFrame++;
+//			return;
+//		}
 		
 		try {
 			com.onDebugMessage("Frame " + this.frames + " Units " + this.game.getAllUnits().size(), DebugEnum.FRAMES);
