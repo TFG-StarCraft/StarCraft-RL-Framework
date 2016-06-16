@@ -8,6 +8,7 @@ import com.Com;
 import bot.Bot;
 import bot.action.GenericAction;
 import bot.commonFunctions.CheckAround;
+import bwapi.Position;
 import bwapi.Unit;
 import newAgent.Const;
 import newAgent.agent.GenericAgent;
@@ -21,7 +22,7 @@ import newAgent.state.State;
 
 public class MarineGroupAgent extends GenericAgent {
 
-	private static final int TIMEOUT = 2500;
+	private static final int TIMEOUT = 42500;
 
 	private List<Unit> allUnits;
 	private List<Unit> aliveUnits;
@@ -33,7 +34,8 @@ public class MarineGroupAgent extends GenericAgent {
 	private int frameCount;
 	private int numGroup;
 
-	public MarineGroupAgent(GenericMaster master, Com com, Bot bot, List<Unit> units, int numGroup, Shared_LambdaQE shared) {
+	public MarineGroupAgent(GenericMaster master, Com com, Bot bot, List<Unit> units, int numGroup,
+			Shared_LambdaQE shared) {
 		super(master, com, bot);
 		this.allUnits = new ArrayList<>(units);
 		this.aliveUnits = new ArrayList<>(units);
@@ -42,7 +44,6 @@ public class MarineGroupAgent extends GenericAgent {
 		this.numGroup = numGroup;
 		this.enemies = new ArrayList<>();
 		// TODO Auto-generated constructor stub
-		
 
 		this.decisionMaker = new DM_LambdaQE(this, shared);
 	}
@@ -52,6 +53,20 @@ public class MarineGroupAgent extends GenericAgent {
 		this.factory = new AEFGroup(com);
 	}
 
+	public Position getAveragePos() {
+		int x = 0, y = 0;
+
+		for (Unit unit : aliveUnits) {
+			x += unit.getX();
+			y += unit.getY();
+		}
+
+		x = (int) Math.ceil(x / (double) aliveUnits.size());
+		y = (int) Math.ceil(y / (double) aliveUnits.size());
+
+		return new Position(x, y);
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// ENVIRONMENT ////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -59,8 +74,8 @@ public class MarineGroupAgent extends GenericAgent {
 	@Override
 	public State getInitState() {
 		this.waitForBotEndsInit();
-		
-		return new State(this, new DataGroup());
+
+		return new State(this, new DataGroup(this));
 	}
 
 	@Override
@@ -188,50 +203,50 @@ public class MarineGroupAgent extends GenericAgent {
 			isFinal = isFinal | event.isFinalEvent();
 			if (event.returnsControlToAgent()) {
 				// Calculate reward for current ending action
-				if (event.isFinalEvent()) {
+//				if (event.isFinalEvent()) {
 					nextReward = event.isGoalState() ? Const.REWARD_SUCCESS : Const.REWARD_FAIL;
-				} else {
-					// Calculate end hp's
-
-					endMyHP = 0;
-					for (Unit unit : aliveUnits) {
-						endMyHP += unit.getHitPoints();
-					}
-					endMyHP = endMyHP == 0 ? -1 : endMyHP;
-
-					endEnemyHP = 0;
-					for (Unit unit : enemies) {
-						endEnemyHP += unit.getHitPoints();
-					}
-					endEnemyHP = endEnemyHP == 0 ? -1 : endEnemyHP;
-
-					if (endEnemyHP != -1 && iniEnemyHP == -1) {
-						// Killed enemies that initially unit didn't see
-
-						List<Unit> l = new ArrayList<>();
-						for (Unit unit : aliveUnits) {
-							for (Unit u : CheckAround.getEnemyUnitsAround(unit)) {
-								if (!l.contains(u))
-									l.add(u);
-							}
-						}
-
-						if (l.isEmpty())
-							iniEnemyHP = -1;
-
-						iniEnemyHP = 0.0;
-						for (int i = 0; i < l.size(); i++) {
-							iniEnemyHP += l.get(i).getHitPoints();
-						}
-					}
-
-					if (iniEnemyHP == -1 && endEnemyHP == -1) {
-						nextReward = 0;
-					}
-
-					double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
-					nextReward = r * newAgent.Const.REWARD_MULT_FACTOR;
-				}
+//				} else {
+//					// Calculate end hp's
+//
+//					endMyHP = 0;
+//					for (Unit unit : aliveUnits) {
+//						endMyHP += unit.getHitPoints();
+//					}
+//					endMyHP = endMyHP == 0 ? -1 : endMyHP;
+//
+//					endEnemyHP = 0;
+//					for (Unit unit : enemies) {
+//						endEnemyHP += unit.getHitPoints();
+//					}
+//					endEnemyHP = endEnemyHP == 0 ? -1 : endEnemyHP;
+//
+//					if (endEnemyHP != -1 && iniEnemyHP == -1) {
+//						// Killed enemies that initially unit didn't see
+//
+//						List<Unit> l = new ArrayList<>();
+//						for (Unit unit : aliveUnits) {
+//							for (Unit u : CheckAround.getEnemyUnitsAround(unit)) {
+//								if (!l.contains(u))
+//									l.add(u);
+//							}
+//						}
+//
+//						if (l.isEmpty())
+//							iniEnemyHP = -1;
+//
+//						iniEnemyHP = 0.0;
+//						for (int i = 0; i < l.size(); i++) {
+//							iniEnemyHP += l.get(i).getHitPoints();
+//						}
+//					}
+//
+//					if (iniEnemyHP == -1 && endEnemyHP == -1) {
+//						nextReward = 0;
+//					}
+//
+//					double r = (iniEnemyHP - endEnemyHP) / (double) iniEnemyHP - (iniMyHP - endMyHP) / (double) iniMyHP;
+//					nextReward = r * newAgent.Const.REWARD_MULT_FACTOR;
+//				}
 
 				this.endCondition = event.isFinalEvent();
 
@@ -256,7 +271,7 @@ public class MarineGroupAgent extends GenericAgent {
 
 	@Override
 	public double getRewardUpdated() {
-		return 2;
+		return nextReward;
 	}
 
 	public List<Unit> getUnits() {

@@ -101,12 +101,12 @@ public class Bot extends DefaultBWListener implements Runnable {
 			game.setLocalSpeed(40);
 			game.pauseGame();
 		}
-		if (initFrame < 200) {
+		if (initFrame < 20) {
 			initFrame++;
 			return;
 		}
 		// Pause 200 frames
-		if (initFrame == 200) {
+		if (initFrame == 20) {
 			game.resumeGame();
 			game.setLocalSpeed(frameSpeed);
 		}
