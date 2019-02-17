@@ -1,5 +1,7 @@
 # TFG-StarCraft
 
+Explicación del funcionamiento del Framework y de los algoritmos (https://eprints.ucm.es/38689/1/Memoria%20tfg.pdf)
+
 ## Herramienats externas
 
 [BWAPI - Verión 4.1.2] (https://github.com/bwapi/bwapi) compatible con BWAPI Mirror
